@@ -1,0 +1,25 @@
+{
+  "name": "fullmag-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-platform e-commerce system",
+  "scripts": {
+    "dev:web": "pnpm --filter @fullmag/web dev",
+    "dev:api": "pnpm --filter @fullmag/api dev",
+    "dev:mobile": "pnpm --filter @fullmag/mobile start",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3",
+    "prettier": "^3.2.4",
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

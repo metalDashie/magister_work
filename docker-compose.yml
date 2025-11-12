@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fullmag-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fullmag
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fullmag-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: fullmag-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - fullmag-network
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    container_name: fullmag-api
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: fullmag
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: dev-secret-change-in-production
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - '3001:3001'
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./services/api:/app/services/api
+      - ./packages/common:/app/packages/common
+      - /app/node_modules
+      - /app/services/api/node_modules
+    networks:
+      - fullmag-network
+    command: pnpm --filter @fullmag/api dev
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: fullmag-web
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+    ports:
+      - '3000:3000'
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app/apps/web
+      - ./packages/common:/app/packages/common
+      - /app/node_modules
+      - /app/apps/web/node_modules
+    networks:
+      - fullmag-network
+    command: pnpm --filter @fullmag/web dev
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  fullmag-network:
+    driver: bridge
