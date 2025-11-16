@@ -32,6 +32,25 @@ export class Order {
   })
   status: OrderStatus
 
+  // Delivery information
+  @Column({ name: 'delivery_type', nullable: true })
+  deliveryType: string
+
+  @Column({ name: 'delivery_city', nullable: true })
+  deliveryCity: string
+
+  @Column({ name: 'delivery_warehouse', nullable: true })
+  deliveryWarehouse: string
+
+  @Column({ name: 'delivery_address', nullable: true })
+  deliveryAddress: string
+
+  @Column({ name: 'recipient_name', nullable: true })
+  recipientName: string
+
+  @Column({ name: 'recipient_phone', nullable: true })
+  recipientPhone: string
+
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
   user: User

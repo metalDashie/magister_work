@@ -16,6 +16,11 @@ import { OrdersModule } from './modules/orders/orders.module'
 import { PaymentsModule } from './modules/payments/payments.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 import { WebhookModule } from './modules/webhook/webhook.module'
+import { ChatModule } from './modules/chat/chat.module'
+import { DeliveryModule } from './modules/delivery/delivery.module'
+import { EmailModule } from './modules/email/email.module'
+import { ImportModule } from './modules/import/import.module'
+import { ChatGateway } from './gateways/chat.gateway'
 
 @Module({
   imports: [
@@ -42,14 +47,14 @@ import { WebhookModule } from './modules/webhook/webhook.module'
       inject: [ConfigService],
     }),
 
-    // GraphQL
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true,
-      playground: true,
-      context: ({ req, res }) => ({ req, res }),
-    }),
+    // GraphQL - Temporarily disabled for testing
+    // GraphQLModule.forRoot<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    //   sortSchema: true,
+    //   playground: true,
+    //   context: ({ req, res }) => ({ req, res }),
+    // }),
 
     // Bull (Redis Queue)
     BullModule.forRootAsync({
@@ -73,6 +78,11 @@ import { WebhookModule } from './modules/webhook/webhook.module'
     PaymentsModule,
     NotificationsModule,
     WebhookModule,
+    ChatModule,
+    DeliveryModule,
+    EmailModule,
+    ImportModule,
   ],
+  providers: [ChatGateway],
 })
 export class AppModule {}

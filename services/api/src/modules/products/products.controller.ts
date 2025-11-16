@@ -18,8 +18,12 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.productsService.findAll(page, limit)
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('search') search?: string
+  ) {
+    return this.productsService.findAll(page, limit, search)
   }
 
   @Get(':id')

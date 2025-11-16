@@ -6,6 +6,7 @@ import { HttpService } from '@nestjs/axios'
 import { Payment } from '../../database/entities'
 import { PaymentProvider, PaymentStatus } from '@fullmag/common'
 import { firstValueFrom } from 'rxjs'
+import { EmailService } from '../email/email.service'
 
 @Injectable()
 export class PaymentsService {
@@ -13,7 +14,8 @@ export class PaymentsService {
     @InjectRepository(Payment)
     private paymentsRepository: Repository<Payment>,
     private httpService: HttpService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private emailService: EmailService
   ) {}
 
   async createInvoice(orderId: string, amount: number, currency: string) {
@@ -68,9 +70,25 @@ export class PaymentsService {
       { providerPaymentId },
       { status }
     )
+
+    // Send payment success email
+    if (status === PaymentStatus.SUCCESS) {
+      const payment = await this.paymentsRepository.findOne({
+        where: { providerPaymentId },
+        relations: ['order', 'order.user'],
+      })
+
+      if (payment?.order?.user?.email) {
+        await this.emailService.sendPaymentSuccess(
+          payment.order,
+          payment.order.user.email,
+          payment.providerPaymentId
+        )
+      }
+    }
   }
 
-  async findByProviderPaymentId(providerPaymentId: string): Promise<Payment> {
+  async findByProviderPaymentId(providerPaymentId: string): Promise<Payment | null> {
     return this.paymentsRepository.findOne({
       where: { providerPaymentId },
       relations: ['order'],

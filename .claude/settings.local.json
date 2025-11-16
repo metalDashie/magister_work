@@ -1,7 +1,31 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(\"C:\\Users\\Iurii\\Desktop\\magister\\fullmag\\apps\\mobile\\src\\navigation\\AppNavigator.tsx\")",
+      "Bash(\"C:\\Users\\Iurii\\Desktop\\magister\\fullmag\\apps\\mobile\\src\\screens\\auth\\LoginScreen.tsx\")",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm dev:api:*)",
+      "Bash(timeout /t 3)",
+      "Bash(ping:*)",
+      "Bash(nul)",
+      "Bash(pnpm build:*)",
+      "Bash(dir:*)",
+      "Bash(pnpm dev)",
+      "Bash(node:*)",
+      "Bash(pnpm rebuild:*)",
+      "Bash(PORT=10002 pnpm dev:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker logs:*)",
+      "Bash(curl:*)",
+      "Bash(docker exec:*)",
+      "Bash(timeout /t 10)",
+      "Bash(pip install:*)",
+      "Bash(docker start:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm add:*)"
     ],
     "deny": [],
     "ask": []

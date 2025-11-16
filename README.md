@@ -67,60 +67,221 @@ fullmag/
 
 ## Getting Started
 
-### 1. Clone and Install
+Follow these steps to set up the project on a new machine:
+
+### Quick Start (Recommended - Docker)
+
+If you have Docker installed, this is the fastest way to get started:
 
 ```bash
+# 1. Clone the repository
 git clone <repository-url>
 cd fullmag
+
+# 2. Start all services with Docker
+docker-compose -f docker-compose.dev.yml up -d
+
+# 3. Wait for services to start (first time takes ~2-3 minutes for dependency installation)
+# Check logs to monitor progress:
+docker logs -f fullmag-api
+docker logs -f fullmag-web
+```
+
+**That's it!** Services will be available at:
+- 🌐 **Web App**: http://localhost:10002
+- 🔧 **API**: http://localhost:10001
+- 📊 **GraphQL Playground**: http://localhost:10001/graphql
+- 🐘 **PostgreSQL**: localhost:10050
+- 🔴 **Redis**: localhost:10100
+
+---
+
+### Manual Setup (Without Docker)
+
+If you prefer to run services locally without Docker:
+
+#### Step 1: Install Prerequisites
+
+Make sure you have installed:
+- **Node.js** >= 20.0.0 ([Download](https://nodejs.org/))
+- **pnpm** >= 8.0.0 (Install: `npm install -g pnpm`)
+- **PostgreSQL** 16 ([Download](https://www.postgresql.org/download/))
+- **Redis** ([Download](https://redis.io/download/))
+
+#### Step 2: Clone and Install Dependencies
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd fullmag
+
+# Install all dependencies (this may take a few minutes)
 pnpm install
 ```
 
-### 2. Environment Configuration
-
-Copy environment files and configure:
+#### Step 3: Setup Database
 
 ```bash
-# Backend
-cp services/api/.env.example services/api/.env
+# Create PostgreSQL database
+createdb fullmag
 
-# Web
-cp apps/web/.env.example apps/web/.env
-
-# Mobile
-cp apps/mobile/.env.example apps/mobile/.env
+# Or using psql:
+psql -U postgres
+CREATE DATABASE fullmag;
+\q
 ```
 
-### 3. Start with Docker (Recommended)
+#### Step 4: Configure Environment Variables
+
+```bash
+# Copy environment files
+cp services/api/.env.example services/api/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+**Edit `services/api/.env`** and update the following:
+
+```env
+# Server
+PORT=10001
+NODE_ENV=development
+
+# Database
+DB_HOST=localhost
+DB_PORT=10050
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=fullmag
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=10100
+
+# JWT
+JWT_SECRET=your-secret-key-change-in-production
+JWT_EXPIRES_IN=1d
+JWT_REFRESH_EXPIRES_IN=7d
+
+# CORS
+CORS_ORIGIN=http://localhost:10002
+FRONTEND_URL=http://localhost:10002
+
+# Email (optional for development)
+EMAIL_ENABLED=false
+```
+
+**Edit `apps/web/.env`** and update:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:10001
+```
+
+#### Step 5: Start Services
+
+Open **3 separate terminal windows**:
+
+**Terminal 1 - Start API:**
+```bash
+pnpm dev:api
+```
+Wait for: `Nest application successfully started`
+
+**Terminal 2 - Start Web App:**
+```bash
+cd apps/web
+PORT=10002 pnpm dev
+```
+Wait for: `Ready in X.Xs`
+
+**Terminal 3 - Start PostgreSQL & Redis:**
+```bash
+# Make sure PostgreSQL is running on port 10050
+# Make sure Redis is running on port 10100
+
+# On macOS/Linux:
+redis-server --port 10100
+
+# On Windows:
+redis-server --port 10100
+```
+
+---
+
+### Verify Installation
+
+Once services are running, verify everything works:
+
+1. **API Health Check:**
+   ```bash
+   curl http://localhost:10001
+   ```
+
+2. **Web App:**
+   Open http://localhost:10002 in your browser
+
+3. **GraphQL Playground:**
+   Open http://localhost:10001/graphql in your browser
+
+4. **Database Connection:**
+   ```bash
+   psql -h localhost -p 10050 -U postgres -d fullmag
+   ```
+
+---
+
+### Common Commands
+
+#### Using Docker:
 
 ```bash
 # Start all services
-docker-compose up -d
+docker-compose -f docker-compose.dev.yml up -d
 
-# View logs
-docker-compose logs -f
+# Stop all services
+docker-compose -f docker-compose.dev.yml down
+
+# View logs (all services)
+docker-compose -f docker-compose.dev.yml logs -f
+
+# View logs (specific service)
+docker logs -f fullmag-api
+docker logs -f fullmag-web
+docker logs -f fullmag-postgres
+docker logs -f fullmag-redis
+
+# Restart a service
+docker-compose -f docker-compose.dev.yml restart api
+docker-compose -f docker-compose.dev.yml restart web
+
+# Rebuild and restart
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Stop and remove everything (including volumes/data)
+docker-compose -f docker-compose.dev.yml down -v
+
+# Check service status
+docker-compose -f docker-compose.dev.yml ps
 ```
 
-Services will be available at:
-- Web: http://localhost:3000
-- API: http://localhost:3001
-- GraphQL Playground: http://localhost:3001/graphql
-- PostgreSQL: localhost:5432
-- Redis: localhost:6379
-
-### 4. Start Development (Without Docker)
+#### Using pnpm (without Docker):
 
 ```bash
-# Terminal 1 - Start PostgreSQL and Redis
-# (Make sure they're running)
+# Development
+pnpm dev:web          # Start web app on port 10002
+pnpm dev:api          # Start API server on port 10001
+pnpm dev:mobile       # Start mobile app
 
-# Terminal 2 - Start API
-pnpm dev:api
+# Build
+pnpm build            # Build all projects
 
-# Terminal 3 - Start Web
-pnpm dev:web
+# Test
+pnpm test             # Run all tests
 
-# Terminal 4 - Start Mobile
-pnpm dev:mobile
+# Lint
+pnpm lint             # Lint all projects
+
+# Clean
+pnpm clean            # Clean build artifacts
 ```
 
 ## Project Structure
@@ -260,7 +421,7 @@ Required environment variables for production:
 
 ### REST API
 
-Available at: `http://localhost:3001/api`
+Available at: `http://localhost:10001/api`
 
 Key endpoints:
 - `POST /api/auth/login` - User login
@@ -275,7 +436,7 @@ Key endpoints:
 
 ### GraphQL API
 
-GraphQL Playground: `http://localhost:3001/graphql`
+GraphQL Playground: `http://localhost:10001/graphql`
 
 ## Testing
 
@@ -316,6 +477,133 @@ Subject: Development of Multi-Platform E-Commerce System
 ## Project Status
 
 Active development - Master's thesis implementation
+
+## Troubleshooting
+
+### Common Issues
+
+#### Docker Issues
+
+**Problem: Containers won't start or crash**
+```bash
+# Check logs for errors
+docker logs fullmag-api
+docker logs fullmag-web
+
+# Try rebuilding
+docker-compose -f docker-compose.dev.yml down -v
+docker-compose -f docker-compose.dev.yml up -d --build
+```
+
+**Problem: Port already in use**
+```bash
+# Find what's using the port (example for port 10001)
+# On macOS/Linux:
+lsof -i :10001
+
+# On Windows:
+netstat -ano | findstr :10001
+
+# Kill the process or change the port in docker-compose.dev.yml
+```
+
+**Problem: Slow dependency installation**
+- First run takes 2-5 minutes to install all dependencies
+- Use `docker logs -f fullmag-api` to monitor progress
+- Subsequent starts are much faster
+
+#### Local Development Issues
+
+**Problem: TypeScript compilation errors**
+```bash
+# Clean and rebuild
+rm -rf node_modules
+rm -rf services/api/dist
+rm -rf apps/web/.next
+pnpm install
+pnpm build
+```
+
+**Problem: Database connection refused**
+```bash
+# Make sure PostgreSQL is running on the correct port
+psql -h localhost -p 10050 -U postgres
+
+# Check your .env file has correct DB settings
+cat services/api/.env | grep DB_
+```
+
+**Problem: Redis connection issues**
+```bash
+# Test Redis connection
+redis-cli -p 10100 ping
+# Should return: PONG
+
+# Start Redis on correct port if not running
+redis-server --port 10100
+```
+
+**Problem: API won't start - "bcrypt" error**
+```bash
+# Rebuild native modules
+cd services/api
+pnpm rebuild bcrypt
+```
+
+**Problem: Web app shows "API connection failed"**
+- Make sure API is running on port 10001
+- Check CORS settings in `services/api/.env`:
+  ```env
+  CORS_ORIGIN=http://localhost:10002
+  ```
+- Verify `apps/web/.env` has correct API URL:
+  ```env
+  NEXT_PUBLIC_API_URL=http://localhost:10001
+  ```
+
+#### Permission Issues
+
+**Problem: Permission denied errors**
+```bash
+# On macOS/Linux, fix permissions:
+sudo chown -R $USER:$USER .
+
+# Or run with sudo for Docker:
+sudo docker-compose -f docker-compose.dev.yml up -d
+```
+
+### Getting Help
+
+If you encounter issues not covered here:
+
+1. Check the logs:
+   - Docker: `docker logs fullmag-api` or `docker logs fullmag-web`
+   - Local: Check the terminal output
+
+2. Verify environment configuration:
+   ```bash
+   # Check API environment
+   cat services/api/.env
+
+   # Check Web environment
+   cat apps/web/.env
+   ```
+
+3. Clean start:
+   ```bash
+   # With Docker
+   docker-compose -f docker-compose.dev.yml down -v
+   docker-compose -f docker-compose.dev.yml up -d --build
+
+   # Without Docker
+   rm -rf node_modules
+   pnpm install
+   ```
+
+4. Create an issue in the repository with:
+   - Error message
+   - Steps to reproduce
+   - System information (OS, Node version, Docker version)
 
 ## Support
 

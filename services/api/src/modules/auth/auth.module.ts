@@ -8,11 +8,13 @@ import { AuthResolver } from './auth.resolver'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { LocalStrategy } from './strategies/local.strategy'
 import { UsersModule } from '../users/users.module'
+import { EmailModule } from '../email/email.module'
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    EmailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -25,7 +27,7 @@ import { UsersModule } from '../users/users.module'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthResolver, JwtStrategy, LocalStrategy],
+  providers: [AuthService, /* AuthResolver, */ JwtStrategy, LocalStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

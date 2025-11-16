@@ -26,5 +26,5 @@ COPY --from=build /app/services/api/dist ./services/api/dist
 COPY --from=build /app/packages/common ./packages/common
 COPY services/api/package.json ./services/api/
 WORKDIR /app/services/api
-EXPOSE 3001
-CMD ["node", "dist/main.js"]
+EXPOSE 10001
+CMD ["node", "dist/services/api/src/main.js"]

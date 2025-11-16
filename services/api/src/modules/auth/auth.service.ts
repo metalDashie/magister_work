@@ -1,14 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { UsersService } from '../users/users.service'
 import { CreateUserDto, LoginDto } from '@fullmag/common'
+import { EmailService } from '../email/email.service'
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private emailService: EmailService
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -37,11 +39,17 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
     const user = await this.usersService.create({
       ...createUserDto,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
     })
 
     const { passwordHash, ...result } = user
     const payload = { email: result.email, sub: result.id, role: result.role }
+
+    // Send welcome email
+    await this.emailService.sendWelcomeEmail(
+      result.email,
+      result.email.split('@')[0]
+    )
 
     return {
       access_token: this.jwtService.sign(payload),

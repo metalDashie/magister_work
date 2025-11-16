@@ -51,6 +51,12 @@ export const CreateOrderItemSchema = z.object({
 
 export const CreateOrderSchema = z.object({
   items: z.array(CreateOrderItemSchema).min(1),
+  deliveryType: z.string().optional(),
+  deliveryCity: z.string().optional(),
+  deliveryWarehouse: z.string().optional(),
+  deliveryAddress: z.string().optional(),
+  recipientName: z.string().optional(),
+  recipientPhone: z.string().optional(),
 })
 
 export type CreateOrderDto = z.infer<typeof CreateOrderSchema>

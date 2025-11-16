@@ -7,13 +7,13 @@ export class AuthResolver {
   constructor(private authService: AuthService) {}
 
   @Mutation(() => String)
-  async login(@Args('input') loginDto: LoginDto) {
+  async login(@Args('input', { type: () => LoginDto }) loginDto: LoginDto) {
     const result = await this.authService.login(loginDto)
     return JSON.stringify(result)
   }
 
   @Mutation(() => String)
-  async register(@Args('input') createUserDto: CreateUserDto) {
+  async register(@Args('input', { type: () => CreateUserDto }) createUserDto: CreateUserDto) {
     const result = await this.authService.register(createUserDto)
     return JSON.stringify(result)
   }
