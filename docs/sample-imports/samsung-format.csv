@@ -1,0 +1,9 @@
+ModelNumber,ProductName,UnitPrice,Quantity,CategoryCode,ImageURL
+SM-S921BZKD,Galaxy S24 Ultra 256GB Black,49999,45,SMARTPHONES,https://images.samsung.com/s24-ultra-black.jpg
+SM-S921BGRD,Galaxy S24 Ultra 256GB Gray,49999,40,SMARTPHONES,https://images.samsung.com/s24-ultra-gray.jpg
+SM-F946BZAA,Galaxy Z Fold 5 512GB,59999,20,SMARTPHONES,https://images.samsung.com/fold5.jpg
+SM-F731BLVD,Galaxy Z Flip 5 256GB Lavender,42999,35,SMARTPHONES,https://images.samsung.com/flip5-lavender.jpg
+QE55Q80D,55 inch QLED 4K TV 2024,52999,15,TELEVISIONS,https://images.samsung.com/q80d-55.jpg
+UE65AU7100,65 inch Crystal UHD TV,38999,25,TELEVISIONS,https://images.samsung.com/au7100-65.jpg
+WW90T554,9kg Washing Machine,18999,30,APPLIANCES,https://images.samsung.com/ww90t554.jpg
+RS68A8842,American Fridge Freezer,45999,12,APPLIANCES,https://images.samsung.com/rs68a8842.jpg

@@ -1,0 +1,99 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fullmag-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fullmag
+    ports:
+      - '10050:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fullmag-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: fullmag-redis
+    ports:
+      - '10100:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - fullmag-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: node:20-alpine
+    container_name: fullmag-api
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      PORT: 10001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: fullmag
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_EXPIRES_IN: 1d
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CORS_ORIGIN: http://localhost:10002
+      FRONTEND_URL: http://localhost:10002
+      EMAIL_ENABLED: false
+    ports:
+      - '10001:10001'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - api_dist:/app/services/api/dist
+      - common_dist:/app/packages/common/dist
+    networks:
+      - fullmag-network
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter @fullmag/common build && pnpm --filter @fullmag/api dev"
+
+  web:
+    image: node:20-alpine
+    container_name: fullmag-web
+    working_dir: /app
+    environment:
+      NODE_ENV: development
+      PORT: 10002
+      NEXT_PUBLIC_API_URL: http://localhost:10001
+    ports:
+      - '10002:10002'
+    depends_on:
+      - api
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - fullmag-network
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm --filter @fullmag/common build && PORT=10002 pnpm --filter @fullmag/web dev"
+
+volumes:
+  postgres_data:
+  redis_data:
+  api_dist:
+  common_dist:
+
+networks:
+  fullmag-network:
+    driver: bridge
