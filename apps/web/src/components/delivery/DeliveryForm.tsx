@@ -32,13 +32,15 @@ export interface DeliveryFormData {
 
 interface DeliveryFormProps {
   onDataChange: (data: DeliveryFormData | null) => void
+  initialName?: string
+  initialPhone?: string
 }
 
-export function DeliveryForm({ onDataChange }: DeliveryFormProps) {
+export function DeliveryForm({ onDataChange, initialName = '', initialPhone = '' }: DeliveryFormProps) {
   const [city, setCity] = useState<City | null>(null)
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null)
-  const [recipientName, setRecipientName] = useState('')
-  const [recipientPhone, setRecipientPhone] = useState('')
+  const [recipientName, setRecipientName] = useState(initialName)
+  const [recipientPhone, setRecipientPhone] = useState(initialPhone)
   const [deliveryCost, setDeliveryCost] = useState<number | null>(null)
   const [deliveryTime, setDeliveryTime] = useState<string | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)

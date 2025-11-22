@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useCartStore } from '@/lib/store/cartStore'
 import { formatPrice } from '@fullmag/common'
 import type { Product } from '@fullmag/common'
+import OptimizedImage from '@/components/common/OptimizedImage'
 
 interface ProductCardProps {
   product: Product
@@ -28,17 +29,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <Link href={`/products/${product.id}`}>
         <div className="aspect-w-1 aspect-h-1 w-full bg-gray-200">
-          {product.images && product.images[0] ? (
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="w-full h-48 object-cover"
-            />
-          ) : (
-            <div className="w-full h-48 flex items-center justify-center bg-gray-100 text-gray-400">
-              No Image
-            </div>
-          )}
+          <OptimizedImage
+            src={product.images?.[0]}
+            alt={product.name}
+            className="w-full h-48"
+            contentType="product"
+            objectFit="cover"
+          />
         </div>
       </Link>
 

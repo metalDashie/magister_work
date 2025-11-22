@@ -47,7 +47,7 @@ export default function ChatWindow() {
       <div className="bg-primary-600 text-white p-4 rounded-t-lg flex justify-between items-center">
         <div>
           <h3 className="font-semibold">Customer Support</h3>
-          <p className="text-xs text-primary-100">
+          <p className="text-xs text-white/80">
             {chatRoom?.status === 'open'
               ? 'Connected'
               : chatRoom?.status === 'waiting'
@@ -122,7 +122,7 @@ export default function ChatWindow() {
                     <p className="text-sm whitespace-pre-wrap">{message.message}</p>
                     <p
                       className={`text-xs mt-1 ${
-                        isOwnMessage ? 'text-primary-100' : 'text-gray-500'
+                        isOwnMessage ? 'text-white/70' : 'text-gray-500'
                       }`}
                     >
                       {new Date(message.createdAt).toLocaleTimeString('uk-UA', {

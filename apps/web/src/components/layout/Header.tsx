@@ -39,12 +39,32 @@ export default function Header() {
                 Categories
               </Link>
               {isAdmin && (
-                <Link
-                  href="/admin/support"
-                  className="text-gray-700 hover:text-primary-600"
-                >
-                  Support Dashboard
-                </Link>
+                <>
+                  <Link
+                    href="/admin/dashboard"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/orders"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Orders
+                  </Link>
+                  <Link
+                    href="/admin/products"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Products
+                  </Link>
+                  <Link
+                    href="/admin/support"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Support
+                  </Link>
+                </>
               )}
             </nav>
           </div>

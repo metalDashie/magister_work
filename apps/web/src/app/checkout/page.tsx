@@ -5,22 +5,25 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/authStore'
 import { useCartStore } from '@/lib/store/cartStore'
 import { api } from '@/lib/api'
-import { formatPrice } from '@fullmag/common'
+import { formatPrice, PaymentMethod } from '@fullmag/common'
 import { DeliveryForm, DeliveryFormData } from '@/components/delivery/DeliveryForm'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore()
   const { cart, totalAmount, clearCart } = useCartStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [deliveryData, setDeliveryData] = useState<DeliveryFormData | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.ONLINE)
 
   useEffect(() => {
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/auth/login')
     }
-  }, [isAuthenticated, router])
+  }, [_hasHydrated, isAuthenticated, router])
 
   const handleCheckout = async () => {
     if (!cart || !cart.items || cart.items.length === 0) {
@@ -37,7 +40,7 @@ export default function CheckoutPage() {
     setError('')
 
     try {
-      // Create order with delivery information
+      // Create order with delivery and payment information
       const orderData = {
         items: cart.items.map((item) => ({
           productId: item.productId,
@@ -49,26 +52,23 @@ export default function CheckoutPage() {
         deliveryWarehouse: deliveryData.warehouseDescription,
         recipientName: deliveryData.recipientName,
         recipientPhone: deliveryData.recipientPhone,
+        paymentMethod: paymentMethod,
       }
 
       const orderResponse = await api.post('/orders', orderData)
       const order = orderResponse.data
 
-      // Create payment invoice
-      const paymentResponse = await api.post('/payments/invoice', {
-        orderId: order.id,
-        amount: totalAmount,
-        currency: 'UAH',
-      })
-
       // Clear cart
       await clearCart()
 
-      // Redirect to payment page
-      if (paymentResponse.data.pageUrl) {
-        window.location.href = paymentResponse.data.pageUrl
+      // If online payment, simulate payment success and redirect to success page
+      // If cash on delivery, redirect directly to success page
+      if (paymentMethod === PaymentMethod.ONLINE) {
+        // Simulated online payment - order is already marked as PAID by backend
+        router.push(`/checkout/success?orderId=${order.id}`)
       } else {
-        router.push(`/profile/orders/${order.id}`)
+        // Cash on delivery - order is marked as PENDING
+        router.push(`/checkout/success?orderId=${order.id}`)
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Checkout failed')
@@ -105,7 +105,60 @@ export default function CheckoutPage() {
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Інформація про доставку</h2>
-        <DeliveryForm onDataChange={setDeliveryData} />
+        <DeliveryForm
+          onDataChange={setDeliveryData}
+          initialName={user?.name || ''}
+          initialPhone={user?.phone || ''}
+        />
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Спосіб оплати</h2>
+        <div className="space-y-3">
+          <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-gray-50 has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value={PaymentMethod.ONLINE}
+              checked={paymentMethod === PaymentMethod.ONLINE}
+              onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+              className="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500"
+            />
+            <div className="ml-3 flex-1">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                <span className="font-semibold text-gray-900">Онлайн оплата</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">
+                Оплата картою (симуляція). Замовлення буде автоматично оплачене
+              </p>
+            </div>
+          </label>
+
+          <label className="flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:bg-gray-50 has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value={PaymentMethod.CASH_ON_DELIVERY}
+              checked={paymentMethod === PaymentMethod.CASH_ON_DELIVERY}
+              onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+              className="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500"
+            />
+            <div className="ml-3 flex-1">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="font-semibold text-gray-900">Готівкою при отриманні</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">
+                Оплата готівкою або картою при отриманні товару
+              </p>
+            </div>
+          </label>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">

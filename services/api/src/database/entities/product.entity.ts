@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm'
 import { Category } from './category.entity'
+import { ProductAttribute } from './product-attribute.entity'
 
 @Entity('products')
 export class Product {
@@ -41,6 +43,11 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'category_id' })
   category: Category
+
+  @OneToMany(() => ProductAttribute, (productAttribute) => productAttribute.product, {
+    cascade: true,
+  })
+  productAttributes: ProductAttribute[]
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date

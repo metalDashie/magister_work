@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module'
 import { UsersModule } from './modules/users/users.module'
 import { ProductsModule } from './modules/products/products.module'
 import { CategoriesModule } from './modules/categories/categories.module'
+import { AttributesModule } from './modules/attributes/attributes.module'
 import { CartModule } from './modules/cart/cart.module'
 import { OrdersModule } from './modules/orders/orders.module'
 import { PaymentsModule } from './modules/payments/payments.module'
@@ -20,6 +21,9 @@ import { ChatModule } from './modules/chat/chat.module'
 import { DeliveryModule } from './modules/delivery/delivery.module'
 import { EmailModule } from './modules/email/email.module'
 import { ImportModule } from './modules/import/import.module'
+import { TelegramModule } from './modules/telegram/telegram.module'
+import { WhatsAppModule } from './modules/whatsapp/whatsapp.module'
+import { AnalyticsModule } from './modules/analytics/analytics.module'
 import { ChatGateway } from './gateways/chat.gateway'
 
 @Module({
@@ -73,6 +77,7 @@ import { ChatGateway } from './gateways/chat.gateway'
     UsersModule,
     ProductsModule,
     CategoriesModule,
+    AttributesModule,
     CartModule,
     OrdersModule,
     PaymentsModule,
@@ -82,6 +87,9 @@ import { ChatGateway } from './gateways/chat.gateway'
     DeliveryModule,
     EmailModule,
     ImportModule,
+    TelegramModule,
+    WhatsAppModule,
+    AnalyticsModule,
   ],
   providers: [ChatGateway],
 })

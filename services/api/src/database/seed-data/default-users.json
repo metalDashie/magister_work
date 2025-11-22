@@ -1,0 +1,20 @@
+[
+  {
+    "email": "admin@fullmag.com",
+    "phone": "+380501234567",
+    "password": "admin123",
+    "role": "admin"
+  },
+  {
+    "email": "manager@fullmag.com",
+    "phone": "+380501234568",
+    "password": "admin123",
+    "role": "manager"
+  },
+  {
+    "email": "user@fullmag.com",
+    "phone": "+380501234569",
+    "password": "user123",
+    "role": "user"
+  }
+]

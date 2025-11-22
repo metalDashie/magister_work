@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: fullmag
     ports:
-      - '10050:5432'
+      - '10080:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -20,7 +20,7 @@ services:
     image: redis:7-alpine
     container_name: fullmag-redis
     ports:
-      - '10100:6379'
+      - '10081:6379'
     volumes:
       - redis_data:/data
     healthcheck:

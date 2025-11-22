@@ -7,13 +7,15 @@ import { useAuthStore } from '@/lib/store/authStore'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore()
 
   useEffect(() => {
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/auth/login')
     }
-  }, [isAuthenticated, router])
+  }, [_hasHydrated, isAuthenticated, router])
 
   if (!user) {
     return null

@@ -48,6 +48,30 @@ export class CartService {
     return this.getCart(userId)
   }
 
+  async updateItemQuantity(
+    userId: string,
+    itemId: string,
+    quantity: number
+  ): Promise<Cart> {
+    const cart = await this.getCart(userId)
+    const item = cart.items?.find((i) => i.id === itemId)
+
+    if (!item) {
+      throw new Error('Cart item not found')
+    }
+
+    if (quantity <= 0) {
+      // If quantity is 0 or negative, remove the item
+      await this.cartItemRepository.delete(itemId)
+    } else {
+      // Update the quantity
+      item.quantity = quantity
+      await this.cartItemRepository.save(item)
+    }
+
+    return this.getCart(userId)
+  }
+
   async removeItem(userId: string, itemId: string): Promise<Cart> {
     await this.cartItemRepository.delete(itemId)
     return this.getCart(userId)

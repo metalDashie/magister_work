@@ -21,9 +21,27 @@ export class ProductsController {
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-    @Query('search') search?: string
+    @Query('search') search?: string,
+    @Query('categoryId') categoryId?: number,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
+    @Query('inStock') inStock?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: 'ASC' | 'DESC',
+    @Query('attributes') attributes?: string // JSON string of attribute filters
   ) {
-    return this.productsService.findAll(page, limit, search)
+    return this.productsService.findAll({
+      page,
+      limit,
+      search,
+      categoryId,
+      minPrice,
+      maxPrice,
+      inStock: inStock === 'true',
+      sortBy,
+      sortOrder,
+      attributes: attributes ? JSON.parse(attributes) : undefined,
+    })
   }
 
   @Get(':id')

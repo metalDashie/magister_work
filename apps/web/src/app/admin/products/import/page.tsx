@@ -32,7 +32,7 @@ type ImportStep = 'upload' | 'mapping' | 'preview' | 'importing' | 'complete'
 
 export default function ProductImportPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore()
 
   // Step management
   const [currentStep, setCurrentStep] = useState<ImportStep>('upload')
@@ -57,6 +57,9 @@ export default function ProductImportPage() {
   const [templateDescription, setTemplateName] = useState('')
 
   useEffect(() => {
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/auth/login')
       return
@@ -68,7 +71,7 @@ export default function ProductImportPage() {
     }
 
     loadProfiles()
-  }, [isAuthenticated, user, router])
+  }, [_hasHydrated, isAuthenticated, user, router])
 
   const loadProfiles = async () => {
     try {

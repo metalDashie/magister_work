@@ -7,6 +7,7 @@ import { Repository } from 'typeorm'
 import { Notification } from '../../database/entities'
 import { NotificationChannel, NotificationStatus } from '@fullmag/common'
 import { firstValueFrom } from 'rxjs'
+import { TelegramService } from '../telegram/telegram.service'
 
 @Processor('notifications')
 export class NotificationsProcessor {
@@ -14,7 +15,8 @@ export class NotificationsProcessor {
     @InjectRepository(Notification)
     private notificationsRepository: Repository<Notification>,
     private configService: ConfigService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private telegramService: TelegramService
   ) {}
 
   @Process('send')
@@ -59,8 +61,20 @@ export class NotificationsProcessor {
   }
 
   private async sendTelegram(data: any) {
-    const botToken = this.configService.get('TELEGRAM_BOT_TOKEN')
-    // Telegram Bot API implementation
-    console.log('Sending Telegram:', data)
+    // Use TelegramService to send the message
+    const { userId, message } = data
+
+    if (userId && message) {
+      const sent = await this.telegramService.sendPersonalMessage({
+        userId,
+        message,
+      })
+
+      if (!sent) {
+        throw new Error('Failed to send Telegram message')
+      }
+    } else {
+      console.log('Sending Telegram:', data)
+    }
   }
 }

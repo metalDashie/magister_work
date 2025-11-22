@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Delete,
   Body,
   Param,
@@ -25,6 +26,19 @@ export class CartController {
   @Post('items')
   addItem(@Request() req, @Body() addToCartDto: AddToCartDto) {
     return this.cartService.addItem(req.user.userId, addToCartDto)
+  }
+
+  @Put('items/:id')
+  updateItem(
+    @Request() req,
+    @Param('id') itemId: string,
+    @Body() updateDto: { quantity: number }
+  ) {
+    return this.cartService.updateItemQuantity(
+      req.user.userId,
+      itemId,
+      updateDto.quantity
+    )
   }
 
   @Delete('items/:id')

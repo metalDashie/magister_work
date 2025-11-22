@@ -1,14 +1,14 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import ProductCard from '@/components/products/ProductCard'
+import CategoryProductList from '@/components/products/CategoryProductList'
 import { generateMetadata as generateMeta } from '@/lib/metadata'
 
 const apiUrl = process.env.API_URL || 'http://localhost:3001'
 
 async function getCategory(id: string) {
   try {
-    const res = await fetch(`${apiUrl}/categories/${id}`, {
+    const res = await fetch(`${apiUrl}/api/categories/${id}`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes
     })
 
@@ -80,6 +80,10 @@ export default async function CategoryPage({
 
       <h1 className="text-3xl font-bold text-gray-900 mb-2">{category.name}</h1>
 
+      {category.description && (
+        <p className="text-gray-600 text-lg mb-6">{category.description}</p>
+      )}
+
       {category.children && category.children.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Subcategories</h2>
@@ -103,17 +107,7 @@ export default async function CategoryPage({
         </h2>
       </div>
 
-      {category.products && category.products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {category.products.map((product: any) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-600">No products in this category yet</p>
-        </div>
-      )}
+      <CategoryProductList categoryId={params.id} />
     </div>
   )
 }

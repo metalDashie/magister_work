@@ -7,6 +7,8 @@ interface AuthState {
   user: User | null
   token: string | null
   isAuthenticated: boolean
+  _hasHydrated: boolean
+  setHasHydrated: (state: boolean) => void
   login: (credentials: LoginDto) => Promise<void>
   register: (userData: CreateUserDto) => Promise<void>
   logout: () => void
@@ -19,6 +21,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      _hasHydrated: false,
+
+      setHasHydrated: (state) => {
+        set({ _hasHydrated: state })
+      },
 
       login: async (credentials) => {
         const response = await api.post('/auth/login', credentials)
@@ -48,6 +55,9 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
     }
   )
 )

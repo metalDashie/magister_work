@@ -9,7 +9,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm'
-import { OrderStatus } from '@fullmag/common'
+import { OrderStatus, PaymentMethod } from '@fullmag/common'
 import { User } from './user.entity'
 import { OrderItem } from './order-item.entity'
 import { Payment } from './payment.entity'
@@ -31,6 +31,14 @@ export class Order {
     default: OrderStatus.PENDING,
   })
   status: OrderStatus
+
+  @Column({
+    type: 'enum',
+    enum: PaymentMethod,
+    name: 'payment_method',
+    nullable: true,
+  })
+  paymentMethod: PaymentMethod
 
   // Delivery information
   @Column({ name: 'delivery_type', nullable: true })

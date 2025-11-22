@@ -5,6 +5,7 @@ import ProductActions from '@/components/products/ProductActions'
 import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generateMeta } from '@/lib/metadata'
 import { getProductSchema, getBreadcrumbSchema } from '@/lib/structured-data'
+import OptimizedImage from '@/components/common/OptimizedImage'
 
 const apiUrl = process.env.API_URL || 'http://localhost:3001'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fullmag.com'
@@ -98,18 +99,14 @@ export default async function ProductDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Product Images */}
         <div>
-          <div className="aspect-w-1 aspect-h-1 w-full bg-gray-200 rounded-lg">
-            {product.images && product.images[0] ? (
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-96 object-cover rounded-lg"
-              />
-            ) : (
-              <div className="w-full h-96 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg">
-                No Image
-              </div>
-            )}
+          <div className="aspect-w-1 aspect-h-1 w-full bg-gray-200 rounded-lg overflow-hidden">
+            <OptimizedImage
+              src={product.images?.[0]}
+              alt={product.name}
+              className="w-full h-96 rounded-lg"
+              contentType="product"
+              objectFit="cover"
+            />
           </div>
         </div>
 

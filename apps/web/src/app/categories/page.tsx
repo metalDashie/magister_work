@@ -14,7 +14,7 @@ export const metadata: Metadata = generateMeta({
 
 async function getCategories() {
   try {
-    const res = await fetch(`${apiUrl}/categories`, {
+    const res = await fetch(`${apiUrl}/api/categories`, {
       next: { revalidate: 300 }, // Revalidate every 5 minutes
     })
 
@@ -49,6 +49,11 @@ export default async function CategoriesPage() {
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {category.name}
               </h3>
+              {category.description && (
+                <p className="text-gray-600 text-sm mb-3">
+                  {category.description}
+                </p>
+              )}
               {category.children && category.children.length > 0 && (
                 <div className="mt-3">
                   <p className="text-sm text-gray-600 mb-2">Subcategories:</p>

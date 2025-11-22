@@ -9,6 +9,11 @@ export enum OrderStatus {
   CANCELLED = 'cancelled',
 }
 
+export enum PaymentMethod {
+  ONLINE = 'online',
+  CASH_ON_DELIVERY = 'cash_on_delivery',
+}
+
 export enum PaymentStatus {
   PENDING = 'pending',
   SUCCESS = 'success',
@@ -57,6 +62,7 @@ export const CreateOrderSchema = z.object({
   deliveryAddress: z.string().optional(),
   recipientName: z.string().optional(),
   recipientPhone: z.string().optional(),
+  paymentMethod: z.nativeEnum(PaymentMethod).optional(),
 })
 
 export type CreateOrderDto = z.infer<typeof CreateOrderSchema>

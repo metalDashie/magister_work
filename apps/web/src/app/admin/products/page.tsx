@@ -6,6 +6,8 @@ import { useAuthStore } from '@/lib/store/authStore'
 import { api } from '@/lib/api'
 import { formatPrice } from '@fullmag/common'
 import Link from 'next/link'
+import ConfirmModal from '@/components/ui/ConfirmModal'
+import Pagination from '@/components/common/Pagination'
 
 interface Product {
   id: string
@@ -22,14 +24,26 @@ interface Product {
 
 export default function AdminProductsPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    productId: string | null
+    productName: string
+  }>({
+    isOpen: false,
+    productId: null,
+    productName: '',
+  })
 
   useEffect(() => {
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/auth/login')
       return
@@ -41,7 +55,7 @@ export default function AdminProductsPage() {
     }
 
     loadProducts()
-  }, [isAuthenticated, user, router, page, searchQuery])
+  }, [_hasHydrated, isAuthenticated, user, router, page, searchQuery])
 
   const loadProducts = async () => {
     try {
@@ -62,11 +76,19 @@ export default function AdminProductsPage() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return
+  const handleDeleteClick = (product: Product) => {
+    setConfirmModal({
+      isOpen: true,
+      productId: product.id,
+      productName: product.name,
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!confirmModal.productId) return
 
     try {
-      await api.delete(`/products/${id}`)
+      await api.delete(`/products/${confirmModal.productId}`)
       loadProducts()
     } catch (error) {
       console.error('Failed to delete product:', error)
@@ -245,7 +267,7 @@ export default function AdminProductsPage() {
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => handleDeleteClick(product)}
                         className="text-red-600 hover:text-red-900"
                       >
                         Delete
@@ -259,34 +281,28 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Pagination */}
-        {total > 20 && (
-          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-            <div className="flex-1 flex justify-between items-center">
-              <div className="text-sm text-gray-700">
-                Showing <span className="font-medium">{(page - 1) * 20 + 1}</span> to{' '}
-                <span className="font-medium">{Math.min(page * 20, total)}</span> of{' '}
-                <span className="font-medium">{total}</span> results
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() => setPage(page + 1)}
-                  disabled={page * 20 >= total}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <Pagination
+          currentPage={page}
+          totalItems={total}
+          itemsPerPage={20}
+          onPageChange={setPage}
+          showPageNumbers={true}
+        />
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() =>
+          setConfirmModal({ isOpen: false, productId: null, productName: '' })
+        }
+        onConfirm={handleDeleteConfirm}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${confirmModal.productName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   )
 }

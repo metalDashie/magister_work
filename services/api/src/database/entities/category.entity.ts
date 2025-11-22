@@ -16,6 +16,9 @@ export class Category {
   @Column()
   name: string
 
+  @Column({ type: 'text', nullable: true })
+  description: string
+
   @Column({ name: 'parent_id', nullable: true })
   parentId: number
 

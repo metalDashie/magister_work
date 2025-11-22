@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Order, OrderItem } from '../../database/entities'
-import { CreateOrderDto, OrderStatus } from '@fullmag/common'
+import { CreateOrderDto, OrderStatus, PaymentMethod } from '@fullmag/common'
 import { CartService } from '../cart/cart.service'
 import { EmailService } from '../email/email.service'
 
@@ -25,6 +25,13 @@ export class OrdersService {
     })
   }
 
+  async findAllAdmin(): Promise<Order[]> {
+    return this.ordersRepository.find({
+      relations: ['user', 'orderItems', 'orderItems.product', 'payment'],
+      order: { createdAt: 'DESC' },
+    })
+  }
+
   async findOne(id: string, userId: string): Promise<Order | null> {
     return this.ordersRepository.findOne({
       where: { id, userId },
@@ -38,10 +45,19 @@ export class OrdersService {
       0
     )
 
+    // Determine order status based on payment method
+    // If online payment, set to PAID (simulated payment success)
+    // If cash on delivery, set to PENDING
+    const paymentMethod = createOrderDto.paymentMethod || PaymentMethod.ONLINE
+    const orderStatus = paymentMethod === PaymentMethod.ONLINE
+      ? OrderStatus.PAID
+      : OrderStatus.PENDING
+
     const newOrder = this.ordersRepository.create({
       userId,
       totalAmount,
-      status: OrderStatus.PENDING,
+      status: orderStatus,
+      paymentMethod: paymentMethod,
       deliveryType: createOrderDto.deliveryType,
       deliveryCity: createOrderDto.deliveryCity,
       deliveryWarehouse: createOrderDto.deliveryWarehouse,

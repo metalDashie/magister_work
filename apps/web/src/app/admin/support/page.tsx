@@ -34,7 +34,7 @@ interface Message {
 
 export default function SupportPage() {
   const router = useRouter()
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore()
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -42,6 +42,9 @@ export default function SupportPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return
+
     if (!isAuthenticated) {
       router.push('/auth/login')
       return
@@ -59,7 +62,7 @@ export default function SupportPage() {
     return () => {
       socketService.disconnect()
     }
-  }, [isAuthenticated, user, router])
+  }, [_hasHydrated, isAuthenticated, user, router])
 
   const initializeSocket = () => {
     if (!user) return

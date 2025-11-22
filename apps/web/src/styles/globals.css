@@ -7,14 +7,20 @@
   --background-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 0, 0, 0;
-  }
-}
-
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+}
+
+/* Force inputs, textareas and select to have dark text on light background */
+input,
+textarea,
+select {
+  color: #1f2937 !important;
+  background-color: white !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
 }

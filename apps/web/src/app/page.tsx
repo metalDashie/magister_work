@@ -105,7 +105,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-white">
             Ready to start shopping?
           </h2>
-          <p className="mt-2 text-primary-100">
+          <p className="mt-2 text-white/90">
             Join thousands of satisfied customers
           </p>
           <Link
