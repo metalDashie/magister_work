@@ -1,16 +1,39 @@
-import Link from 'next/link'
-import { Metadata } from 'next'
-import RegisterForm from '@/components/auth/RegisterForm'
-import { generateMetadata as generateMeta } from '@/lib/metadata'
+'use client'
 
-export const metadata: Metadata = generateMeta({
-  title: 'Create Account',
-  description: 'Create a new FullMag account to start shopping and enjoy fast delivery.',
-  path: '/auth/register',
-  noIndex: true,
-})
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import RegisterForm from '@/components/auth/RegisterForm'
+import { useAuthStore } from '@/lib/store/authStore'
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuthStore()
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/')
+    }
+  }, [isAuthenticated, isLoading, router])
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  // Don't render form if authenticated (will redirect)
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

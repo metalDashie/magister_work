@@ -27,7 +27,7 @@ export class OrdersService {
 
   async findAllAdmin(): Promise<Order[]> {
     return this.ordersRepository.find({
-      relations: ['user', 'orderItems', 'orderItems.product', 'payment'],
+      relations: ['user', 'items', 'items.product', 'payment'],
       order: { createdAt: 'DESC' },
     })
   }
@@ -80,16 +80,19 @@ export class OrdersService {
     // Clear cart after order creation
     await this.cartService.clearCart(userId)
 
-    const createdOrder = await this.findOne(savedOrder.id, userId)
-
-    // Send order confirmation email
-    const user = createdOrder?.user
-    if (user?.email && createdOrder) {
-      await this.emailService.sendOrderConfirmation(createdOrder, user.email)
-    }
+    // Fetch the complete order with user relation for email
+    const createdOrder = await this.ordersRepository.findOne({
+      where: { id: savedOrder.id },
+      relations: ['items', 'items.product', 'payment', 'user'],
+    })
 
     if (!createdOrder) {
       throw new Error('Failed to create order')
+    }
+
+    // Send order confirmation email
+    if (createdOrder.user?.email) {
+      await this.emailService.sendOrderConfirmation(createdOrder, createdOrder.user.email)
     }
 
     return createdOrder
@@ -106,11 +109,13 @@ export class OrdersService {
     }
 
     const oldStatus = order.status
+    const userEmail = order.user?.email
+
     await this.ordersRepository.update(id, { status })
 
     const updatedOrder = await this.ordersRepository.findOne({
       where: { id },
-      relations: ['items', 'items.product', 'payment'],
+      relations: ['items', 'items.product', 'payment', 'user'],
     })
 
     if (!updatedOrder) {
@@ -118,10 +123,10 @@ export class OrdersService {
     }
 
     // Send status update email
-    if (updatedOrder.user?.email && oldStatus !== status) {
+    if (userEmail && oldStatus !== status) {
       await this.emailService.sendOrderStatusUpdate(
         updatedOrder,
-        updatedOrder.user.email,
+        userEmail,
         oldStatus,
         status
       )

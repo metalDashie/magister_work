@@ -24,6 +24,8 @@ import { ImportModule } from './modules/import/import.module'
 import { TelegramModule } from './modules/telegram/telegram.module'
 import { WhatsAppModule } from './modules/whatsapp/whatsapp.module'
 import { AnalyticsModule } from './modules/analytics/analytics.module'
+import { ReviewsModule } from './modules/reviews/reviews.module'
+import { BannersModule } from './modules/banners/banners.module'
 import { ChatGateway } from './gateways/chat.gateway'
 
 @Module({
@@ -90,6 +92,8 @@ import { ChatGateway } from './gateways/chat.gateway'
     TelegramModule,
     WhatsAppModule,
     AnalyticsModule,
+    ReviewsModule,
+    BannersModule,
   ],
   providers: [ChatGateway],
 })

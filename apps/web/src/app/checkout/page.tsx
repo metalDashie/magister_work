@@ -5,8 +5,15 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/authStore'
 import { useCartStore } from '@/lib/store/cartStore'
 import { api } from '@/lib/api'
-import { formatPrice, PaymentMethod } from '@fullmag/common'
+import { formatPrice } from '@fullmag/common'
 import { DeliveryForm, DeliveryFormData } from '@/components/delivery/DeliveryForm'
+
+const PaymentMethodValues = {
+  ONLINE: 'online',
+  CASH_ON_DELIVERY: 'cash_on_delivery',
+} as const
+
+export const dynamic = 'force-dynamic'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -15,7 +22,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [deliveryData, setDeliveryData] = useState<DeliveryFormData | null>(null)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.ONLINE)
+  const [paymentMethod, setPaymentMethod] = useState<string>('online')
 
   useEffect(() => {
     if (!_hasHydrated) return
@@ -63,7 +70,7 @@ export default function CheckoutPage() {
 
       // If online payment, simulate payment success and redirect to success page
       // If cash on delivery, redirect directly to success page
-      if (paymentMethod === PaymentMethod.ONLINE) {
+      if (paymentMethod === PaymentMethodValues.ONLINE) {
         // Simulated online payment - order is already marked as PAID by backend
         router.push(`/checkout/success?orderId=${order.id}`)
       } else {
@@ -107,7 +114,7 @@ export default function CheckoutPage() {
         <h2 className="text-xl font-semibold mb-4">Інформація про доставку</h2>
         <DeliveryForm
           onDataChange={setDeliveryData}
-          initialName={user?.name || ''}
+          initialName={user?.email?.split('@')[0] || ''}
           initialPhone={user?.phone || ''}
         />
       </div>
@@ -119,9 +126,9 @@ export default function CheckoutPage() {
             <input
               type="radio"
               name="paymentMethod"
-              value={PaymentMethod.ONLINE}
-              checked={paymentMethod === PaymentMethod.ONLINE}
-              onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+              value={PaymentMethodValues.ONLINE}
+              checked={paymentMethod === PaymentMethodValues.ONLINE}
+              onChange={(e) => setPaymentMethod(e.target.value)}
               className="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500"
             />
             <div className="ml-3 flex-1">
@@ -141,9 +148,9 @@ export default function CheckoutPage() {
             <input
               type="radio"
               name="paymentMethod"
-              value={PaymentMethod.CASH_ON_DELIVERY}
-              checked={paymentMethod === PaymentMethod.CASH_ON_DELIVERY}
-              onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+              value={PaymentMethodValues.CASH_ON_DELIVERY}
+              checked={paymentMethod === PaymentMethodValues.CASH_ON_DELIVERY}
+              onChange={(e) => setPaymentMethod(e.target.value)}
               className="mt-1 w-4 h-4 text-primary-600 focus:ring-primary-500"
             />
             <div className="ml-3 flex-1">

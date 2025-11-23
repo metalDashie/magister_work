@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core'
-import { ValidationPipe } from '@nestjs/common'
+import { ValidationPipe, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
+import { LoggingInterceptor } from './interceptors/logging.interceptor'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  })
 
   const configService = app.get(ConfigService)
 
@@ -25,6 +28,9 @@ async function bootstrap() {
 
   // Global prefix
   app.setGlobalPrefix('api')
+
+  // Global logging interceptor
+  app.useGlobalInterceptors(new LoggingInterceptor())
 
   const port = configService.get('PORT') || 3001
 

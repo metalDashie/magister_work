@@ -10,6 +10,7 @@ import {
 } from 'typeorm'
 import { Category } from './category.entity'
 import { ProductAttribute } from './product-attribute.entity'
+import { Review } from './review.entity'
 
 @Entity('products')
 export class Product {
@@ -48,6 +49,52 @@ export class Product {
     cascade: true,
   })
   productAttributes: ProductAttribute[]
+
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[]
+
+  @Column({ name: 'average_rating', type: 'decimal', precision: 2, scale: 1, nullable: true })
+  averageRating: number | null
+
+  @Column({ name: 'reviews_count', type: 'int', default: 0 })
+  reviewsCount: number
+
+  // Discount fields
+  @Column({ name: 'discount_percent', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  discountPercent: number | null
+
+  @Column({ name: 'discount_start_date', type: 'timestamp', nullable: true })
+  discountStartDate: Date | null
+
+  @Column({ name: 'discount_end_date', type: 'timestamp', nullable: true })
+  discountEndDate: Date | null
+
+  @Column({ name: 'discount_active', type: 'boolean', default: false })
+  discountActive: boolean
+
+  // Computed getter for final price after discount
+  get finalPrice(): number {
+    if (!this.isDiscountValid()) {
+      return Number(this.price)
+    }
+    const discount = Number(this.discountPercent) || 0
+    return Number(this.price) * (1 - discount / 100)
+  }
+
+  // Check if discount is currently valid
+  isDiscountValid(): boolean {
+    if (!this.discountActive || !this.discountPercent) {
+      return false
+    }
+    const now = new Date()
+    if (this.discountStartDate && now < this.discountStartDate) {
+      return false
+    }
+    if (this.discountEndDate && now > this.discountEndDate) {
+      return false
+    }
+    return true
+  }
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date

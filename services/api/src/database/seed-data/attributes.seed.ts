@@ -261,33 +261,4 @@ export const attributesSeedData: Partial<Attribute>[] = [
     categoryId: null,
   },
 
-  // Additional attributes for complete product data (only new ones not already defined above)
-  {
-    name: 'Camera Resolution',
-    slug: 'camera',
-    description: 'Main camera resolution',
-    type: AttributeType.SELECT,
-    inputType: AttributeInputType.SELECT,
-    options: ['8MP', '12MP', '16MP', '48MP', '50MP', '64MP', '108MP', '200MP'],
-    unit: null,
-    isFilterable: true,
-    isRequired: false,
-    isVisible: true,
-    sortOrder: 60,
-    categoryId: null,
-  },
-  {
-    name: 'Battery Capacity',
-    slug: 'battery',
-    description: 'Battery capacity in mAh or hours',
-    type: AttributeType.NUMBER,
-    inputType: AttributeInputType.NUMBER,
-    options: null,
-    unit: 'mAh',
-    isFilterable: true,
-    isRequired: false,
-    isVisible: true,
-    sortOrder: 61,
-    categoryId: null,
-  },
 ]

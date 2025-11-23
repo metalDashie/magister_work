@@ -56,13 +56,31 @@ export default function Header() {
                     href="/admin/products"
                     className="text-gray-700 hover:text-primary-600"
                   >
-                    Products
+                    Store Managing
+                  </Link>
+                  <Link
+                    href="/admin/discounts"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Discounts
                   </Link>
                   <Link
                     href="/admin/support"
                     className="text-gray-700 hover:text-primary-600"
                   >
                     Support
+                  </Link>
+                  <Link
+                    href="/admin/users"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Users
+                  </Link>
+                  <Link
+                    href="/admin/reviews"
+                    className="text-gray-700 hover:text-primary-600"
+                  >
+                    Reviews
                   </Link>
                 </>
               )}

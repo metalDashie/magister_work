@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '@/lib/store/authStore'
 import { useChatStore } from '@/lib/store/chatStore'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { formatDateTime } from '@fullmag/common'
 
 export default function ChatWindow() {

@@ -26,7 +26,7 @@ export class ImportController {
 
   @Get('profiles')
   async getProfiles(@Req() req: any) {
-    return this.importService.getProfiles(req.user.id)
+    return this.importService.getProfiles(req.user.userId)
   }
 
   @Get('profiles/:id')
@@ -36,7 +36,7 @@ export class ImportController {
 
   @Post('profiles')
   async createProfile(@Body() data: Partial<ImportProfile>, @Req() req: any) {
-    return this.importService.createProfile(data, req.user.id)
+    return this.importService.createProfile(data, req.user.userId)
   }
 
   @Put('profiles/:id')
@@ -82,14 +82,14 @@ export class ImportController {
     }
 
     const fileContent = file.buffer.toString('utf-8')
-    return this.importService.importProducts(fileContent, file.originalname, profileId, req.user.id)
+    return this.importService.importProducts(fileContent, file.originalname, profileId, req.user.userId)
   }
 
   // ========== Import History ==========
 
   @Get('history')
   async getHistory(@Req() req: any) {
-    return this.importService.getImportHistory(req.user.id)
+    return this.importService.getImportHistory(req.user.userId)
   }
 
   @Get('history/:id')

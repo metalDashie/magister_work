@@ -32,7 +32,8 @@ interface ProductState {
   clearFilters: () => void
 }
 
-export const useProductStore = create<ProductState>((set, get) => ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const useProductStore = create<ProductState>((set, _get) => ({
   products: [],
   product: null,
   total: 0,

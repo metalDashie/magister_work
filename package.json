@@ -6,6 +6,7 @@
   "scripts": {
     "dev:web": "pnpm --filter @fullmag/web dev",
     "dev:api": "pnpm --filter @fullmag/api dev",
+    "dev-watch:api": "pnpm --filter @fullmag/api start:dev",
     "dev:mobile": "pnpm --filter @fullmag/mobile start",
     "dev:mobile:android": "pnpm --filter @fullmag/mobile android",
     "dev:mobile:ios": "pnpm --filter @fullmag/mobile ios",

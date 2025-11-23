@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core'
 import { ValidationPipe, Logger } from '@nestjs/common'
 import { AppModule } from './app.module'
+import { LoggingInterceptor } from './interceptors/logging.interceptor'
 
 async function bootstrap() {
   const logger = new Logger('WhatsAppService')
@@ -10,6 +11,9 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN || '*',
     credentials: true,
   })
+
+  // Global request/response logging
+  app.useGlobalInterceptors(new LoggingInterceptor())
 
   app.useGlobalPipes(
     new ValidationPipe({

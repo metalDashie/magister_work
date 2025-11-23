@@ -1,16 +1,39 @@
-import Link from 'next/link'
-import { Metadata } from 'next'
-import LoginForm from '@/components/auth/LoginForm'
-import { generateMetadata as generateMeta } from '@/lib/metadata'
+'use client'
 
-export const metadata: Metadata = generateMeta({
-  title: 'Sign In',
-  description: 'Sign in to your FullMag account to manage orders and track deliveries.',
-  path: '/auth/login',
-  noIndex: true,
-})
+import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import LoginForm from '@/components/auth/LoginForm'
+import { useAuthStore } from '@/lib/store/authStore'
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuthStore()
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/')
+    }
+  }, [isAuthenticated, isLoading, router])
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  // Don't render form if authenticated (will redirect)
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

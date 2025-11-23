@@ -109,7 +109,7 @@ export default function AdminDashboard() {
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'ADMIN')) {
+    if (!isLoading && (!user || (user.role !== 'admin' && user.role !== 'manager'))) {
       router.push('/')
     }
   }, [user, isLoading, router])
@@ -318,7 +318,7 @@ export default function AdminDashboard() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={(entry) => `${entry.status}: ${entry.count}`}
+                label={({ payload }: { payload?: { status: string; count: number } }) => payload ? `${payload.status}: ${payload.count}` : ''}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="count"

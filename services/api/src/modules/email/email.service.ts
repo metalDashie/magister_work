@@ -35,26 +35,33 @@ export class EmailService {
 
     const host = this.configService.get('EMAIL_HOST')
     const port = this.configService.get('EMAIL_PORT')
-    const secure = this.configService.get('EMAIL_SECURE', 'true') === 'true'
+    const secure = this.configService.get('EMAIL_SECURE', 'false') === 'true'
     const user = this.configService.get('EMAIL_USER')
     const pass = this.configService.get('EMAIL_PASSWORD')
 
-    if (!host || !user || !pass) {
-      this.logger.warn('Email configuration incomplete. Emails will not be sent.')
+    if (!host) {
+      this.logger.warn('Email host not configured. Emails will not be sent.')
       return
     }
 
-    this.transporter = nodemailer.createTransport({
+    // Build transport options
+    const transportOptions: nodemailer.TransportOptions = {
       host,
-      port: parseInt(port || '587'),
+      port: parseInt(port || '1025'),
       secure,
-      auth: {
+    } as any
+
+    // Only add auth if credentials are provided (not needed for Mailpit)
+    if (user && pass) {
+      (transportOptions as any).auth = {
         user,
         pass,
-      },
-    })
+      }
+    }
 
-    this.logger.log('Email service initialized successfully')
+    this.transporter = nodemailer.createTransport(transportOptions)
+
+    this.logger.log(`Email service initialized successfully (host: ${host}:${port})`)
   }
 
   private precompileTemplates() {
@@ -67,6 +74,7 @@ export class EmailService {
         'order-status-update.hbs',
         'payment-success.hbs',
         'password-reset.hbs',
+        'email-verification.hbs',
       ]
 
       for (const file of templateFiles) {
@@ -121,6 +129,7 @@ export class EmailService {
       template: 'welcome',
       context: {
         name,
+        frontendUrl: this.configService.get('FRONTEND_URL', 'http://localhost:10002'),
         year: new Date().getFullYear(),
       },
     })
@@ -216,6 +225,26 @@ export class EmailService {
       context: {
         resetUrl,
         expiryMinutes: 60,
+        year: new Date().getFullYear(),
+      },
+    })
+  }
+
+  async sendEmailVerification(
+    email: string,
+    name: string,
+    verificationToken: string
+  ): Promise<boolean> {
+    const verificationUrl = `${this.configService.get('FRONTEND_URL')}/auth/verify-email?token=${verificationToken}`
+
+    return this.sendEmail({
+      to: email,
+      subject: 'Підтвердіть вашу електронну пошту - FullMag',
+      template: 'email-verification',
+      context: {
+        name,
+        verificationUrl,
+        expiryHours: 24,
         year: new Date().getFullYear(),
       },
     })

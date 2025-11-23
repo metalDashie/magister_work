@@ -70,7 +70,7 @@ export function generateMetadata({
         },
       ],
       locale: 'uk_UA',
-      type,
+      type: type === 'product' ? 'website' : type,
     },
     twitter: {
       card: 'summary_large_image',

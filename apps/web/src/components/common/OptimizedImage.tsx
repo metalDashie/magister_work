@@ -20,6 +20,7 @@ export default function OptimizedImage({
   width,
   height,
   contentType = 'general',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fill = false,
   objectFit = 'cover',
 }: OptimizedImageProps) {

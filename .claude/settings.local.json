@@ -57,7 +57,11 @@
       "Bash(npx tsc:*)",
       "WebSearch",
       "WebFetch(domain:developers.facebook.com)",
-      "WebFetch(domain:whatsapp.github.io)"
+      "WebFetch(domain:whatsapp.github.io)",
+      "Bash(pnpm dev:seed:*)",
+      "Bash(pnpm build:api:*)",
+      "Bash(pnpm --filter @fullmag/api build)",
+      "Bash(pnpm --filter @fullmag/web build:*)"
     ],
     "deny": [],
     "ask": []

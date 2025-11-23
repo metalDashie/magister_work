@@ -54,7 +54,7 @@ export default function ProductImportPage() {
   // Template save
   const [showSaveTemplate, setShowSaveTemplate] = useState(false)
   const [templateName, setTemplateName] = useState('')
-  const [templateDescription, setTemplateName] = useState('')
+  const [templateDescription, setTemplateDescription] = useState('')
 
   useEffect(() => {
     // Wait for hydration before checking auth
@@ -184,7 +184,7 @@ export default function ProductImportPage() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('profileId', profileId)
+      formData.append('profileId', profileId || '')
 
       const response = await api.post('/import/execute', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

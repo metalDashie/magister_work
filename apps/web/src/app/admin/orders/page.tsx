@@ -24,7 +24,7 @@ interface Order {
     firstName?: string
     lastName?: string
   }
-  orderItems?: Array<{
+  items?: Array<{
     id: string
     productId: string
     quantity: number
@@ -55,17 +55,19 @@ export default function AdminOrders() {
   const [sortBy, setSortBy] = useState<'date' | 'amount'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
-  useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'ADMIN')) {
-      router.push('/')
-    }
-  }, [user, isLoading, router])
+  const isAdmin = user?.role === 'admin' || user?.role === 'manager'
 
   useEffect(() => {
-    if (user?.role === 'ADMIN') {
+    if (!isLoading && (!user || !isAdmin)) {
+      router.push('/')
+    }
+  }, [user, isLoading, router, isAdmin])
+
+  useEffect(() => {
+    if (isAdmin) {
       fetchOrders()
     }
-  }, [user])
+  }, [isAdmin])
 
   const fetchOrders = async () => {
     try {
@@ -143,6 +145,8 @@ export default function AdminOrders() {
     const statusConfig = ORDER_STATUSES.find((s) => s.value === status)
     return statusConfig?.label || status
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _ = getStatusLabel
 
   if (isLoading || loading) {
     return (

@@ -7,6 +7,7 @@ interface AuthState {
   user: User | null
   token: string | null
   isAuthenticated: boolean
+  isLoading: boolean
   _hasHydrated: boolean
   setHasHydrated: (state: boolean) => void
   login: (credentials: LoginDto) => Promise<void>
@@ -21,10 +22,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isLoading: true,
       _hasHydrated: false,
 
       setHasHydrated: (state) => {
-        set({ _hasHydrated: state })
+        set({ _hasHydrated: state, isLoading: !state })
       },
 
       login: async (credentials) => {

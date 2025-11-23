@@ -61,6 +61,21 @@ export async function generateMetadata({
   })
 }
 
+// Check if discount is currently active
+function isDiscountActive(product: any): boolean {
+  if (!product.discountActive || !product.discountPercent) {
+    return false
+  }
+  const now = new Date()
+  if (product.discountStartDate && now < new Date(product.discountStartDate)) {
+    return false
+  }
+  if (product.discountEndDate && now > new Date(product.discountEndDate)) {
+    return false
+  }
+  return true
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -71,6 +86,11 @@ export default async function ProductDetailPage({
   if (!product) {
     notFound()
   }
+
+  const hasActiveDiscount = isDiscountActive(product)
+  const finalPrice = hasActiveDiscount
+    ? product.price * (1 - (product.discountPercent || 0) / 100)
+    : product.price
 
   // Breadcrumb for structured data
   const breadcrumbItems = [
@@ -119,9 +139,30 @@ export default async function ProductDetailPage({
           )}
 
           <div className="mt-4">
-            <span className="text-4xl font-bold text-primary-600">
-              {formatPrice(product.price, product.currency)}
-            </span>
+            {hasActiveDiscount ? (
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl text-gray-400 line-through">
+                    {formatPrice(product.price, product.currency)}
+                  </span>
+                  <span className="px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+                    -{product.discountPercent}%
+                  </span>
+                </div>
+                <span className="text-4xl font-bold text-red-600">
+                  {formatPrice(finalPrice, product.currency)}
+                </span>
+                {product.discountEndDate && (
+                  <p className="text-sm text-gray-500">
+                    Sale ends: {new Date(product.discountEndDate).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <span className="text-4xl font-bold text-primary-600">
+                {formatPrice(product.price, product.currency)}
+              </span>
+            )}
           </div>
 
           <div className="mt-6">
@@ -133,7 +174,7 @@ export default async function ProductDetailPage({
 
           <ProductActions
             productId={product.id}
-            price={product.price}
+            price={finalPrice}
             stock={product.stock}
           />
 

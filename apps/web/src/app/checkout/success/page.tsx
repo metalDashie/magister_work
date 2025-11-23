@@ -1,17 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/authStore'
 import { api } from '@/lib/api'
-import { formatPrice, OrderStatus, PaymentMethod } from '@fullmag/common'
+import { formatPrice } from '@fullmag/common'
 import Link from 'next/link'
+
+enum OrderStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  PAID = 'paid',
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
+}
+
+const PaymentMethodValues = {
+  ONLINE: 'online',
+  CASH_ON_DELIVERY: 'cash_on_delivery',
+} as const
 
 interface Order {
   id: string
   totalAmount: number
   status: OrderStatus
-  paymentMethod: PaymentMethod
+  paymentMethod: string
   deliveryCity: string
   deliveryWarehouse: string
   recipientName: string
@@ -29,7 +43,7 @@ interface Order {
   createdAt: string
 }
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { isAuthenticated, _hasHydrated } = useAuthStore()
@@ -101,7 +115,7 @@ export default function CheckoutSuccessPage() {
   }
 
   const isPaid = order.status === OrderStatus.PAID
-  const isOnlinePayment = order.paymentMethod === PaymentMethod.ONLINE
+  const isOnlinePayment = order.paymentMethod === PaymentMethodValues.ONLINE
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -282,5 +296,24 @@ export default function CheckoutSuccessPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading order details...</p>
+      </div>
+    </div>
+  )
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CheckoutSuccessContent />
+    </Suspense>
   )
 }

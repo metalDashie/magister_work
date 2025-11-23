@@ -72,7 +72,7 @@ export default function ProductList() {
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Filter Sidebar */}
       <aside className="lg:col-span-1">
-        <div className="sticky top-4">
+        <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
         </div>
       </aside>

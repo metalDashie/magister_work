@@ -8,10 +8,27 @@ import { api } from '@/lib/api'
 import { formatPrice, formatDateTime } from '@fullmag/common'
 import Pagination from '@/components/common/Pagination'
 
+interface Order {
+  id: string
+  status: string
+  paymentMethod: string
+  totalAmount: number
+  createdAt: string
+  items?: Array<{
+    id: string
+    productId: string
+    quantity: number
+    price: number
+    product?: {
+      name: string
+    }
+  }>
+}
+
 export default function OrdersPage() {
   const router = useRouter()
   const { isAuthenticated, _hasHydrated } = useAuthStore()
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)

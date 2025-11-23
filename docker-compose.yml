@@ -33,6 +33,18 @@ services:
       timeout: 5s
       retries: 5
 
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: fullmag-mailpit
+    ports:
+      - '8025:8025'   # Web UI
+      - '1025:1025'   # SMTP
+    networks:
+      - fullmag-network
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
   api:
     build:
       context: .
@@ -53,12 +65,19 @@ services:
       JWT_REFRESH_EXPIRES_IN: 7d
       CORS_ORIGIN: http://localhost:10002
       FRONTEND_URL: http://localhost:10002
-      EMAIL_ENABLED: false
+      EMAIL_ENABLED: true
+      EMAIL_HOST: mailpit
+      EMAIL_PORT: 1025
+      EMAIL_SECURE: false
+      EMAIL_USER: ''
+      EMAIL_PASSWORD: ''
+      EMAIL_FROM: FullMag <noreply@fullmag.com>
     ports:
       - '10001:10001'
     depends_on:
       - postgres
       - redis
+      - mailpit
     volumes:
       - ./services/api:/app/services/api
       - ./packages/common:/app/packages/common

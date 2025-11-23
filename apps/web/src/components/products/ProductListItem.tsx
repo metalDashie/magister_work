@@ -25,7 +25,7 @@ interface ProductListItemProps {
 }
 
 export default function ProductListItem({ product }: ProductListItemProps) {
-  const { addToCart } = useCartStore()
+  const { addItem } = useCartStore()
   const [adding, setAdding] = useState(false)
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -34,7 +34,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
 
     setAdding(true)
     try {
-      await addToCart(product.id, product.price)
+      await addItem({ productId: product.id, quantity: 1, price: product.price })
     } catch (error) {
       console.error('Failed to add to cart:', error)
     } finally {

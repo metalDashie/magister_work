@@ -4,9 +4,58 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { parse } from 'papaparse'
 import { UserRole } from '@fullmag/common'
-import * as entities from './entities'
+import {
+  User,
+  Category,
+  Product,
+  Attribute,
+  ProductAttribute,
+  Cart,
+  CartItem,
+  Order,
+  OrderItem,
+  Payment,
+  Notification,
+  ChatRoom,
+  ChatMessage,
+  DeliveryAddress,
+  ImportProfile,
+  ImportHistory,
+  TelegramUser,
+  WhatsAppUser,
+  Review,
+  ReviewLike,
+  ReviewReply,
+  ReviewComplaint,
+} from './entities'
 import defaultUsersData from './seed-data/default-users.json'
 import { attributesSeedData } from './seed-data/attributes.seed'
+
+// All entity classes for DataSource configuration
+const allEntities = [
+  User,
+  Category,
+  Product,
+  Attribute,
+  ProductAttribute,
+  Cart,
+  CartItem,
+  Order,
+  OrderItem,
+  Payment,
+  Notification,
+  ChatRoom,
+  ChatMessage,
+  DeliveryAddress,
+  ImportProfile,
+  ImportHistory,
+  TelegramUser,
+  WhatsAppUser,
+  Review,
+  ReviewLike,
+  ReviewReply,
+  ReviewComplaint,
+]
 
 const defaultUsers = defaultUsersData as any
 
@@ -50,7 +99,7 @@ async function seed() {
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
     database: process.env.DB_DATABASE || 'fullmag',
-    entities: Object.values(entities),
+    entities: allEntities,
     synchronize: false,
   })
 
@@ -59,14 +108,18 @@ async function seed() {
     console.log('Database connection established')
 
     // Repositories
-    const userRepo = dataSource.getRepository(entities.User)
-    const categoryRepo = dataSource.getRepository(entities.Category)
-    const productRepo = dataSource.getRepository(entities.Product)
-    const attributeRepo = dataSource.getRepository(entities.Attribute)
-    const productAttributeRepo = dataSource.getRepository(entities.ProductAttribute)
+    const userRepo = dataSource.getRepository(User)
+    const categoryRepo = dataSource.getRepository(Category)
+    const productRepo = dataSource.getRepository(Product)
+    const attributeRepo = dataSource.getRepository(Attribute)
+    const productAttributeRepo = dataSource.getRepository(ProductAttribute)
 
     // Clear existing data
     console.log('Clearing existing data...')
+    await dataSource.query('TRUNCATE TABLE "review_complaints" CASCADE')
+    await dataSource.query('TRUNCATE TABLE "review_likes" CASCADE')
+    await dataSource.query('TRUNCATE TABLE "review_replies" CASCADE')
+    await dataSource.query('TRUNCATE TABLE "reviews" CASCADE')
     await dataSource.query('TRUNCATE TABLE "order_items" CASCADE')
     await dataSource.query('TRUNCATE TABLE "orders" CASCADE')
     await dataSource.query('TRUNCATE TABLE "cart_items" CASCADE')
@@ -88,7 +141,7 @@ async function seed() {
 
     // Seed Users
     console.log('\nSeeding users...')
-    const users: entities.User[] = []
+    const users: User[] = []
     for (const userData of defaultUsers) {
       const passwordHash = await bcrypt.hash(userData.password, 10)
       const user = userRepo.create({
@@ -104,8 +157,8 @@ async function seed() {
 
     // Seed Main Categories
     console.log('\nSeeding categories...')
-    const mainCategories: Record<string, entities.Category> = {}
-    const subCategories: Record<string, entities.Category> = {}
+    const mainCategories: Record<string, Category> = {}
+    const subCategories: Record<string, Category> = {}
 
     // Create main categories first
     const mainCategoryNames = ['Електроніка', 'Одяг', 'Книги', 'Дім та сад', 'Спорт та фітнес', 'Краса та догляд', 'Дитячі товари']
@@ -138,7 +191,7 @@ async function seed() {
 
     // Seed Attributes
     console.log('\nSeeding attributes...')
-    const attributeMap: Record<string, entities.Attribute> = {}
+    const attributeMap: Record<string, Attribute> = {}
     for (const attrData of attributesSeedData) {
       const attribute = attributeRepo.create(attrData)
       await attributeRepo.save(attribute)
@@ -196,7 +249,7 @@ async function seed() {
             price: parseFloat(row['Price']),
             currency: row['Currency'] || 'UAH',
             stock: parseInt(row['Stock']) || 0,
-            categoryId,
+            categoryId: categoryId ?? undefined,
             images: row['Image URL'] ? [row['Image URL']] : [],
           })
 
