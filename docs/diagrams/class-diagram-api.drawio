@@ -1,0 +1,542 @@
+<mxfile host="app.diagrams.net" modified="2025-01-30T12:00:00.000Z" agent="Claude" etag="fullmag-class" version="22.0.0" type="device">
+  <diagram name="Діаграма класів API (NestJS)" id="class-diagram-api">
+    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============ ENTITIES ============ -->
+
+        <!-- User Entity -->
+        <mxCell id="entity-user" value="&lt;&lt;Entity&gt;&gt;&#xa;User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="200" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="user-attrs" value="+ id: uuid&#xa;+ email: string&#xa;+ phone: string&#xa;+ password_hash: string&#xa;+ role: UserRole&#xa;+ email_verified: boolean&#xa;+ emailVerificationToken: string&#xa;+ password_reset_token: string&#xa;+ password_reset_expires: Date&#xa;+ createdAt: Date&#xa;+ updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-user">
+          <mxGeometry y="40" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="user-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-user">
+          <mxGeometry y="200" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="user-methods" value="+ orders: Order[]&#xa;+ carts: Cart[]&#xa;+ reviews: Review[]&#xa;+ addresses: UserAddress[]&#xa;+ wishlists: Wishlist[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-user">
+          <mxGeometry y="208" width="200" height="72" as="geometry" />
+        </mxCell>
+
+        <!-- Product Entity -->
+        <mxCell id="entity-product" value="&lt;&lt;Entity&gt;&gt;&#xa;Product" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="40" width="200" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="product-attrs" value="+ id: uuid&#xa;+ name: string&#xa;+ sku: string&#xa;+ description: string&#xa;+ price: decimal&#xa;+ currency: string&#xa;+ stock: number&#xa;+ categoryId: number&#xa;+ images: string[]&#xa;+ discount_percent: number&#xa;+ discount_start_date: Date&#xa;+ discount_end_date: Date&#xa;+ averageRating: number&#xa;+ reviewsCount: number&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-product">
+          <mxGeometry y="40" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="product-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-product">
+          <mxGeometry y="240" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="product-methods" value="+ category: Category&#xa;+ productAttributes: ProductAttr[]&#xa;+ reviews: Review[]&#xa;+ cartItems: CartItem[]&#xa;+ orderItems: OrderItem[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-product">
+          <mxGeometry y="248" width="200" height="72" as="geometry" />
+        </mxCell>
+
+        <!-- Category Entity -->
+        <mxCell id="entity-category" value="&lt;&lt;Entity&gt;&gt;&#xa;Category" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="180" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="category-attrs" value="+ id: number&#xa;+ name: string&#xa;+ description: string&#xa;+ parentId: number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-category">
+          <mxGeometry y="40" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="category-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-category">
+          <mxGeometry y="110" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="category-methods" value="+ parent: Category&#xa;+ children: Category[]&#xa;+ products: Product[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-category">
+          <mxGeometry y="118" width="180" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- Order Entity -->
+        <mxCell id="entity-order" value="&lt;&lt;Entity&gt;&gt;&#xa;Order" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="200" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="order-attrs" value="+ id: uuid&#xa;+ userId: uuid&#xa;+ totalAmount: decimal&#xa;+ status: OrderStatus&#xa;+ paymentMethod: PaymentMethod&#xa;+ delivery_type: string&#xa;+ city: string&#xa;+ warehouse: string&#xa;+ address: string&#xa;+ recipientName: string&#xa;+ recipientPhone: string&#xa;+ notes: string&#xa;+ createdAt: Date&#xa;+ updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-order">
+          <mxGeometry y="40" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="order-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-order">
+          <mxGeometry y="240" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="order-methods" value="+ user: User&#xa;+ items: OrderItem[]&#xa;+ payment: Payment&#xa;+ returnRequests: ReturnRequest[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-order">
+          <mxGeometry y="248" width="200" height="62" as="geometry" />
+        </mxCell>
+
+        <!-- OrderItem Entity -->
+        <mxCell id="entity-orderitem" value="&lt;&lt;Entity&gt;&gt;&#xa;OrderItem" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="420" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="orderitem-attrs" value="+ id: uuid&#xa;+ orderId: uuid&#xa;+ productId: uuid&#xa;+ quantity: number&#xa;+ price: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-orderitem">
+          <mxGeometry y="40" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="orderitem-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-orderitem">
+          <mxGeometry y="120" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="orderitem-methods" value="+ order: Order&#xa;+ product: Product" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-orderitem">
+          <mxGeometry y="128" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Cart Entity -->
+        <mxCell id="entity-cart" value="&lt;&lt;Entity&gt;&gt;&#xa;Cart" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="420" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-attrs" value="+ id: uuid&#xa;+ userId: uuid&#xa;+ createdAt: Date&#xa;+ updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-cart">
+          <mxGeometry y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-cart">
+          <mxGeometry y="100" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-methods" value="+ user: User&#xa;+ items: CartItem[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-cart">
+          <mxGeometry y="108" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- CartItem Entity -->
+        <mxCell id="entity-cartitem" value="&lt;&lt;Entity&gt;&gt;&#xa;CartItem" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="680" y="420" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cartitem-attrs" value="+ id: uuid&#xa;+ cartId: uuid&#xa;+ productId: uuid&#xa;+ quantity: number&#xa;+ price: decimal" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-cartitem">
+          <mxGeometry y="40" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cartitem-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-cartitem">
+          <mxGeometry y="120" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="cartitem-methods" value="+ cart: Cart&#xa;+ product: Product" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-cartitem">
+          <mxGeometry y="128" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Payment Entity -->
+        <mxCell id="entity-payment" value="&lt;&lt;Entity&gt;&gt;&#xa;Payment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="740" width="180" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-attrs" value="+ id: uuid&#xa;+ orderId: uuid&#xa;+ provider: PaymentProvider&#xa;+ providerPaymentId: string&#xa;+ status: PaymentStatus&#xa;+ amount: decimal&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-payment">
+          <mxGeometry y="40" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-payment">
+          <mxGeometry y="140" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-methods" value="+ order: Order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-payment">
+          <mxGeometry y="148" width="180" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Review Entity -->
+        <mxCell id="entity-review" value="&lt;&lt;Entity&gt;&gt;&#xa;Review" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="260" y="740" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="review-attrs" value="+ id: uuid&#xa;+ userId: uuid&#xa;+ productId: uuid&#xa;+ rating: number (1-5)&#xa;+ title: string&#xa;+ content: string&#xa;+ images: string[]&#xa;+ isVerifiedPurchase: boolean&#xa;+ likesCount: number&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-review">
+          <mxGeometry y="40" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="review-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-review">
+          <mxGeometry y="170" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="review-methods" value="+ user: User&#xa;+ product: Product&#xa;+ likes: ReviewLike[]&#xa;+ replies: ReviewReply[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-review">
+          <mxGeometry y="178" width="180" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Coupon Entity -->
+        <mxCell id="entity-coupon" value="&lt;&lt;Entity&gt;&gt;&#xa;Coupon" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="640" width="180" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="coupon-attrs" value="+ id: uuid&#xa;+ code: string (unique)&#xa;+ description: string&#xa;+ type: CouponType&#xa;+ value: decimal&#xa;+ minOrderAmount: decimal&#xa;+ maxDiscountAmount: decimal&#xa;+ usageLimit: number&#xa;+ usageLimitPerUser: number&#xa;+ timesUsed: number&#xa;+ startDate: Date&#xa;+ endDate: Date&#xa;+ status: CouponStatus" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-coupon">
+          <mxGeometry y="40" width="180" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="coupon-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-coupon">
+          <mxGeometry y="210" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="coupon-methods" value="+ isValid(): boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-coupon">
+          <mxGeometry y="218" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ReturnRequest Entity -->
+        <mxCell id="entity-return" value="&lt;&lt;Entity&gt;&gt;&#xa;ReturnRequest" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="700" y="640" width="180" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="return-attrs" value="+ id: uuid&#xa;+ orderId: uuid&#xa;+ userId: uuid&#xa;+ orderItemId: uuid&#xa;+ reason: ReturnReason&#xa;+ status: ReturnStatus&#xa;+ quantity: number&#xa;+ refundAmount: decimal&#xa;+ adminNotes: string&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-return">
+          <mxGeometry y="40" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="return-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-return">
+          <mxGeometry y="170" width="180" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="return-methods" value="+ order: Order&#xa;+ user: User&#xa;+ orderItem: OrderItem" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-return">
+          <mxGeometry y="178" width="180" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Wishlist Entity -->
+        <mxCell id="entity-wishlist" value="&lt;&lt;Entity&gt;&gt;&#xa;Wishlist" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="920" y="40" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="wishlist-attrs" value="+ id: uuid&#xa;+ userId: uuid&#xa;+ productId: uuid&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-wishlist">
+          <mxGeometry y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wishlist-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-wishlist">
+          <mxGeometry y="100" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="wishlist-methods" value="+ user: User&#xa;+ product: Product" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-wishlist">
+          <mxGeometry y="108" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- CompareItem Entity -->
+        <mxCell id="entity-compare" value="&lt;&lt;Entity&gt;&gt;&#xa;CompareItem" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="920" y="200" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="compare-attrs" value="+ id: uuid&#xa;+ userId: uuid&#xa;+ productId: uuid&#xa;+ createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-compare">
+          <mxGeometry y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="compare-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-compare">
+          <mxGeometry y="100" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="compare-methods" value="+ user: User&#xa;+ product: Product" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-compare">
+          <mxGeometry y="108" width="160" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- AnalyticsSnapshot Entity -->
+        <mxCell id="entity-analytics" value="&lt;&lt;Entity&gt;&gt;&#xa;AnalyticsSnapshot" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="920" y="360" width="200" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-attrs" value="+ id: uuid&#xa;+ snapshotDate: Date&#xa;+ type: SnapshotType&#xa;+ totalRevenue: decimal&#xa;+ totalOrders: number&#xa;+ averageOrderValue: decimal&#xa;+ newCustomers: number&#xa;+ returningCustomers: number&#xa;+ productsSold: number&#xa;+ abandonedCarts: number&#xa;+ cartConversionRate: decimal&#xa;+ topProducts: JSON&#xa;+ topCategories: JSON" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-analytics">
+          <mxGeometry y="40" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-analytics">
+          <mxGeometry y="220" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-methods" value="" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-analytics">
+          <mxGeometry y="228" width="200" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- Attribute Entity -->
+        <mxCell id="entity-attribute" value="&lt;&lt;Entity&gt;&gt;&#xa;Attribute" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="740" y="40" width="150" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="attr-attrs" value="+ id: number&#xa;+ name: string&#xa;+ unit: string&#xa;+ sortOrder: number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-attribute">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="attr-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-attribute">
+          <mxGeometry y="100" width="150" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="attr-methods" value="+ productAttrs: ProductAttr[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-attribute">
+          <mxGeometry y="108" width="150" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- ProductAttribute Entity -->
+        <mxCell id="entity-prodattr" value="&lt;&lt;Entity&gt;&gt;&#xa;ProductAttribute" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="740" y="200" width="150" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="prodattr-attrs" value="+ id: number&#xa;+ productId: uuid&#xa;+ attributeId: number&#xa;+ value: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-prodattr">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="prodattr-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="entity-prodattr">
+          <mxGeometry y="100" width="150" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="prodattr-methods" value="+ product: Product&#xa;+ attribute: Attribute" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="entity-prodattr">
+          <mxGeometry y="108" width="150" height="32" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ENUMS ============ -->
+
+        <!-- UserRole Enum -->
+        <mxCell id="enum-userrole" value="&lt;&lt;enum&gt;&gt;&#xa;UserRole" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="40" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="userrole-values" value="USER&#xa;MANAGER&#xa;ADMIN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-userrole">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- OrderStatus Enum -->
+        <mxCell id="enum-orderstatus" value="&lt;&lt;enum&gt;&gt;&#xa;OrderStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="160" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="orderstatus-values" value="PENDING&#xa;PROCESSING&#xa;PAID&#xa;SHIPPED&#xa;DELIVERED&#xa;CANCELLED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-orderstatus">
+          <mxGeometry y="40" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- PaymentStatus Enum -->
+        <mxCell id="enum-paymentstatus" value="&lt;&lt;enum&gt;&gt;&#xa;PaymentStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="40" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="paymentstatus-values" value="PENDING&#xa;SUCCESS&#xa;FAILED&#xa;REFUNDED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-paymentstatus">
+          <mxGeometry y="40" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- PaymentProvider Enum -->
+        <mxCell id="enum-paymentprovider" value="&lt;&lt;enum&gt;&gt;&#xa;PaymentProvider" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="170" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="paymentprovider-values" value="STRIPE&#xa;FONDY&#xa;MONOBANK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-paymentprovider">
+          <mxGeometry y="40" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- CouponType Enum -->
+        <mxCell id="enum-coupontype" value="&lt;&lt;enum&gt;&gt;&#xa;CouponType" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="320" width="130" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="coupontype-values" value="PERCENTAGE&#xa;FIXED_AMOUNT&#xa;FREE_SHIPPING" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-coupontype">
+          <mxGeometry y="40" width="130" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ReturnReason Enum -->
+        <mxCell id="enum-returnreason" value="&lt;&lt;enum&gt;&gt;&#xa;ReturnReason" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="440" width="150" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="returnreason-values" value="DEFECTIVE&#xa;WRONG_ITEM&#xa;NOT_AS_DESCRIBED&#xa;CHANGED_MIND&#xa;DAMAGED_IN_SHIPPING&#xa;OTHER" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-returnreason">
+          <mxGeometry y="40" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ReturnStatus Enum -->
+        <mxCell id="enum-returnstatus" value="&lt;&lt;enum&gt;&gt;&#xa;ReturnStatus" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="600" width="130" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="returnstatus-values" value="PENDING&#xa;APPROVED&#xa;REJECTED&#xa;RECEIVED&#xa;REFUNDED&#xa;COMPLETED" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="enum-returnstatus">
+          <mxGeometry y="40" width="130" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============ RELATIONSHIPS ============ -->
+
+        <!-- User -> Order (1 to many) -->
+        <mxCell id="rel-user-order" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-user" target="entity-order">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-order-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-user-order">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order -> OrderItem (1 to many) -->
+        <mxCell id="rel-order-item" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-order" target="entity-orderitem">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-order-item-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-order-item">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order -> Payment (1 to 1) -->
+        <mxCell id="rel-order-payment" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-order" target="entity-payment">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-order-payment-label" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-order-payment">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> OrderItem (1 to many) -->
+        <mxCell id="rel-product-orderitem" value="1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-product" target="entity-orderitem">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-orderitem-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-orderitem">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Category -> Product (1 to many) -->
+        <mxCell id="rel-category-product" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-category" target="entity-product">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-category-product-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-category-product">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Category -> Category (self-referential) -->
+        <mxCell id="rel-category-self" value="parent 0..1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="entity-category" target="entity-category">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="740" y="85" />
+              <mxPoint x="740" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-category-self-label" value="children *" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-category-self">
+          <mxGeometry x="0.3" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- User -> Cart (1 to many) -->
+        <mxCell id="rel-user-cart" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="user-methods" target="entity-cart">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-cart-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-user-cart">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cart -> CartItem (1 to many) -->
+        <mxCell id="rel-cart-item" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-cart" target="entity-cartitem">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-cart-item-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-cart-item">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> CartItem (1 to many) -->
+        <mxCell id="rel-product-cartitem" value="1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-product" target="entity-cartitem">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-cartitem-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-cartitem">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- User -> Review (1 to many) -->
+        <mxCell id="rel-user-review" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-user" target="entity-review">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="140" y="740" />
+              <mxPoint x="140" y="720" />
+              <mxPoint x="350" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-review-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-user-review">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> Review (1 to many) -->
+        <mxCell id="rel-product-review" value="1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-product" target="entity-review">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="380" y="600" />
+              <mxPoint x="380" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-review-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-review">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- User -> Wishlist (1 to many) -->
+        <mxCell id="rel-user-wishlist" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="entity-user" target="entity-wishlist">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="260" y="50" />
+              <mxPoint x="260" y="20" />
+              <mxPoint x="900" y="20" />
+              <mxPoint x="900" y="80" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-wishlist-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-user-wishlist">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> Wishlist (1 to many) -->
+        <mxCell id="rel-product-wishlist" value="1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-product" target="entity-wishlist">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-wishlist-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-wishlist">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> CompareItem (1 to many) -->
+        <mxCell id="rel-product-compare" value="1" style="endArrow=open;html=1;endSize=12;startArrow=none;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="entity-product" target="entity-compare">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-compare-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-compare">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Order -> ReturnRequest (1 to many) -->
+        <mxCell id="rel-order-return" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="entity-order" target="entity-return">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="140" y="1000" />
+              <mxPoint x="680" y="1000" />
+              <mxPoint x="680" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-order-return-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-order-return">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product -> ProductAttribute (1 to many) -->
+        <mxCell id="rel-product-prodattr" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-product" target="entity-prodattr">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-product-prodattr-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-product-prodattr">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Attribute -> ProductAttribute (1 to many) -->
+        <mxCell id="rel-attr-prodattr" value="1" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="entity-attribute" target="entity-prodattr">
+          <mxGeometry x="-1" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-attr-prodattr-label" value="*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="rel-attr-prodattr">
+          <mxGeometry x="0.7" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="Легенда" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="300" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-entity" value="Entity (Сутність)" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="legend-box">
+          <mxGeometry y="26" width="150" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-enum" value="Enum (Перелік)" style="text;strokeColor=#d6b656;fillColor=#fff2cc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="legend-box">
+          <mxGeometry y="52" width="150" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-comp" value="◆ Композиція (1:N)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="legend-box">
+          <mxGeometry y="78" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-assoc" value="◇ Агрегація (1:N)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=10;" vertex="1" parent="legend-box">
+          <mxGeometry y="98" width="150" height="22" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Опис діаграми класів</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14pt;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 18pt;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Опис діаграми класів</h1>
+
+<h2>Клас User (Користувач):</h2>
+<p>Клас User представляє користувача системи та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор користувача</li>
+    <li>email (string) — електронна адреса користувача</li>
+    <li>phone (string) — номер телефону</li>
+    <li>password_hash (string) — хеш пароля</li>
+    <li>role (UserRole) — роль користувача в системі</li>
+    <li>email_verified (boolean) — статус верифікації email</li>
+    <li>emailVerificationToken (string) — токен для підтвердження email</li>
+    <li>password_reset_token (string) — токен для скидання пароля</li>
+    <li>password_reset_expires (Date) — термін дії токена скидання</li>
+    <li>createdAt (Date) — дата створення запису</li>
+    <li>updatedAt (Date) — дата останнього оновлення</li>
+</ul>
+<p>Клас має зв'язки з класами: Order (замовлення), Cart (кошик), Review (відгуки), UserAddress (адреси), Wishlist (список бажань).</p>
+
+<h2>Клас Product (Товар):</h2>
+<p>Клас Product представляє товар у каталозі магазину та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор товару</li>
+    <li>name (string) — назва товару</li>
+    <li>sku (string) — артикул товару</li>
+    <li>description (string) — опис товару</li>
+    <li>price (decimal) — ціна товару</li>
+    <li>currency (string) — валюта ціни</li>
+    <li>stock (number) — кількість товару на складі</li>
+    <li>categoryId (number) — ідентифікатор категорії</li>
+    <li>images (string[]) — масив URL зображень товару</li>
+    <li>discount_percent (number) — відсоток знижки</li>
+    <li>discount_start_date (Date) — дата початку знижки</li>
+    <li>discount_end_date (Date) — дата закінчення знижки</li>
+    <li>averageRating (number) — середній рейтинг товару</li>
+    <li>reviewsCount (number) — кількість відгуків</li>
+    <li>createdAt (Date) — дата створення запису</li>
+</ul>
+<p>Клас має зв'язки з класами: Category (категорія), ProductAttribute (атрибути), Review (відгуки), CartItem (позиції кошика), OrderItem (позиції замовлення).</p>
+
+<h2>Клас Category (Категорія):</h2>
+<p>Клас Category представляє категорію товарів з підтримкою ієрархії та містить наступні атрибути:</p>
+<ul>
+    <li>id (number) — унікальний ідентифікатор категорії</li>
+    <li>name (string) — назва категорії</li>
+    <li>description (string) — опис категорії</li>
+    <li>parentId (number) — ідентифікатор батьківської категорії</li>
+</ul>
+<p>Клас має зв'язки з класами: Category (батьківська та дочірні категорії — самопосилання), Product (товари в категорії).</p>
+
+<h2>Клас Order (Замовлення):</h2>
+<p>Клас Order представляє замовлення користувача та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор замовлення</li>
+    <li>userId (uuid) — ідентифікатор користувача</li>
+    <li>totalAmount (decimal) — загальна сума замовлення</li>
+    <li>status (OrderStatus) — статус замовлення</li>
+    <li>paymentMethod (PaymentMethod) — спосіб оплати</li>
+    <li>delivery_type (string) — тип доставки</li>
+    <li>city (string) — місто доставки</li>
+    <li>warehouse (string) — відділення/склад</li>
+    <li>address (string) — адреса доставки</li>
+    <li>recipientName (string) — ім'я отримувача</li>
+    <li>recipientPhone (string) — телефон отримувача</li>
+    <li>notes (string) — примітки до замовлення</li>
+    <li>createdAt (Date) — дата створення замовлення</li>
+    <li>updatedAt (Date) — дата останнього оновлення</li>
+</ul>
+<p>Клас має зв'язки з класами: User (користувач), OrderItem (позиції замовлення), Payment (платіж), ReturnRequest (запити на повернення).</p>
+
+<h2>Клас OrderItem (Позиція замовлення):</h2>
+<p>Клас OrderItem представляє окрему позицію в замовленні та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор позиції</li>
+    <li>orderId (uuid) — ідентифікатор замовлення</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>quantity (number) — кількість одиниць товару</li>
+    <li>price (decimal) — ціна за одиницю на момент замовлення</li>
+</ul>
+<p>Клас має зв'язки з класами: Order (замовлення), Product (товар).</p>
+
+<h2>Клас Cart (Кошик):</h2>
+<p>Клас Cart представляє кошик покупок користувача та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор кошика</li>
+    <li>userId (uuid) — ідентифікатор користувача</li>
+    <li>createdAt (Date) — дата створення кошика</li>
+    <li>updatedAt (Date) — дата останнього оновлення</li>
+</ul>
+<p>Клас має зв'язки з класами: User (користувач), CartItem (позиції кошика).</p>
+
+<h2>Клас CartItem (Позиція кошика):</h2>
+<p>Клас CartItem представляє окремий товар у кошику та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор позиції</li>
+    <li>cartId (uuid) — ідентифікатор кошика</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>quantity (number) — кількість одиниць товару</li>
+    <li>price (decimal) — ціна за одиницю</li>
+</ul>
+<p>Клас має зв'язки з класами: Cart (кошик), Product (товар).</p>
+
+<h2>Клас Payment (Платіж):</h2>
+<p>Клас Payment представляє інформацію про платіж за замовлення та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор платежу</li>
+    <li>orderId (uuid) — ідентифікатор замовлення</li>
+    <li>provider (PaymentProvider) — платіжний провайдер (Stripe, FONDY, Monobank)</li>
+    <li>providerPaymentId (string) — ідентифікатор платежу у провайдера</li>
+    <li>status (PaymentStatus) — статус платежу</li>
+    <li>amount (decimal) — сума платежу</li>
+    <li>createdAt (Date) — дата створення платежу</li>
+</ul>
+<p>Клас має зв'язок з класом Order (замовлення).</p>
+
+<h2>Клас Review (Відгук):</h2>
+<p>Клас Review представляє відгук користувача про товар та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор відгуку</li>
+    <li>userId (uuid) — ідентифікатор автора відгуку</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>rating (number) — оцінка від 1 до 5</li>
+    <li>title (string) — заголовок відгуку</li>
+    <li>content (string) — текст відгуку</li>
+    <li>images (string[]) — масив URL зображень до відгуку</li>
+    <li>isVerifiedPurchase (boolean) — чи підтверджена покупка</li>
+    <li>likesCount (number) — кількість лайків</li>
+    <li>createdAt (Date) — дата створення відгуку</li>
+</ul>
+<p>Клас має зв'язки з класами: User (автор), Product (товар), ReviewLike (лайки), ReviewReply (відповіді).</p>
+
+<h2>Клас Coupon (Купон):</h2>
+<p>Клас Coupon представляє промокод або купон на знижку та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор купона</li>
+    <li>code (string) — унікальний код купона</li>
+    <li>description (string) — опис купона</li>
+    <li>type (CouponType) — тип знижки (відсоткова, фіксована, безкоштовна доставка)</li>
+    <li>value (decimal) — значення знижки</li>
+    <li>minOrderAmount (decimal) — мінімальна сума замовлення</li>
+    <li>maxDiscountAmount (decimal) — максимальна сума знижки</li>
+    <li>usageLimit (number) — загальний ліміт використань</li>
+    <li>usageLimitPerUser (number) — ліміт використань на користувача</li>
+    <li>timesUsed (number) — кількість використань</li>
+    <li>startDate (Date) — дата початку дії</li>
+    <li>endDate (Date) — дата закінчення дії</li>
+    <li>status (CouponStatus) — статус купона</li>
+</ul>
+<p>Клас має метод isValid(), який перевіряє дійсність купона та повертає boolean.</p>
+
+<h2>Клас ReturnRequest (Запит на повернення):</h2>
+<p>Клас ReturnRequest представляє запит на повернення товару та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор запиту</li>
+    <li>orderId (uuid) — ідентифікатор замовлення</li>
+    <li>userId (uuid) — ідентифікатор користувача</li>
+    <li>orderItemId (uuid) — ідентифікатор позиції замовлення</li>
+    <li>reason (ReturnReason) — причина повернення</li>
+    <li>status (ReturnStatus) — статус запиту</li>
+    <li>quantity (number) — кількість товару для повернення</li>
+    <li>refundAmount (decimal) — сума повернення</li>
+    <li>adminNotes (string) — примітки адміністратора</li>
+    <li>createdAt (Date) — дата створення запиту</li>
+</ul>
+<p>Клас має зв'язки з класами: Order (замовлення), User (користувач), OrderItem (позиція замовлення).</p>
+
+<h2>Клас Wishlist (Список бажань):</h2>
+<p>Клас Wishlist представляє товар у списку бажань користувача та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор запису</li>
+    <li>userId (uuid) — ідентифікатор користувача</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>createdAt (Date) — дата додавання товару</li>
+</ul>
+<p>Клас має зв'язки з класами: User (користувач), Product (товар).</p>
+
+<h2>Клас CompareItem (Товар для порівняння):</h2>
+<p>Клас CompareItem представляє товар у списку порівняння та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор запису</li>
+    <li>userId (uuid) — ідентифікатор користувача</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>createdAt (Date) — дата додавання товару</li>
+</ul>
+<p>Клас має зв'язки з класами: User (користувач), Product (товар).</p>
+
+<h2>Клас Attribute (Атрибут):</h2>
+<p>Клас Attribute представляє характеристику товару та містить наступні атрибути:</p>
+<ul>
+    <li>id (number) — унікальний ідентифікатор атрибута</li>
+    <li>name (string) — назва атрибута (наприклад, "Колір", "Розмір")</li>
+    <li>unit (string) — одиниця виміру</li>
+    <li>sortOrder (number) — порядок сортування</li>
+</ul>
+<p>Клас має зв'язок з класом ProductAttribute (значення атрибутів для товарів).</p>
+
+<h2>Клас ProductAttribute (Значення атрибута товару):</h2>
+<p>Клас ProductAttribute представляє значення атрибута для конкретного товару та містить наступні атрибути:</p>
+<ul>
+    <li>id (number) — унікальний ідентифікатор запису</li>
+    <li>productId (uuid) — ідентифікатор товару</li>
+    <li>attributeId (number) — ідентифікатор атрибута</li>
+    <li>value (string) — значення атрибута</li>
+</ul>
+<p>Клас має зв'язки з класами: Product (товар), Attribute (атрибут).</p>
+
+<h2>Клас AnalyticsSnapshot (Знімок аналітики):</h2>
+<p>Клас AnalyticsSnapshot представляє збережений знімок аналітичних даних та містить наступні атрибути:</p>
+<ul>
+    <li>id (uuid) — унікальний ідентифікатор знімка</li>
+    <li>snapshotDate (Date) — дата знімка</li>
+    <li>type (SnapshotType) — тип знімка (щоденний, щотижневий, щомісячний)</li>
+    <li>totalRevenue (decimal) — загальна виручка</li>
+    <li>totalOrders (number) — кількість замовлень</li>
+    <li>averageOrderValue (decimal) — середній чек</li>
+    <li>newCustomers (number) — кількість нових клієнтів</li>
+    <li>returningCustomers (number) — кількість постійних клієнтів</li>
+    <li>productsSold (number) — кількість проданих товарів</li>
+    <li>abandonedCarts (number) — кількість покинутих кошиків</li>
+    <li>cartConversionRate (decimal) — конверсія кошика</li>
+    <li>topProducts (JSON) — топ товарів</li>
+    <li>topCategories (JSON) — топ категорій</li>
+</ul>
+
+<h2>Перерахування (Enums):</h2>
+
+<p><strong>UserRole</strong> — визначає ролі користувачів: USER (покупець), MANAGER (менеджер), ADMIN (адміністратор).</p>
+
+<p><strong>OrderStatus</strong> — визначає статуси замовлення: PENDING (очікує), PROCESSING (в обробці), PAID (оплачено), SHIPPED (відправлено), DELIVERED (доставлено), CANCELLED (скасовано).</p>
+
+<p><strong>PaymentStatus</strong> — визначає статуси платежу: PENDING (очікує), SUCCESS (успішно), FAILED (помилка), REFUNDED (повернено).</p>
+
+<p><strong>PaymentProvider</strong> — визначає платіжні системи: STRIPE, FONDY, MONOBANK.</p>
+
+<p><strong>CouponType</strong> — визначає типи знижок: PERCENTAGE (відсоткова), FIXED_AMOUNT (фіксована), FREE_SHIPPING (безкоштовна доставка).</p>
+
+<p><strong>ReturnReason</strong> — визначає причини повернення: DEFECTIVE (дефект), WRONG_ITEM (не той товар), NOT_AS_DESCRIBED (не відповідає опису), CHANGED_MIND (передумав), DAMAGED_IN_SHIPPING (пошкоджено), OTHER (інше).</p>
+
+<p><strong>ReturnStatus</strong> — визначає статуси повернення: PENDING (очікує), APPROVED (схвалено), REJECTED (відхилено), RECEIVED (отримано), REFUNDED (повернено кошти), COMPLETED (завершено).</p>
+
+</body>
+</html>

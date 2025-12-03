@@ -1,0 +1,481 @@
+<mxfile host="app.diagrams.net" modified="2025-01-30T12:00:00.000Z" agent="Claude" etag="fullmag-use-case" version="22.0.0" type="device">
+  <diagram name="Діаграма прецедентів" id="use-case-diagram">
+    <mxGraphModel dx="1434" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- System Boundary -->
+        <mxCell id="system-boundary" value="Інтернет-магазин FullMag" style="shape=umlFrame;whiteSpace=wrap;html=1;width=180;height=30;boundedLbl=1;verticalAlign=top;align=left;spacingLeft=5;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="1200" height="1100" as="geometry" />
+        </mxCell>
+
+        <!-- Actors -->
+        <!-- Guest (Гість) -->
+        <mxCell id="actor-guest" value="Гість" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- User (Користувач) -->
+        <mxCell id="actor-user" value="Користувач" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Admin (Адміністратор) -->
+        <mxCell id="actor-admin" value="Адміністратор" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="200" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Manager (Менеджер) -->
+        <mxCell id="actor-manager" value="Менеджер" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="500" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Payment System -->
+        <mxCell id="actor-payment" value="Платіжна&#xa;система" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="850" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Email System -->
+        <mxCell id="actor-email" value="Email&#xa;сервіс" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="850" width="40" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ============ USE CASES ============ -->
+
+        <!-- Authentication Use Cases -->
+        <mxCell id="uc-register" value="Реєстрація" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-login" value="Авторизація" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-logout" value="Вихід з системи" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-reset-password" value="Відновлення&#xa;пароля" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Product Use Cases -->
+        <mxCell id="uc-view-products" value="Перегляд&#xa;каталогу товарів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-search-products" value="Пошук товарів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-filter-products" value="Фільтрація&#xa;товарів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-product-details" value="Перегляд деталей&#xa;товару" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-compare-products" value="Порівняння&#xa;товарів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="360" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Cart Use Cases -->
+        <mxCell id="uc-add-to-cart" value="Додавання&#xa;в кошик" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-cart" value="Перегляд кошика" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-update-cart" value="Зміна кількості&#xa;товару в кошику" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-remove-from-cart" value="Видалення&#xa;з кошика" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="360" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- User Profile Use Cases -->
+        <mxCell id="uc-view-profile" value="Перегляд профілю" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-edit-profile" value="Редагування&#xa;профілю" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-manage-addresses" value="Керування&#xa;адресами" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="570" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Wishlist Use Cases -->
+        <mxCell id="uc-add-to-wishlist" value="Додавання&#xa;до списку бажань" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-wishlist" value="Перегляд списку&#xa;бажань" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Order Use Cases -->
+        <mxCell id="uc-checkout" value="Оформлення&#xa;замовлення" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-select-delivery" value="Вибір способу&#xa;доставки" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-apply-coupon" value="Застосування&#xa;купону" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="570" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-orders" value="Перегляд&#xa;замовлень" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="570" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-track-order" value="Відстеження&#xa;замовлення" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="640" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Payment Use Cases -->
+        <mxCell id="uc-pay-online" value="Онлайн оплата" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="850" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-process-payment" value="Обробка платежу" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="920" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-refund" value="Повернення&#xa;коштів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="990" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Review Use Cases -->
+        <mxCell id="uc-write-review" value="Написання відгуку" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="640" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-rate-product" value="Оцінювання&#xa;товару" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="590" y="710" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Return Use Cases -->
+        <mxCell id="uc-request-return" value="Запит на&#xa;повернення" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="420" y="710" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Chat Use Cases -->
+        <mxCell id="uc-chat-support" value="Чат з підтримкою" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="250" y="710" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============ ADMIN USE CASES ============ -->
+
+        <!-- Product Management -->
+        <mxCell id="uc-manage-products" value="Управління&#xa;товарами" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-add-product" value="Додавання товару" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="80" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-edit-product" value="Редагування&#xa;товару" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-delete-product" value="Видалення товару" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-import-products" value="Імпорт товарів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-set-discount" value="Встановлення&#xa;знижок" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Category Management -->
+        <mxCell id="uc-manage-categories" value="Управління&#xa;категоріями" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Order Management -->
+        <mxCell id="uc-manage-orders" value="Управління&#xa;замовленнями" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-update-order-status" value="Зміна статусу&#xa;замовлення" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- User Management -->
+        <mxCell id="uc-manage-users" value="Управління&#xa;користувачами" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Coupon Management -->
+        <mxCell id="uc-manage-coupons" value="Управління&#xa;купонами" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Analytics -->
+        <mxCell id="uc-view-analytics" value="Перегляд&#xa;аналітики" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="360" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-reports" value="Перегляд звітів" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Return Management -->
+        <mxCell id="uc-process-returns" value="Обробка&#xa;повернень" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="360" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Abandoned Cart -->
+        <mxCell id="uc-view-abandoned-carts" value="Перегляд&#xa;покинутих кошиків" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="430" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Support -->
+        <mxCell id="uc-handle-support" value="Обробка звернень&#xa;підтримки" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Review Management -->
+        <mxCell id="uc-moderate-reviews" value="Модерація&#xa;відгуків" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="500" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Banner Management -->
+        <mxCell id="uc-manage-banners" value="Управління&#xa;банерами" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="360" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Email Use Cases -->
+        <mxCell id="uc-send-notifications" value="Відправка&#xa;сповіщень" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="850" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-send-order-confirmation" value="Підтвердження&#xa;замовлення" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="920" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-send-cart-reminder" value="Нагадування про&#xa;кошик" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="990" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============ RELATIONSHIPS ============ -->
+
+        <!-- Guest associations -->
+        <mxCell id="edge-guest-register" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-login" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-view-products" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-view-products">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-search" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-search-products">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-filter" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-filter-products">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-details" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-view-product-details">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-compare" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-compare-products">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-cart" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-add-to-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-view-cart" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-view-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-guest-reset-pass" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-guest" target="uc-reset-password">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- User associations -->
+        <mxCell id="edge-user-logout" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-logout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-profile" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-view-profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-edit-profile" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-edit-profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-addresses" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-manage-addresses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-wishlist-add" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-add-to-wishlist">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-wishlist-view" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-view-wishlist">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-checkout" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-checkout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-orders" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-view-orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-track" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-track-order">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-review" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-write-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-rate" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-rate-product">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-return" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-request-return">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-chat" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-chat-support">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-update-cart" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-update-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-remove-cart" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-remove-from-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-user-pay" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="uc-pay-online">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Admin associations -->
+        <mxCell id="edge-admin-products" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-manage-products">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-categories" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-manage-categories">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-users" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-manage-users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-analytics" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-view-analytics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-reports" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-view-reports">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-banners" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-manage-banners">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-coupons" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-manage-coupons">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-admin-reviews" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="uc-moderate-reviews">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Manager associations -->
+        <mxCell id="edge-manager-orders" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-manage-orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-manager-status" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-update-order-status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-manager-returns" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-process-returns">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-manager-abandoned" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-view-abandoned-carts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-manager-support" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-handle-support">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-manager-discount" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-manager" target="uc-set-discount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Payment System associations -->
+        <mxCell id="edge-payment-process" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-payment" target="uc-process-payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-payment-refund" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-payment" target="uc-refund">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Email System associations -->
+        <mxCell id="edge-email-notify" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-email" target="uc-send-notifications">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-email-order" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-email" target="uc-send-order-confirmation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-email-cart" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="actor-email" target="uc-send-cart-reminder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Include relationships -->
+        <mxCell id="include-checkout-delivery" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-checkout" target="uc-select-delivery">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="include-pay-process" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-pay-online" target="uc-process-payment">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Extend relationships -->
+        <mxCell id="extend-checkout-coupon" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-apply-coupon" target="uc-checkout">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Include for manage products -->
+        <mxCell id="include-manage-add" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-manage-products" target="uc-add-product">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="include-manage-edit" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-manage-products" target="uc-edit-product">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="include-manage-delete" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-manage-products" target="uc-delete-product">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="extend-manage-import" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;labelBackgroundColor=none;fontSize=10;" edge="1" parent="1" source="uc-import-products" target="uc-manage-products">
+          <mxGeometry x="0.5" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Generalization (User inherits Guest) -->
+        <mxCell id="gen-user-guest" value="" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;" edge="1" parent="1" source="actor-user" target="actor-guest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Generalization (Admin inherits Manager) -->
+        <mxCell id="gen-admin-manager" value="" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;" edge="1" parent="1" source="actor-admin" target="actor-manager">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

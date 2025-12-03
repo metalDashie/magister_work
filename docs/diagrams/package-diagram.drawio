@@ -1,0 +1,551 @@
+<mxfile host="app.diagrams.net" modified="2025-01-30T12:00:00.000Z" agent="Claude" etag="fullmag-package" version="22.0.0" type="device">
+  <diagram name="Діаграма пакетів" id="package-diagram">
+    <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============ MAIN SYSTEM PACKAGE ============ -->
+        <mxCell id="system-package" value="FullMag E-commerce System" style="shape=folder;fontStyle=1;tabWidth=160;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1720" height="1320" as="geometry" />
+        </mxCell>
+
+        <!-- ============ APPS LAYER ============ -->
+        <mxCell id="apps-package" value="&lt;&lt;layer&gt;&gt;&#xa;apps" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=top;spacingTop=5;" vertex="1" parent="system-package">
+          <mxGeometry x="40" y="60" width="540" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Web App Package -->
+        <mxCell id="web-package" value="&lt;&lt;application&gt;&gt;&#xa;web" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=25;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="apps-package">
+          <mxGeometry x="20" y="50" width="240" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- Web sub-packages -->
+        <mxCell id="web-pages" value="pages (app/)" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="web-package">
+          <mxGeometry x="10" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="web-components" value="components" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="web-package">
+          <mxGeometry x="120" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="web-lib" value="lib" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="web-package">
+          <mxGeometry x="10" y="100" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="web-store" value="store (Zustand)" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="web-package">
+          <mxGeometry x="120" y="100" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="web-styles" value="styles" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="web-package">
+          <mxGeometry x="10" y="160" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="web-tech" value="Next.js 14&#xa;React&#xa;TailwindCSS&#xa;TypeScript" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="web-package">
+          <mxGeometry x="10" y="220" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Mobile App Package -->
+        <mxCell id="mobile-package" value="&lt;&lt;application&gt;&gt;&#xa;mobile" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=25;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="apps-package">
+          <mxGeometry x="280" y="50" width="240" height="320" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mobile-screens" value="screens" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="mobile-package">
+          <mxGeometry x="10" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile-components" value="components" style="shape=folder;fontStyle=0;tabWidth=60;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="mobile-package">
+          <mxGeometry x="120" y="40" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile-navigation" value="navigation" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="mobile-package">
+          <mxGeometry x="10" y="100" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile-services" value="services" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="mobile-package">
+          <mxGeometry x="120" y="100" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mobile-tech" value="React Native&#xa;Expo&#xa;TypeScript" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="mobile-package">
+          <mxGeometry x="10" y="220" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ============ SERVICES LAYER ============ -->
+        <mxCell id="services-package" value="&lt;&lt;layer&gt;&gt;&#xa;services" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=top;spacingTop=5;" vertex="1" parent="system-package">
+          <mxGeometry x="40" y="500" width="1200" height="780" as="geometry" />
+        </mxCell>
+
+        <!-- API Service Package -->
+        <mxCell id="api-package" value="&lt;&lt;service&gt;&gt;&#xa;api (NestJS)" style="shape=folder;fontStyle=1;tabWidth=100;tabHeight=25;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="services-package">
+          <mxGeometry x="20" y="50" width="1160" height="700" as="geometry" />
+        </mxCell>
+
+        <!-- API Modules -->
+        <mxCell id="modules-package" value="modules" style="shape=folder;fontStyle=1;tabWidth=60;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;verticalAlign=top;spacingTop=3;" vertex="1" parent="api-package">
+          <mxGeometry x="20" y="50" width="720" height="620" as="geometry" />
+        </mxCell>
+
+        <!-- Auth Module -->
+        <mxCell id="auth-module" value="auth" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="10" y="35" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-desc" value="- controller&#xa;- service&#xa;- guards&#xa;- strategies (JWT, Local)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="15" y="50" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Users Module -->
+        <mxCell id="users-module" value="users" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="130" y="35" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="users-desc" value="- controller&#xa;- service&#xa;- resolver (GraphQL)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="135" y="50" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Products Module -->
+        <mxCell id="products-module" value="products" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="250" y="35" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="products-desc" value="- controller&#xa;- service&#xa;- filtering, search&#xa;- discounts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="255" y="50" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Categories Module -->
+        <mxCell id="categories-module" value="categories" style="shape=folder;fontStyle=0;tabWidth=55;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="370" y="35" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="categories-desc" value="- controller&#xa;- service&#xa;- hierarchical tree" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="375" y="50" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Attributes Module -->
+        <mxCell id="attributes-module" value="attributes" style="shape=folder;fontStyle=0;tabWidth=55;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="490" y="35" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="attributes-desc" value="- controller&#xa;- service&#xa;- product attributes" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="495" y="50" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Cart Module -->
+        <mxCell id="cart-module" value="cart" style="shape=folder;fontStyle=0;tabWidth=35;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="10" y="120" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-desc" value="- controller&#xa;- service&#xa;- items management" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="15" y="135" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Orders Module -->
+        <mxCell id="orders-module" value="orders" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="130" y="120" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="orders-desc" value="- controller&#xa;- service&#xa;- status management" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="135" y="135" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Payments Module -->
+        <mxCell id="payments-module" value="payments" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="250" y="120" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="payments-desc" value="- controller&#xa;- service&#xa;- Stripe integration&#xa;- webhooks" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="255" y="135" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Coupons Module -->
+        <mxCell id="coupons-module" value="coupons" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="370" y="120" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="coupons-desc" value="- controller&#xa;- service&#xa;- validation&#xa;- usage tracking" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="375" y="135" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Delivery Module -->
+        <mxCell id="delivery-module" value="delivery" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="490" y="120" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="delivery-desc" value="- controller&#xa;- service&#xa;- Nova Poshta API" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="495" y="135" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Reviews Module -->
+        <mxCell id="reviews-module" value="reviews" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="10" y="205" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="reviews-desc" value="- service&#xa;- ratings&#xa;- likes, replies&#xa;- complaints" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="15" y="220" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Wishlist Module -->
+        <mxCell id="wishlist-module" value="wishlist" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="130" y="205" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wishlist-desc" value="- controller&#xa;- service&#xa;- user favorites" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="135" y="220" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Compare Module -->
+        <mxCell id="compare-module" value="compare" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="250" y="205" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="compare-desc" value="- controller&#xa;- service&#xa;- product comparison" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="255" y="220" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Returns Module -->
+        <mxCell id="returns-module" value="returns" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="370" y="205" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="returns-desc" value="- controller&#xa;- service&#xa;- RMA process" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="375" y="220" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Addresses Module -->
+        <mxCell id="addresses-module" value="addresses" style="shape=folder;fontStyle=0;tabWidth=55;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="490" y="205" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="addresses-desc" value="- controller&#xa;- service&#xa;- user addresses" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="495" y="220" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Email Module -->
+        <mxCell id="email-module" value="email" style="shape=folder;fontStyle=0;tabWidth=35;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="10" y="290" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="email-desc" value="- service&#xa;- Nodemailer&#xa;- Handlebars templates" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="15" y="305" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Notifications Module -->
+        <mxCell id="notifications-module" value="notifications" style="shape=folder;fontStyle=0;tabWidth=65;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="130" y="290" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="notifications-desc" value="- service&#xa;- multi-channel&#xa;- email, SMS, Telegram" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="135" y="305" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Chat Module -->
+        <mxCell id="chat-module" value="chat" style="shape=folder;fontStyle=0;tabWidth=35;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="250" y="290" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="chat-desc" value="- gateway (WebSocket)&#xa;- service&#xa;- real-time support" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="255" y="305" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Analytics Module -->
+        <mxCell id="analytics-module" value="analytics" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="370" y="290" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-desc" value="- controller&#xa;- service&#xa;- aggregation service&#xa;- metrics, reports" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="375" y="305" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Import Module -->
+        <mxCell id="import-module" value="import" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="490" y="290" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="import-desc" value="- service&#xa;- CSV parsing&#xa;- product import" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="495" y="305" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Abandoned Cart Module -->
+        <mxCell id="abandoned-module" value="abandoned-cart" style="shape=folder;fontStyle=0;tabWidth=80;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="10" y="375" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="abandoned-desc" value="- controller&#xa;- service&#xa;- cart reminders" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="15" y="390" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Telegram Module -->
+        <mxCell id="telegram-module" value="telegram" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="130" y="375" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="telegram-desc" value="- bot integration&#xa;- notifications" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="135" y="390" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Banners Module -->
+        <mxCell id="banners-module" value="banners" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="250" y="375" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="banners-desc" value="- promotions&#xa;- announcements" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="255" y="390" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Webhook Module -->
+        <mxCell id="webhook-module" value="webhook" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="370" y="375" width="110" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="webhook-desc" value="- external callbacks&#xa;- payment webhooks" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="375" y="390" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Module groupings labels -->
+        <mxCell id="group-core" value="Core Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#b85450;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="55" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="group-commerce" value="Commerce Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#82b366;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="140" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="group-customer" value="Customer Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#d79b00;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="225" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="group-support" value="Support Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#9673a6;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="310" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="group-integrations" value="Integrations" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontStyle=1;fontColor=#666666;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="395" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Legend for modules -->
+        <mxCell id="modules-legend" value="Legend" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="modules-package">
+          <mxGeometry x="610" y="440" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-core" value="Core" style="text;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=8;" vertex="1" parent="modules-legend">
+          <mxGeometry y="20" width="100" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-commerce" value="Commerce" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=8;" vertex="1" parent="modules-legend">
+          <mxGeometry y="36" width="100" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-customer" value="Customer" style="text;strokeColor=#d79b00;fillColor=#ffe6cc;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=8;" vertex="1" parent="modules-legend">
+          <mxGeometry y="52" width="100" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-support" value="Support" style="text;strokeColor=#9673a6;fillColor=#e1d5e7;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=8;" vertex="1" parent="modules-legend">
+          <mxGeometry y="68" width="100" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-integr" value="Integration" style="text;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=8;" vertex="1" parent="modules-legend">
+          <mxGeometry y="84" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Database Package -->
+        <mxCell id="database-package" value="database" style="shape=folder;fontStyle=1;tabWidth=60;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;verticalAlign=top;spacingTop=3;" vertex="1" parent="api-package">
+          <mxGeometry x="760" y="50" width="180" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="entities-subpkg" value="entities" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="database-package">
+          <mxGeometry x="10" y="35" width="160" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="entities-list" value="- User&#xa;- Product&#xa;- Category&#xa;- Order / OrderItem&#xa;- Cart / CartItem&#xa;- Payment&#xa;- Review / ReviewLike / Reply&#xa;- Coupon / CouponUsage&#xa;- Wishlist&#xa;- CompareItem&#xa;- ReturnRequest&#xa;- AnalyticsSnapshot&#xa;- Notification&#xa;- ChatRoom / ChatMessage&#xa;- Banner&#xa;- ImportProfile / History" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="database-package">
+          <mxGeometry x="15" y="50" width="150" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="migrations-subpkg" value="migrations" style="shape=folder;fontStyle=0;tabWidth=55;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" vertex="1" parent="database-package">
+          <mxGeometry x="10" y="245" width="160" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Templates Package -->
+        <mxCell id="templates-package" value="templates" style="shape=folder;fontStyle=1;tabWidth=60;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;verticalAlign=top;spacingTop=3;" vertex="1" parent="api-package">
+          <mxGeometry x="760" y="370" width="180" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="email-templates" value="email/" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="templates-package">
+          <mxGeometry x="10" y="35" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="templates-list" value="- welcome.hbs&#xa;- email-verification.hbs&#xa;- password-reset.hbs&#xa;- order-confirmation.hbs&#xa;- order-status-update.hbs&#xa;- payment-success.hbs&#xa;- cart-reminder.hbs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="templates-package">
+          <mxGeometry x="15" y="50" width="145" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Config Package -->
+        <mxCell id="config-package" value="config" style="shape=folder;fontStyle=1;tabWidth=50;tabHeight=20;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;verticalAlign=top;spacingTop=3;" vertex="1" parent="api-package">
+          <mxGeometry x="760" y="550" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="config-list" value="- database.config.ts&#xa;- redis.config.ts&#xa;- jwt.config.ts&#xa;- stripe.config.ts&#xa;- mail.config.ts&#xa;- app.config.ts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="config-package">
+          <mxGeometry x="10" y="35" width="160" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- API Tech stack -->
+        <mxCell id="api-tech" value="NestJS 10.3&#xa;TypeORM 0.3&#xa;Passport + JWT&#xa;Bull + Redis&#xa;Socket.io&#xa;GraphQL (Apollo)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="api-package">
+          <mxGeometry x="960" y="50" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- WhatsApp Service Package -->
+        <mxCell id="whatsapp-package" value="&lt;&lt;service&gt;&gt;&#xa;whatsapp" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=25;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="services-package">
+          <mxGeometry x="20" y="770" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="whatsapp-tech" value="WhatsApp Business API&#xa;Message templates&#xa;Notification service" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="whatsapp-package">
+          <mxGeometry x="10" y="50" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ PACKAGES LAYER ============ -->
+        <mxCell id="packages-package" value="&lt;&lt;layer&gt;&gt;&#xa;packages" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=top;spacingTop=5;" vertex="1" parent="system-package">
+          <mxGeometry x="620" y="60" width="340" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Common Package -->
+        <mxCell id="common-package" value="&lt;&lt;shared&gt;&gt;&#xa;common" style="shape=folder;fontStyle=1;tabWidth=80;tabHeight=25;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;verticalAlign=top;spacingTop=5;" vertex="1" parent="packages-package">
+          <mxGeometry x="20" y="50" width="300" height="320" as="geometry" />
+        </mxCell>
+
+        <mxCell id="types-subpkg" value="types" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="common-package">
+          <mxGeometry x="10" y="40" width="130" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="types-list" value="- user.types.ts&#xa;- product.types.ts&#xa;- order.types.ts&#xa;- cart.types.ts&#xa;- notification.types.ts&#xa;- payment.types.ts&#xa;- category.types.ts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="common-package">
+          <mxGeometry x="15" y="55" width="120" height="105" as="geometry" />
+        </mxCell>
+
+        <mxCell id="constants-subpkg" value="constants" style="shape=folder;fontStyle=0;tabWidth=55;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="common-package">
+          <mxGeometry x="150" y="40" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="constants-list" value="- API_ROUTES&#xa;- CURRENCY&#xa;- PAGINATION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="common-package">
+          <mxGeometry x="155" y="55" width="120" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="utils-subpkg" value="utils" style="shape=folder;fontStyle=0;tabWidth=35;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="common-package">
+          <mxGeometry x="150" y="110" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="utils-list" value="- validation.ts (Zod)&#xa;- format.ts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="common-package">
+          <mxGeometry x="155" y="125" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="schemas-subpkg" value="schemas" style="shape=folder;fontStyle=0;tabWidth=50;tabHeight=16;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="common-package">
+          <mxGeometry x="10" y="180" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="schemas-list" value="- Zod validation schemas" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="common-package">
+          <mxGeometry x="15" y="195" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="common-tech" value="TypeScript&#xa;Zod validation&#xa;Shared DTOs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="common-package">
+          <mxGeometry x="10" y="260" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============ INFRASTRUCTURE LAYER ============ -->
+        <mxCell id="infra-package" value="&lt;&lt;layer&gt;&gt;&#xa;infrastructure" style="shape=folder;fontStyle=1;tabWidth=100;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;verticalAlign=top;spacingTop=5;" vertex="1" parent="system-package">
+          <mxGeometry x="1000" y="60" width="360" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Docker -->
+        <mxCell id="docker-pkg" value="docker" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="infra-package">
+          <mxGeometry x="20" y="50" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="docker-list" value="- docker-compose.yml&#xa;- Dockerfile (api)&#xa;- Dockerfile (web)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="infra-package">
+          <mxGeometry x="25" y="65" width="140" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- NGINX -->
+        <mxCell id="nginx-pkg" value="nginx" style="shape=folder;fontStyle=0;tabWidth=40;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="infra-package">
+          <mxGeometry x="190" y="50" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx-list" value="- nginx.conf&#xa;- reverse proxy&#xa;- SSL termination" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="infra-package">
+          <mxGeometry x="195" y="65" width="140" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Scripts -->
+        <mxCell id="scripts-pkg" value="scripts" style="shape=folder;fontStyle=0;tabWidth=45;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="infra-package">
+          <mxGeometry x="20" y="150" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="scripts-list" value="- deploy scripts&#xa;- database scripts&#xa;- utility scripts" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="infra-package">
+          <mxGeometry x="25" y="165" width="140" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Docs -->
+        <mxCell id="docs-pkg" value="docs" style="shape=folder;fontStyle=0;tabWidth=35;tabHeight=18;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=0;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="infra-package">
+          <mxGeometry x="190" y="150" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="docs-list" value="- ARCHITECTURE.md&#xa;- QUICKSTART.md&#xa;- API documentation&#xa;- Diagrams" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="infra-package">
+          <mxGeometry x="195" y="165" width="140" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Infra tools -->
+        <mxCell id="infra-tools" value="Infrastructure:" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#333333;" vertex="1" parent="infra-package">
+          <mxGeometry x="20" y="250" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="infra-tools-list" value="- PostgreSQL 16 (database)&#xa;- Redis 4.6 (cache, queues)&#xa;- Docker / Docker Compose&#xa;- pnpm workspaces (monorepo)&#xa;- NGINX (reverse proxy)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#666666;" vertex="1" parent="infra-package">
+          <mxGeometry x="20" y="270" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============ DEPENDENCIES ============ -->
+
+        <!-- Web -> Common -->
+        <mxCell id="dep-web-common" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="web-package" target="common-package">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-web-common-label" value="&lt;&lt;use&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-web-common">
+          <mxGeometry x="-0.2" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Mobile -> Common -->
+        <mxCell id="dep-mobile-common" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="mobile-package" target="common-package">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="440" />
+              <mxPoint x="790" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep-mobile-common-label" value="&lt;&lt;use&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-mobile-common">
+          <mxGeometry x="-0.3" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- API -> Common -->
+        <mxCell id="dep-api-common" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="api-package" target="common-package">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-api-common-label" value="&lt;&lt;use&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-api-common">
+          <mxGeometry x="-0.3" y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Web -> API (HTTP) -->
+        <mxCell id="dep-web-api" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="web-package" target="api-package">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="490" />
+              <mxPoint x="40" y="490" />
+              <mxPoint x="40" y="725" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep-web-api-label" value="&lt;&lt;HTTP/REST&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-web-api">
+          <mxGeometry x="-0.5" y="-15" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Mobile -> API (HTTP) -->
+        <mxCell id="dep-mobile-api" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="mobile-package" target="api-package">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="490" />
+              <xPoint x="20" y="490" />
+              <mxPoint x="20" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep-mobile-api-label" value="&lt;&lt;HTTP/REST&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-mobile-api">
+          <mxGeometry x="-0.5" y="15" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- External Systems -->
+        <mxCell id="external-package" value="&lt;&lt;external&gt;&gt;&#xa;External Services" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;verticalAlign=top;spacingTop=5;" vertex="1" parent="system-package">
+          <mxGeometry x="1400" y="500" width="280" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-stripe" value="Stripe" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="20" y="50" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-fondy" value="FONDY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="140" y="50" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-monobank" value="Monobank" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="20" y="90" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-novaposhta" value="Nova Poshta" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="140" y="90" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-smtp" value="SMTP Server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="20" y="140" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-telegram" value="Telegram Bot API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="140" y="140" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-whatsapp" value="WhatsApp API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="external-package">
+          <mxGeometry x="20" y="190" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- API -> External -->
+        <mxCell id="dep-api-external" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="system-package" source="api-package" target="external-package">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-api-external-label" value="&lt;&lt;integrate&gt;&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;" vertex="1" connectable="0" parent="dep-api-external">
+          <mxGeometry x="-0.3" y="-10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
