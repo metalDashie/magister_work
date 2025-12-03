@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useCartStore } from '@/lib/store/cartStore'
+import { useAuthStore } from '@/lib/store/authStore'
 import { formatPrice } from '@fullmag/common'
 import OptimizedImage from '@/components/common/OptimizedImage'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { api } from '@/lib/api'
 
 interface ProductWithDiscount {
   id: string
@@ -30,8 +32,59 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
+  const { isAuthenticated } = useAuthStore()
   const [isAdding, setIsAdding] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [inWishlist, setInWishlist] = useState(false)
+  const [wishlistLoading, setWishlistLoading] = useState(false)
+  const [inCompare, setInCompare] = useState(false)
+  const [compareLoading, setCompareLoading] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get(`/wishlist/check/${product.id}`)
+        .then(res => setInWishlist(res.data.inWishlist))
+        .catch(() => {})
+      api.get(`/compare/${product.id}/check`)
+        .then(res => setInCompare(res.data.inCompareList))
+        .catch(() => {})
+    }
+  }, [isAuthenticated, product.id])
+
+  const toggleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!isAuthenticated || wishlistLoading) return
+
+    setWishlistLoading(true)
+    try {
+      const res = await api.post(`/wishlist/${product.id}/toggle`)
+      setInWishlist(res.data.added)
+    } catch (error) {
+      console.error('Failed to toggle wishlist:', error)
+    } finally {
+      setWishlistLoading(false)
+    }
+  }
+
+  const toggleCompare = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!isAuthenticated || compareLoading) return
+
+    setCompareLoading(true)
+    try {
+      const res = await api.post(`/compare/${product.id}/toggle`)
+      setInCompare(res.data.added)
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        alert(error.response.data.message || 'Cannot add more than 4 products to compare')
+      }
+      console.error('Failed to toggle compare:', error)
+    } finally {
+      setCompareLoading(false)
+    }
+  }
 
   // Check if discount is currently active
   const isDiscountActive = () => {
@@ -111,6 +164,56 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
+
+          {/* Action Buttons */}
+          {isAuthenticated && (
+            <div className="absolute top-3 right-3 flex flex-col gap-2">
+              {/* Wishlist Button */}
+              <button
+                onClick={toggleWishlist}
+                disabled={wishlistLoading}
+                className="w-9 h-9 flex items-center justify-center bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all duration-200"
+                title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+              >
+                <svg
+                  className={`w-5 h-5 transition-colors ${inWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400'}`}
+                  fill={inWishlist ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </button>
+              {/* Compare Button */}
+              <button
+                onClick={toggleCompare}
+                disabled={compareLoading}
+                className={`w-9 h-9 flex items-center justify-center backdrop-blur-sm rounded-full shadow-md transition-all duration-200 ${
+                  inCompare ? 'bg-primary-600 text-white' : 'bg-white/90 hover:bg-white text-gray-400'
+                }`}
+                title={inCompare ? 'Remove from compare' : 'Add to compare'}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
 
           {/* Quick Add Button - Shows on Hover */}
           {!isOutOfStock && (

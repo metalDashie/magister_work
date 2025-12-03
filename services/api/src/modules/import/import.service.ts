@@ -6,6 +6,8 @@ import {
   ImportHistory,
   Product,
   Category,
+  Attribute,
+  ProductAttribute,
 } from '../../database/entities'
 import { CSVParser } from '../../utils/csv-parser'
 
@@ -27,12 +29,21 @@ export interface ImportResult {
     successful: number
     failed: number
     skipped: number
+    mapped: number // Products mapped to existing products (stock added)
   }
   errors: Array<{
     row: number
     field?: string
     message: string
   }>
+}
+
+export interface ProductMappingItem {
+  id: string
+  name: string
+  sku: string
+  price: number
+  stock: number
 }
 
 @Injectable()
@@ -45,7 +56,11 @@ export class ImportService {
     @InjectRepository(Product)
     private productRepo: Repository<Product>,
     @InjectRepository(Category)
-    private categoryRepo: Repository<Category>
+    private categoryRepo: Repository<Category>,
+    @InjectRepository(Attribute)
+    private attributeRepo: Repository<Attribute>,
+    @InjectRepository(ProductAttribute)
+    private productAttributeRepo: Repository<ProductAttribute>
   ) {}
 
   /**
@@ -142,7 +157,8 @@ export class ImportService {
     fileContent: string,
     fileName: string,
     profileId: string,
-    userId: string
+    userId: string,
+    productMappings?: Record<number, ProductMappingItem>
   ): Promise<ImportResult> {
     const profile = await this.getProfile(profileId)
 
@@ -152,7 +168,7 @@ export class ImportService {
       profileId,
       importedById: userId,
       status: 'processing',
-      stats: { total: 0, successful: 0, failed: 0, skipped: 0, errors: [] },
+      stats: { total: 0, successful: 0, failed: 0, skipped: 0, mapped: 0, errors: [] },
     })
     await this.importHistoryRepo.save(history)
 
@@ -168,6 +184,7 @@ export class ImportService {
         successful: 0,
         failed: 0,
         skipped: 0,
+        mapped: 0,
       }
       const errors: Array<{ row: number; field?: string; message: string }> = []
 
@@ -176,7 +193,39 @@ export class ImportService {
         const row = parsed.rows[i]
 
         try {
-          // Extract and transform data
+          // Check if this row is mapped to an existing product
+          const mappedProduct = productMappings?.[i]
+
+          if (mappedProduct) {
+            // This row is mapped to an existing product - add stock quantity
+            const existingProduct = await this.productRepo.findOne({
+              where: { id: mappedProduct.id },
+            })
+
+            if (existingProduct) {
+              // Extract stock from CSV row
+              const productData = await this.transformRow(row, profile)
+              const stockToAdd = productData.stock || 0
+
+              // Add stock to existing product
+              await this.productRepo.update(existingProduct.id, {
+                stock: existingProduct.stock + stockToAdd,
+              })
+
+              stats.mapped++
+              continue
+            } else {
+              // Mapped product no longer exists, treat as error
+              stats.failed++
+              errors.push({
+                row: i + 2,
+                message: `Mapped product with ID ${mappedProduct.id} not found`,
+              })
+              continue
+            }
+          }
+
+          // Extract and transform data for new product
           const productData = await this.transformRow(row, profile)
 
           // Validate
@@ -207,6 +256,12 @@ export class ImportService {
           // Create new product
           const product = this.productRepo.create(productData)
           await this.productRepo.save(product)
+
+          // Create product attributes if attributeMapping exists
+          if (profile.attributeMapping && Object.keys(profile.attributeMapping).length > 0) {
+            await this.createProductAttributes(product.id, row, profile.attributeMapping)
+          }
+
           stats.successful++
         } catch (error) {
           stats.failed++
@@ -390,5 +445,66 @@ export class ImportService {
     }
 
     return history
+  }
+
+  /**
+   * Create product attributes from CSV row data
+   */
+  private async createProductAttributes(
+    productId: string,
+    row: any,
+    attributeMapping: Record<string, string>
+  ): Promise<void> {
+    for (const [attrSlug, csvColumn] of Object.entries(attributeMapping)) {
+      const rawValue = CSVParser.extractValue(row, csvColumn)
+      if (rawValue === undefined || rawValue === null || rawValue === '') {
+        continue
+      }
+
+      // Find attribute by slug
+      const attribute = await this.attributeRepo.findOne({
+        where: { slug: attrSlug },
+      })
+
+      if (!attribute) {
+        console.warn(`Attribute with slug "${attrSlug}" not found`)
+        continue
+      }
+
+      // Parse value based on attribute type
+      let parsedValue: any = rawValue
+
+      switch (attribute.type) {
+        case 'number':
+        case 'range':
+          parsedValue = parseFloat(rawValue.toString().replace(/[^\d.-]/g, ''))
+          if (isNaN(parsedValue)) continue
+          break
+        case 'boolean':
+          const lower = rawValue.toString().toLowerCase()
+          parsedValue = lower === 'true' || lower === 'yes' || lower === '1'
+          break
+        case 'multi_select':
+          // Handle comma-separated values
+          if (typeof rawValue === 'string') {
+            parsedValue = rawValue.split(',').map((v: string) => v.trim())
+          }
+          break
+        case 'string':
+        case 'select':
+        default:
+          parsedValue = rawValue.toString().trim()
+          break
+      }
+
+      // Create product attribute
+      const productAttribute = this.productAttributeRepo.create({
+        productId,
+        attributeId: attribute.id,
+        value: parsedValue,
+      })
+
+      await this.productAttributeRepo.save(productAttribute)
+    }
   }
 }

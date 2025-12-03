@@ -61,7 +61,12 @@
       "Bash(pnpm dev:seed:*)",
       "Bash(pnpm build:api:*)",
       "Bash(pnpm --filter @fullmag/api build)",
-      "Bash(pnpm --filter @fullmag/web build:*)"
+      "Bash(pnpm --filter @fullmag/web build:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(done)",
+      "Bash(cat:*)",
+      "Bash(where:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

@@ -8,6 +8,18 @@ import { formatPrice } from '@fullmag/common'
 import Link from 'next/link'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import Pagination from '@/components/common/Pagination'
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 
 interface Product {
   id: string
@@ -21,6 +33,26 @@ interface Product {
     name: string
   }
 }
+
+interface ProductStats {
+  totalProducts: number
+  totalValue: number
+  avgPrice: number
+  inStock: number
+  lowStock: number
+  outOfStock: number
+  byCategory: { name: string; count: number; value: number }[]
+  priceRanges: { range: string; count: number }[]
+}
+
+const PIE_COLORS = [
+  '#22C55E',
+  '#EAB308',
+  '#EF4444',
+  '#3B82F6',
+  '#8B5CF6',
+  '#EC4899',
+]
 
 export default function AdminProductsPage() {
   const router = useRouter()
@@ -39,13 +71,20 @@ export default function AdminProductsPage() {
     productId: null,
     productName: '',
   })
+  const [showCharts, setShowCharts] = useState(true)
+  const [allProducts, setAllProducts] = useState<Product[]>([])
+  const [statsLoading, setStatsLoading] = useState(true)
 
   useEffect(() => {
     // Wait for hydration before checking auth
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] admin/products/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
       return
     }
 
@@ -55,7 +94,22 @@ export default function AdminProductsPage() {
     }
 
     loadProducts()
+    loadAllProductsForStats()
   }, [_hasHydrated, isAuthenticated, user, router, page, searchQuery])
+
+  const loadAllProductsForStats = async () => {
+    try {
+      setStatsLoading(true)
+      const response = await api.get('/products', {
+        params: { limit: 1000 },
+      })
+      setAllProducts(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to load products for stats:', error)
+    } finally {
+      setStatsLoading(false)
+    }
+  }
 
   const loadProducts = async () => {
     try {
@@ -102,6 +156,91 @@ export default function AdminProductsPage() {
     loadProducts()
   }
 
+  // Calculate statistics from all products
+  const calculateStats = (): ProductStats => {
+    const totalProducts = allProducts.length
+    const totalValue = allProducts.reduce(
+      (sum, p) => sum + p.price * p.stock,
+      0
+    )
+    const avgPrice =
+      totalProducts > 0
+        ? allProducts.reduce((sum, p) => sum + p.price, 0) / totalProducts
+        : 0
+    const inStock = allProducts.filter((p) => p.stock > 10).length
+    const lowStock = allProducts.filter(
+      (p) => p.stock > 0 && p.stock <= 10
+    ).length
+    const outOfStock = allProducts.filter((p) => p.stock === 0).length
+
+    // Group by category
+    const categoryMap = new Map<string, { count: number; value: number }>()
+    allProducts.forEach((p) => {
+      const catName = p.category?.name || 'Uncategorized'
+      const existing = categoryMap.get(catName) || { count: 0, value: 0 }
+      existing.count++
+      existing.value += p.price * p.stock
+      categoryMap.set(catName, existing)
+    })
+    const byCategory = Array.from(categoryMap.entries())
+      .map(([name, data]) => ({ name, count: data.count, value: data.value }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8)
+
+    // Price ranges
+    const priceRanges = [
+      {
+        range: '0-500',
+        count: allProducts.filter((p) => p.price <= 500).length,
+      },
+      {
+        range: '500-1000',
+        count: allProducts.filter((p) => p.price > 500 && p.price <= 1000)
+          .length,
+      },
+      {
+        range: '1000-5000',
+        count: allProducts.filter((p) => p.price > 1000 && p.price <= 5000)
+          .length,
+      },
+      {
+        range: '5000-10000',
+        count: allProducts.filter((p) => p.price > 5000 && p.price <= 10000)
+          .length,
+      },
+      {
+        range: '10000+',
+        count: allProducts.filter((p) => p.price > 10000).length,
+      },
+    ].filter((r) => r.count > 0)
+
+    return {
+      totalProducts,
+      totalValue,
+      avgPrice,
+      inStock,
+      lowStock,
+      outOfStock,
+      byCategory,
+      priceRanges,
+    }
+  }
+
+  const stats = calculateStats()
+
+  const stockStatusData = [
+    { name: 'In Stock', value: stats.inStock, color: '#22C55E' },
+    { name: 'Low Stock', value: stats.lowStock, color: '#EAB308' },
+    { name: 'Out of Stock', value: stats.outOfStock, color: '#EF4444' },
+  ].filter((d) => d.value > 0)
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('uk-UA', {
+      style: 'currency',
+      currency: 'UAH',
+    }).format(amount)
+  }
+
   if (loading && products.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -112,10 +251,158 @@ export default function AdminProductsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
-        <p className="mt-2 text-gray-600">Manage your product catalog and inventory</p>
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Product Management
+          </h1>
+          <p className="mt-2 text-gray-600">
+            Manage your product catalog and inventory
+          </p>
+        </div>
+        <button
+          onClick={() => setShowCharts(!showCharts)}
+          className={`px-4 py-2 rounded ${showCharts ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          {showCharts ? 'Hide Charts' : 'Show Charts'}
+        </button>
       </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Total Products</div>
+          <div className="text-2xl font-bold">{stats.totalProducts}</div>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Inventory Value</div>
+          <div className="text-xl font-bold text-primary-600">
+            {formatCurrency(stats.totalValue)}
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Avg Price</div>
+          <div className="text-xl font-bold">
+            {formatCurrency(stats.avgPrice)}
+          </div>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg shadow">
+          <div className="text-sm text-green-700">In Stock</div>
+          <div className="text-2xl font-bold text-green-700">
+            {stats.inStock}
+          </div>
+        </div>
+        <div className="bg-yellow-50 p-4 rounded-lg shadow">
+          <div className="text-sm text-yellow-700">Low Stock</div>
+          <div className="text-2xl font-bold text-yellow-700">
+            {stats.lowStock}
+          </div>
+        </div>
+        <div className="bg-red-50 p-4 rounded-lg shadow">
+          <div className="text-sm text-red-700">Out of Stock</div>
+          <div className="text-2xl font-bold text-red-700">
+            {stats.outOfStock}
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      {showCharts && !statsLoading && allProducts.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Stock Status Pie Chart */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">
+              Stock Status Distribution
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={stockStatusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {stockStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Products by Category */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Products by Category</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={stats.byCategory} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  width={100}
+                  fontSize={12}
+                />
+                <Tooltip />
+                <Bar dataKey="count" fill="#3B82F6" name="Products" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Price Range Distribution */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">
+              Price Range Distribution (UAH)
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={stats.priceRanges}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="range" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="count" fill="#8B5CF6" name="Products" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Category Inventory Value */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">
+              Inventory Value by Category
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={stats.byCategory.filter((c) => c.value > 0)}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) =>
+                    `${name.substring(0, 10)}${name.length > 10 ? '...' : ''} ${(percent * 100).toFixed(0)}%`
+                  }
+                >
+                  {stats.byCategory.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={PIE_COLORS[index % PIE_COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* Action Bar */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
@@ -220,9 +507,15 @@ export default function AdminProductsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No products found.{' '}
-                    <Link href="/admin/products/new" className="text-primary-600 hover:underline">
+                    <Link
+                      href="/admin/products/new"
+                      className="text-primary-600 hover:underline"
+                    >
                       Add your first product
                     </Link>
                   </td>
@@ -231,10 +524,14 @@ export default function AdminProductsPage() {
                 products.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {product.name}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-500">{product.sku || '-'}</div>
+                      <div className="text-sm text-gray-500">
+                        {product.sku || '-'}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-500">
@@ -252,8 +549,8 @@ export default function AdminProductsPage() {
                           product.stock > 10
                             ? 'bg-green-100 text-green-800'
                             : product.stock > 0
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-red-100 text-red-800'
                         }`}
                       >
                         {product.stock}

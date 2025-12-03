@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ви забули кошик!</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    .cart-icon {
+      font-size: 60px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .info-section {
+      margin: 25px 0;
+      padding: 20px;
+      background-color: #f9fafb;
+      border-radius: 6px;
+    }
+    .info-section h3 {
+      margin-top: 0;
+      color: #1f2937;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f9fafb;
+      font-weight: 600;
+    }
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: right;
+      padding-top: 15px;
+      border-top: 2px solid #2563eb;
+    }
+    .cta-button {
+      display: block;
+      width: 100%;
+      padding: 16px 24px;
+      background-color: #2563eb;
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      margin: 30px 0;
+    }
+    .cta-button:hover {
+      background-color: #1d4ed8;
+    }
+    .discount-badge {
+      background-color: #dc2626;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: bold;
+      display: inline-block;
+      margin: 15px 0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .unsubscribe {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">FullMag</div>
+    </div>
+
+    <div class="cart-icon">🛒</div>
+
+    <h1 style="text-align: center;">Ви залишили товари в кошику!</h1>
+
+    <p>Привіт{{#if name}}, {{name}}{{/if}}!</p>
+
+    <p>Ми помітили, що ви додали чудові товари до кошика, але не завершили покупку. Не хвилюйтесь — ми зберегли все для вас!</p>
+
+    <div class="info-section">
+      <h3>Товари у вашому кошику</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Товар</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.quantity}}</td>
+            <td>{{this.price}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="total">
+        Загальна сума: {{totalAmount}}
+      </div>
+    </div>
+
+    {{#if hasDiscount}}
+    <div style="text-align: center;">
+      <span class="discount-badge">🎉 Спеціальна пропозиція: {{discountCode}} - {{discountPercent}}% знижки!</span>
+    </div>
+    {{/if}}
+
+    <a href="{{cartUrl}}" class="cta-button">
+      Повернутись до кошика →
+    </a>
+
+    <p style="text-align: center; color: #6b7280;">
+      Потрібна допомога? Наша команда підтримки готова відповісти на ваші питання.
+    </p>
+
+    <div class="footer">
+      <p>З повагою,<br>Команда FullMag</p>
+      <p>&copy; {{year}} FullMag. Всі права захищені.</p>
+      <p class="unsubscribe">
+        Якщо ви більше не хочете отримувати ці листи,
+        <a href="{{unsubscribeUrl}}" style="color: #6b7280;">відпишіться тут</a>.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

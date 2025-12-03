@@ -8,16 +8,19 @@ import { useAuthStore } from '@/lib/store/authStore'
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading } = useAuthStore()
+  const { isAuthenticated, _hasHydrated } = useAuthStore()
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    // Wait for hydration before checking auth
+    if (!_hasHydrated) return
+
+    if (isAuthenticated) {
       router.replace('/')
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, _hasHydrated, router])
 
-  // Show loading while checking auth
-  if (isLoading) {
+  // Show loading while hydrating
+  if (!_hasHydrated) {
     return (
       <div className="min-h-[calc(100vh-12rem)] flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>

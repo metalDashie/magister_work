@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/authStore'
 import { api } from '@/lib/api'
 import ColumnMapper from '@/components/admin/ColumnMapper'
-import ImportPreview from '@/components/admin/ImportPreview'
+import ImportPreview, { ProductMapping } from '@/components/admin/ImportPreview'
 import ProfileSelector from '@/components/admin/ProfileSelector'
 
 interface ImportProfile {
@@ -13,6 +13,7 @@ interface ImportProfile {
   name: string
   description?: string
   columnMapping: Record<string, string>
+  attributeMapping?: Record<string, string>
   transformations?: any
   validationRules?: any
 }
@@ -43,8 +44,11 @@ export default function ProductImportPage() {
 
   // Profile management
   const [profiles, setProfiles] = useState<ImportProfile[]>([])
-  const [selectedProfile, setSelectedProfile] = useState<ImportProfile | null>(null)
+  const [selectedProfile, setSelectedProfile] = useState<ImportProfile | null>(
+    null
+  )
   const [columnMapping, setColumnMapping] = useState<Record<string, string>>({})
+  const [attributeMapping, setAttributeMapping] = useState<Record<string, string>>({})
 
   // Import state
   const [importing, setImporting] = useState(false)
@@ -56,12 +60,19 @@ export default function ProductImportPage() {
   const [templateName, setTemplateName] = useState('')
   const [templateDescription, setTemplateDescription] = useState('')
 
+  // Product mappings (for mapping parsed products to existing DB products)
+  const [productMappings, setProductMappings] = useState<ProductMapping>({})
+
   useEffect(() => {
     // Wait for hydration before checking auth
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] admin/products/import/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
       return
     }
 
@@ -112,6 +123,7 @@ export default function ProductImportPage() {
     setSelectedProfile(profile)
     if (profile && csvPreview) {
       setColumnMapping(profile.columnMapping)
+      setAttributeMapping(profile.attributeMapping || {})
     }
   }
 
@@ -133,6 +145,7 @@ export default function ProductImportPage() {
         encoding: 'utf-8',
         hasHeader: true,
         columnMapping,
+        attributeMapping,
         validationRules: {
           requireSKU: false,
           allowDuplicateSKU: true,
@@ -166,6 +179,7 @@ export default function ProductImportPage() {
           encoding: 'utf-8',
           hasHeader: true,
           columnMapping,
+          attributeMapping,
           validationRules: {
             defaultCurrency: 'UAH',
           },
@@ -186,6 +200,11 @@ export default function ProductImportPage() {
       formData.append('file', file)
       formData.append('profileId', profileId || '')
 
+      // Include product mappings if any exist
+      if (Object.keys(productMappings).length > 0) {
+        formData.append('productMappings', JSON.stringify(productMappings))
+      }
+
       const response = await api.post('/import/execute', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
@@ -204,12 +223,17 @@ export default function ProductImportPage() {
     setFile(null)
     setCsvPreview(null)
     setColumnMapping({})
+    setAttributeMapping({})
+    setProductMappings({})
     setImportResult(null)
     setError('')
     setCurrentStep('upload')
   }
 
-  if (!isAuthenticated || (user?.role !== 'admin' && user?.role !== 'manager')) {
+  if (
+    !isAuthenticated ||
+    (user?.role !== 'admin' && user?.role !== 'manager')
+  ) {
     return null
   }
 
@@ -217,7 +241,9 @@ export default function ProductImportPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Import Products from CSV</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Import Products from CSV
+        </h1>
         <p className="mt-2 text-gray-600">
           Upload a CSV file and map columns to import products in bulk
         </p>
@@ -226,54 +252,69 @@ export default function ProductImportPage() {
       {/* Progress Steps */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
-          {['Upload File', 'Map Columns', 'Preview & Import', 'Complete'].map((step, index) => {
-            const stepStates: ImportStep[] = ['upload', 'mapping', 'preview', 'complete']
-            const currentIndex = stepStates.indexOf(currentStep)
-            const isActive = index === currentIndex
-            const isCompleted = index < currentIndex
+          {['Upload File', 'Map Columns', 'Preview & Import', 'Complete'].map(
+            (step, index) => {
+              const stepStates: ImportStep[] = [
+                'upload',
+                'mapping',
+                'preview',
+                'complete',
+              ]
+              const currentIndex = stepStates.indexOf(currentStep)
+              const isActive = index === currentIndex
+              const isCompleted = index < currentIndex
 
-            return (
-              <div key={step} className="flex items-center flex-1">
-                <div className="flex items-center relative">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      isActive
-                        ? 'bg-primary-600 text-white'
-                        : isCompleted
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    ) : (
-                      <span>{index + 1}</span>
-                    )}
+              return (
+                <div key={step} className="flex items-center flex-1">
+                  <div className="flex items-center relative">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        isActive
+                          ? 'bg-primary-600 text-white'
+                          : isCompleted
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gray-200 text-gray-600'
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <svg
+                          className="w-6 h-6"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      ) : (
+                        <span>{index + 1}</span>
+                      )}
+                    </div>
+                    <span
+                      className={`ml-3 text-sm font-medium ${
+                        isActive
+                          ? 'text-primary-600'
+                          : isCompleted
+                            ? 'text-green-600'
+                            : 'text-gray-500'
+                      }`}
+                    >
+                      {step}
+                    </span>
                   </div>
-                  <span
-                    className={`ml-3 text-sm font-medium ${
-                      isActive ? 'text-primary-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
-                    }`}
-                  >
-                    {step}
-                  </span>
+                  {index < 3 && (
+                    <div
+                      className={`flex-1 h-0.5 mx-4 ${
+                        isCompleted ? 'bg-green-600' : 'bg-gray-200'
+                      }`}
+                    />
+                  )}
                 </div>
-                {index < 3 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-4 ${
-                      isCompleted ? 'bg-green-600' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
-              </div>
-            )
-          })}
+              )
+            }
+          )}
         </div>
       </div>
 
@@ -287,7 +328,9 @@ export default function ProductImportPage() {
       {/* Step 1: Upload File */}
       {currentStep === 'upload' && (
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-xl font-semibold mb-4">Step 1: Upload CSV File</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Step 1: Upload CSV File
+          </h2>
 
           {/* Profile Selector */}
           <div className="mb-6">
@@ -388,6 +431,8 @@ export default function ProductImportPage() {
             preview={csvPreview.preview}
             mapping={columnMapping}
             onMappingChange={setColumnMapping}
+            attributeMapping={attributeMapping}
+            onAttributeMappingChange={setAttributeMapping}
           />
 
           <div className="mt-6 flex justify-between">
@@ -410,12 +455,16 @@ export default function ProductImportPage() {
       {/* Step 3: Preview & Import */}
       {currentStep === 'preview' && csvPreview && (
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-xl font-semibold mb-6">Step 3: Preview & Import</h2>
+          <h2 className="text-xl font-semibold mb-6">
+            Step 3: Preview & Import
+          </h2>
 
           <ImportPreview
             preview={csvPreview.preview}
             mapping={columnMapping}
             stats={csvPreview.stats}
+            productMappings={productMappings}
+            onProductMappingChange={setProductMappings}
           />
 
           <div className="mt-6 flex justify-between">
@@ -441,7 +490,9 @@ export default function ProductImportPage() {
         <div className="bg-white rounded-lg shadow-md p-12 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary-600 mx-auto"></div>
           <h2 className="mt-6 text-xl font-semibold">Importing Products...</h2>
-          <p className="mt-2 text-gray-600">Please wait while we process your file</p>
+          <p className="mt-2 text-gray-600">
+            Please wait while we process your file
+          </p>
         </div>
       )}
 
@@ -462,37 +513,57 @@ export default function ProductImportPage() {
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">Import Complete!</h2>
+            <h2 className="mt-4 text-2xl font-bold text-gray-900">
+              Import Complete!
+            </h2>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-5 gap-4 mb-8">
             <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-blue-600">{importResult.stats.total}</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {importResult.stats.total}
+              </div>
               <div className="text-sm text-blue-700 mt-1">Total Rows</div>
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-green-600">{importResult.stats.successful}</div>
-              <div className="text-sm text-green-700 mt-1">Imported</div>
+              <div className="text-3xl font-bold text-green-600">
+                {importResult.stats.successful}
+              </div>
+              <div className="text-sm text-green-700 mt-1">New Products</div>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-purple-600">
+                {importResult.stats.mapped || 0}
+              </div>
+              <div className="text-sm text-purple-700 mt-1">Stock Added</div>
             </div>
             <div className="bg-yellow-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-yellow-600">{importResult.stats.skipped}</div>
+              <div className="text-3xl font-bold text-yellow-600">
+                {importResult.stats.skipped}
+              </div>
               <div className="text-sm text-yellow-700 mt-1">Skipped</div>
             </div>
             <div className="bg-red-50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-red-600">{importResult.stats.failed}</div>
+              <div className="text-3xl font-bold text-red-600">
+                {importResult.stats.failed}
+              </div>
               <div className="text-sm text-red-700 mt-1">Failed</div>
             </div>
           </div>
 
           {importResult.errors && importResult.errors.length > 0 && (
             <div className="mb-8">
-              <h3 className="font-semibold text-lg mb-3">Errors ({importResult.errors.length})</h3>
+              <h3 className="font-semibold text-lg mb-3">
+                Errors ({importResult.errors.length})
+              </h3>
               <div className="bg-red-50 rounded-lg p-4 max-h-64 overflow-y-auto">
-                {importResult.errors.slice(0, 10).map((error: any, index: number) => (
-                  <div key={index} className="text-sm text-red-700 mb-2">
-                    Row {error.row}: {error.message}
-                  </div>
-                ))}
+                {importResult.errors
+                  .slice(0, 10)
+                  .map((error: any, index: number) => (
+                    <div key={index} className="text-sm text-red-700 mb-2">
+                      Row {error.row}: {error.message}
+                    </div>
+                  ))}
                 {importResult.errors.length > 10 && (
                   <div className="text-sm text-red-600 mt-2">
                     ... and {importResult.errors.length - 10} more errors

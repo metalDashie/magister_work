@@ -38,7 +38,11 @@ export default function OrdersPage() {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] profile/orders/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
       return
     }
 
@@ -107,7 +111,9 @@ export default function OrdersPage() {
 
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
-          <p className="text-gray-600 mb-4">You haven't placed any orders yet</p>
+          <p className="text-gray-600 mb-4">
+            You haven't placed any orders yet
+          </p>
           <Link
             href="/products"
             className="text-primary-600 hover:text-primary-700 font-semibold"

@@ -35,14 +35,14 @@ export class User {
   @Column({ name: 'email_verified', default: false })
   emailVerified: boolean
 
-  @Column({ name: 'email_verification_token', nullable: true })
+  @Column({ name: 'email_verification_token', type: 'varchar', nullable: true })
   emailVerificationToken: string | null
 
   @Column({ name: 'email_verification_expires', type: 'timestamp', nullable: true })
   emailVerificationExpires: Date | null
 
   // Password reset fields
-  @Column({ name: 'password_reset_token', nullable: true })
+  @Column({ name: 'password_reset_token', type: 'varchar', nullable: true })
   passwordResetToken: string | null
 
   @Column({ name: 'password_reset_expires', type: 'timestamp', nullable: true })

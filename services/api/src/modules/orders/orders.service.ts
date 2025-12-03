@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Order, OrderItem } from '../../database/entities'
-import { CreateOrderDto, OrderStatus, PaymentMethod } from '@fullmag/common'
+import { CreateOrderDto, OrderStatus, PaymentMethod, UserRole } from '@fullmag/common'
 import { CartService } from '../cart/cart.service'
 import { EmailService } from '../email/email.service'
 
@@ -133,5 +133,61 @@ export class OrdersService {
     }
 
     return updatedOrder
+  }
+
+  async generateInvoice(id: string, userId: string, userRole: string): Promise<any> {
+    const isAdmin = userRole === UserRole.ADMIN || userRole === UserRole.MANAGER
+
+    const order = await this.ordersRepository.findOne({
+      where: isAdmin ? { id } : { id, userId },
+      relations: ['items', 'items.product', 'user'],
+    })
+
+    if (!order) {
+      throw new NotFoundException('Order not found')
+    }
+
+    // Calculate totals
+    const subtotal = order.items.reduce(
+      (sum, item) => sum + Number(item.price) * item.quantity,
+      0
+    )
+
+    const invoice = {
+      invoiceNumber: `INV-${order.id.substring(0, 8).toUpperCase()}`,
+      orderNumber: order.id.substring(0, 8).toUpperCase(),
+      date: order.createdAt,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      customer: {
+        name: order.recipientName,
+        email: order.user?.email,
+        phone: order.recipientPhone,
+      },
+      delivery: {
+        type: order.deliveryType,
+        city: order.deliveryCity,
+        warehouse: order.deliveryWarehouse,
+        address: order.deliveryAddress,
+      },
+      items: order.items.map((item) => ({
+        name: item.product?.name || 'Unknown Product',
+        sku: item.product?.sku,
+        quantity: item.quantity,
+        price: Number(item.price),
+        total: Number(item.price) * item.quantity,
+      })),
+      subtotal,
+      shipping: 0, // Free shipping for now
+      total: Number(order.totalAmount),
+      company: {
+        name: 'FullMag',
+        address: 'Kyiv, Ukraine',
+        phone: '+380 XX XXX XXXX',
+        email: 'support@fullmag.com',
+      },
+    }
+
+    return invoice
   }
 }

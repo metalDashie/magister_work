@@ -26,6 +26,13 @@ import { WhatsAppModule } from './modules/whatsapp/whatsapp.module'
 import { AnalyticsModule } from './modules/analytics/analytics.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
 import { BannersModule } from './modules/banners/banners.module'
+import { WishlistModule } from './modules/wishlist/wishlist.module'
+import { CouponsModule } from './modules/coupons/coupons.module'
+import { ReturnsModule } from './modules/returns/returns.module'
+import { AddressesModule } from './modules/addresses/addresses.module'
+import { AbandonedCartModule } from './modules/abandoned-cart/abandoned-cart.module'
+import { CompareModule } from './modules/compare/compare.module'
+import { ElasticsearchModule } from './modules/elasticsearch/elasticsearch.module'
 import { ChatGateway } from './gateways/chat.gateway'
 
 @Module({
@@ -94,6 +101,13 @@ import { ChatGateway } from './gateways/chat.gateway'
     AnalyticsModule,
     ReviewsModule,
     BannersModule,
+    WishlistModule,
+    CouponsModule,
+    ReturnsModule,
+    AddressesModule,
+    AbandonedCartModule,
+    CompareModule,
+    ElasticsearchModule,
   ],
   providers: [ChatGateway],
 })

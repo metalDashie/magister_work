@@ -21,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="uk">
       <head>
-        <StructuredData
-          data={[getOrganizationSchema(), getWebSiteSchema()]}
-        />
+        <StructuredData data={[getOrganizationSchema(), getWebSiteSchema()]} />
       </head>
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <BannerProvider />

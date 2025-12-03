@@ -1,356 +1,292 @@
-# System Architecture
+# Архітектура системи FullMag E-Commerce
 
-## Overview
+## Огляд архітектури
 
-FullMag is built using a microservices-inspired architecture with a monorepo structure, enabling code sharing and consistent development practices across all platforms.
+### Архітектурний стиль
 
-## Architecture Diagram
+Система побудована за принципами **монолітної модульної архітектури** з можливістю подальшого переходу до мікросервісів.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         Clients                              │
-├──────────────┬──────────────────┬──────────────────────────┤
-│  Web Browser │  iOS/Android     │  Desktop                 │
-│  (Next.js)   │  (React Native)  │  (Future)                │
-└──────┬───────┴─────────┬────────┴────────────┬─────────────┘
-       │                 │                     │
-       │                 └─────────┬───────────┘
-       │                           │
-       └───────────────────────────┼───────────────────────────┐
-                                   │                           │
-                         ┌─────────▼──────────┐                │
-                         │   Load Balancer    │                │
-                         │     (Nginx)        │                │
-                         └─────────┬──────────┘                │
-                                   │                           │
-                         ┌─────────▼──────────┐                │
-                         │    API Gateway      │                │
-                         │   NestJS Backend    │                │
-                         │  ┌──────────────┐  │                │
-                         │  │   GraphQL    │  │                │
-                         │  │     API      │  │                │
-                         │  ├──────────────┤  │                │
-                         │  │   REST API   │  │                │
-                         │  └──────────────┘  │                │
-                         └─────────┬──────────┘                │
-                                   │                           │
-        ┌──────────────────────────┼───────────────────┐       │
-        │                          │                   │       │
-┌───────▼────────┐      ┌──────────▼────────┐  ┌──────▼───────▼──┐
-│   PostgreSQL   │      │      Redis        │  │   External APIs │
-│   (Database)   │      │  (Cache/Queue)    │  │  - Monobank     │
-└────────────────┘      └───────────────────┘  │  - SendGrid     │
-                                               │  - TurboSMS     │
-                                               │  - Telegram     │
-                                               └─────────────────┘
-```
-
-## Layers
-
-### 1. Presentation Layer
-
-#### Web Application (Next.js)
-- **SSR/SSG**: Server-side rendering for SEO
-- **API Routes**: Backend for frontend pattern
-- **Static Assets**: Optimized images and assets
-- **Responsive Design**: Mobile-first approach
-
-#### Mobile Application (React Native)
-- **Native UI**: Platform-specific components
-- **Offline Support**: AsyncStorage for local data
-- **Push Notifications**: Firebase Cloud Messaging
-- **Biometric Auth**: TouchID/FaceID support
-
-### 2. API Layer (NestJS)
-
-#### Modular Architecture
+### Діаграма високого рівня
 
 ```
-src/
-├── modules/
-│   ├── auth/           # Authentication & Authorization
-│   ├── users/          # User Management
-│   ├── products/       # Product Catalog
-│   ├── categories/     # Product Categories
-│   ├── cart/           # Shopping Cart
-│   ├── orders/         # Order Management
-│   ├── payments/       # Payment Processing
-│   ├── notifications/  # Notification System
-│   └── webhook/        # External Webhooks
-├── database/
-│   └── entities/       # TypeORM Entities
-├── common/
-│   ├── decorators/     # Custom Decorators
-│   ├── guards/         # Auth Guards
-│   ├── filters/        # Exception Filters
-│   └── interceptors/   # Request/Response Interceptors
-└── config/             # Configuration
+Web Browser (Next.js) → API Gateway → NestJS Backend → PostgreSQL/Redis
+                                             ↓
+                                   External Services (Stripe, Nova Poshta)
 ```
 
-### 3. Data Layer
+## Технологічний стек
 
-#### PostgreSQL Database Schema
+### Backend
 
-```sql
-users
-  ├── id (UUID, PK)
-  ├── email (UNIQUE)
-  ├── phone
-  ├── password_hash
-  ├── role (ENUM)
-  └── timestamps
+- **Runtime**: Node.js 20+
+- **Framework**: NestJS 10+
+- **Language**: TypeScript 5.3+
+- **ORM**: TypeORM 0.3+
+- **Database**: PostgreSQL 15+
+- **Cache**: Redis 7+
+- **Queue**: Bull 4+
+- **WebSocket**: Socket.io 4+
+- **Auth**: JWT
 
-products
-  ├── id (UUID, PK)
-  ├── name
-  ├── sku
-  ├── description
-  ├── price (DECIMAL)
-  ├── currency
-  ├── stock (INT)
-  ├── category_id (FK)
-  └── timestamps
+### Frontend
 
-categories
-  ├── id (SERIAL, PK)
-  ├── name
-  └── parent_id (FK, self-reference)
+- **Framework**: Next.js 14+ (App Router)
+- **Library**: React 18+
+- **Language**: TypeScript 5.3+
+- **Styling**: Tailwind CSS 3+
+- **State**: Zustand 4+
+- **HTTP**: Axios 1.6+
 
-carts
-  ├── id (UUID, PK)
-  ├── user_id (FK)
-  └── timestamps
-
-cart_items
-  ├── id (UUID, PK)
-  ├── cart_id (FK)
-  ├── product_id (FK)
-  ├── quantity (INT)
-  └── price (DECIMAL)
-
-orders
-  ├── id (UUID, PK)
-  ├── user_id (FK)
-  ├── total_amount (DECIMAL)
-  ├── status (ENUM)
-  └── timestamps
-
-order_items
-  ├── id (UUID, PK)
-  ├── order_id (FK)
-  ├── product_id (FK)
-  ├── quantity (INT)
-  └── price (DECIMAL)
-
-payments
-  ├── id (UUID, PK)
-  ├── order_id (FK)
-  ├── provider (ENUM)
-  ├── provider_payment_id
-  ├── status (ENUM)
-  ├── amount (DECIMAL)
-  ├── currency
-  └── timestamps
-
-notifications
-  ├── id (UUID, PK)
-  ├── user_id (FK)
-  ├── channel (ENUM)
-  ├── payload (JSONB)
-  ├── status (ENUM)
-  └── timestamps
-```
-
-#### Redis Usage
-
-1. **Caching**
-   - Product listings
-   - Category trees
-   - User sessions
-
-2. **Queue Management**
-   - Email notifications
-   - SMS sending
-   - Telegram messages
-   - Payment processing
-
-### 4. Integration Layer
-
-#### Payment Processing (Monobank)
+## Структура проєкту (Monorepo)
 
 ```
-User → Order Created → Payment Request
-  ↓
-Create Invoice (Monobank API)
-  ↓
-Return Payment URL → User Redirected
-  ↓
-User Completes Payment
-  ↓
-Webhook Received → Update Order Status
-  ↓
-Send Notification → User & Admin
+magister_work/
+├── apps/
+│   ├── web/              # Next.js frontend
+│   └── mobile/           # React Native (optional)
+├── services/
+│   └── api/              # NestJS backend
+├── packages/
+│   └── common/           # Shared types
+└── docs/                 # Documentation
 ```
 
-#### Notification System
+## Ключові модулі
+
+1. **Auth** — JWT автентифікація
+2. **Products** — Каталог товарів
+3. **Categories** — Ієрархічні категорії
+4. **Attributes** — Динамічні атрибути
+5. **Cart** — Кошик покупок
+6. **Orders** — Обробка замовлень
+7. **Payments** — Інтеграція Stripe
+8. **Chat** — WebSocket чат
+9. **Reviews** — Відгуки користувачів
+10. **Analytics** — Бізнес-аналітика
+
+## Потоки даних
+
+### Checkout Flow
 
 ```
-Event Triggered
-  ↓
-Queue Job Created (Redis/Bull)
-  ↓
-Worker Picks Up Job
-  ↓
-┌─────────────────┬─────────────────┬──────────────────┐
-│ Email           │ SMS             │ Telegram         │
-│ (SendGrid)      │ (TurboSMS)      │ (Bot API)        │
-└─────────────────┴─────────────────┴──────────────────┘
-  ↓
-Update Notification Status
-  ↓
-Retry if Failed (with exponential backoff)
+1. User fills delivery info
+2. Create Order (PENDING)
+3. Redirect to /payment/[orderId]
+4. Stripe Payment Intent
+5. Confirm payment
+6. Update Order status (PAID)
+7. Redirect to success page
 ```
 
-## Design Patterns
+## Безпека
 
-### 1. Repository Pattern
-- Abstraction over data access
-- TypeORM repositories for each entity
-- Business logic separated from data access
+- **Passwords**: bcrypt hashing
+- **API**: JWT tokens (1d access, 7d refresh)
+- **CORS**: Configured origins
+- **Rate Limiting**: 100 req/min
+- **Input Validation**: class-validator
+- **SQL Injection**: TypeORM protection
+- **XSS**: Input sanitization
+- **PCI DSS**: Stripe handles card data
 
-### 2. Dependency Injection
-- NestJS built-in DI container
-- Loose coupling between modules
-- Easy testing with mock dependencies
+## Масштабованість
 
-### 3. Middleware Pattern
-- Request logging
-- Authentication checks
-- CORS handling
-- Rate limiting
+- Stateless API (horizontal scaling)
+- Redis caching (API responses, DB queries)
+- Database indexing
+- CDN for static assets
+- Background jobs via Bull Queue
 
-### 4. Observer Pattern
-- Event-driven notifications
-- Order status changes trigger events
-- Payment webhooks emit events
-
-### 5. Factory Pattern
-- Payment provider factory
-- Notification channel factory
-- Database connection factory
-
-## Security Architecture
-
-### Authentication Flow
-
-```
-1. User Login → Credentials Verification
-2. Generate JWT Token (Access + Refresh)
-3. Store Refresh Token (Redis)
-4. Return Tokens to Client
-5. Client Stores Tokens (Secure Storage)
-6. Request with Access Token → Verify JWT
-7. Token Expired → Use Refresh Token
-8. Logout → Invalidate Tokens
-```
-
-### Authorization
-
-- **Role-Based Access Control (RBAC)**
-  - USER: Browse, order, manage own data
-  - MANAGER: Manage products, view orders
-  - ADMIN: Full system access
-
-- **Guards & Decorators**
-  - `@UseGuards(JwtAuthGuard)`
-  - `@Roles('admin', 'manager')`
-
-### Data Protection
-
-- **Passwords**: Bcrypt hashing (cost factor: 10)
-- **Sensitive Data**: Encrypted at rest
-- **API Communication**: TLS 1.3
-- **Payment Data**: PCI DSS compliance (tokenization)
-
-## Scalability Considerations
-
-### Horizontal Scaling
-
-- Stateless API servers
-- Load balancing with Nginx
-- Session management via Redis
-
-### Database Optimization
-
-- Indexes on frequently queried fields
-- Connection pooling
-- Read replicas for reporting
-
-### Caching Strategy
-
-- **L1 Cache**: In-memory (application level)
-- **L2 Cache**: Redis (distributed)
-- **CDN**: Static assets (Cloudflare/AWS CloudFront)
-
-### Queue Management
-
-- Background job processing
-- Retry mechanisms
-- Dead letter queues for failed jobs
-
-## Monitoring & Observability
-
-### Logging
-
-- Structured logging (JSON format)
-- Log levels: ERROR, WARN, INFO, DEBUG
-- Centralized log aggregation
-
-### Metrics
-
-- Request rate
-- Response time
-- Error rate
-- Database query performance
-
-### Tracing
-
-- Distributed tracing
-- Request correlation IDs
-- Performance bottleneck identification
-
-## Deployment Architecture
+## Deployment
 
 ### Development
 
-```
-Local Machine
-  ├── Docker Compose (PostgreSQL, Redis)
-  ├── API (pnpm dev)
-  ├── Web (pnpm dev)
-  └── Mobile (React Native CLI)
+```bash
+docker-compose up
 ```
 
-### Production
+### Production (AWS example)
 
-```
-Cloud Infrastructure (AWS/Azure/GCP)
-  ├── Load Balancer
-  ├── Container Orchestration (Docker/Kubernetes)
-  │   ├── API Instances (Multiple)
-  │   ├── Web Instances (Multiple)
-  │   └── Worker Instances
-  ├── Managed PostgreSQL (RDS/Cloud SQL)
-  ├── Managed Redis (ElastiCache/Redis Cloud)
-  └── CDN (CloudFront/Cloudflare)
-```
+- **Frontend**: S3 + CloudFront
+- **Backend**: ECS with Auto Scaling
+- **Database**: RDS Multi-AZ
+- **Cache**: ElastiCache Redis
+- **Storage**: S3 for uploads
 
-## Future Enhancements
+## Моніторинг
 
-1. **Microservices Migration**: Split API into independent services
-2. **Event Sourcing**: Complete audit trail of all changes
-3. **CQRS**: Separate read and write models
-4. **GraphQL Subscriptions**: Real-time updates
-5. **Elasticsearch**: Advanced search capabilities
-6. **Message Broker**: RabbitMQ/Kafka for event streaming
-7. **Service Mesh**: Istio for service-to-service communication
+- **Errors**: Sentry
+- **Logs**: CloudWatch / Winston
+- **Metrics**: Response time, error rate, cache hit rate
+- **Alerts**: Critical errors, high latency
+
+---
+
+## Проєктування інтерфейсу користувача
+
+### Загальний опис
+
+Інтерфейс користувача системи FullMag побудований з використанням сучасних веб-технологій та принципів Mobile-First дизайну. Архітектура фронтенду базується на компонентному підході React з використанням Next.js App Router для серверного рендерингу та оптимізації SEO.
+
+Основна мета проєктування — створення інтуїтивно зрозумілого, швидкого та адаптивного інтерфейсу, який забезпечує комфортний досвід покупок як на мобільних пристроях, так і на десктопних комп'ютерах.
+
+### Технологічний стек фронтенду
+
+Для реалізації інтерфейсу використовуються наступні технології:
+
+- **Next.js 14** — фреймворк для React з підтримкою серверних компонентів та App Router
+- **React 18** — бібліотека для побудови користувацьких інтерфейсів
+- **TypeScript** — типізована мова програмування для підвищення надійності коду
+- **Tailwind CSS** — utility-first CSS фреймворк для стилізації
+- **Zustand** — легковісна бібліотека для управління станом
+- **React Hook Form** — бібліотека для роботи з формами
+- **Recharts** — бібліотека для візуалізації даних у вигляді графіків
+- **Socket.IO Client** — клієнт для real-time комунікації
+- **Axios** — HTTP-клієнт для взаємодії з API
+
+### Структура фронтенд-додатку
+
+Фронтенд організований за функціональним принципом, де компоненти групуються за доменною областю:
+
+- **app/** — сторінки Next.js App Router (products, cart, checkout, profile, admin)
+- **components/** — перевикористовувані React-компоненти
+- **lib/** — утиліти, API-клієнт та Zustand stores
+- **styles/** — глобальні стилі та конфігурація Tailwind
+
+### Компонентна архітектура
+
+Система компонентів побудована ієрархічно з чітким розподілом відповідальності.
+
+**Компоненти макету:**
+
+- Header — глобальна навігація з логотипом, меню категорій, кошиком та профілем користувача
+- Footer — інформаційний блок з посиланнями та віджетом чату
+- BannerProvider — система промо-банерів
+
+**Компоненти каталогу:**
+
+- ProductList — контейнер списку товарів з підтримкою grid/list режимів
+- ProductCard — картка товару з зображенням, ціною та кнопками дій
+- FilterSidebar — бокова панель фільтрації з категоріями, ціновим діапазоном та наявністю
+- Pagination — компонент пагінації
+- SortDropdown — сортування товарів
+- ViewToggle — перемикач відображення grid/list
+
+**Компоненти товару:**
+
+- ProductImageGallery — галерея зображень з можливістю збільшення
+- ProductInfo — інформація про товар з ціною та кнопками дій
+- ProductTabs — вкладки з описом, характеристиками та відгуками
+- ProductReviews — блок відгуків покупців
+
+**Компоненти кошика та замовлення:**
+
+- CartItem — елемент кошика з управлінням кількістю
+- DeliveryForm — форма доставки з пошуком міст та відділень
+- StripePaymentForm — форма оплати через Stripe
+
+### Управління станом
+
+Для управління станом використовується Zustand з наступними stores:
+
+- **AuthStore** — зберігає інформацію про авторизованого користувача, токен доступу та методи login/logout. Дані персистуються у localStorage для збереження сесії.
+- **CartStore** — управляє вмістом кошика з синхронізацією з сервером. Надає методи додавання, видалення та оновлення кількості товарів.
+- **ProductStore** — зберігає список товарів, фільтри та стан завантаження для сторінки каталогу.
+- **ChatStore** — управляє повідомленнями чату з підтримкою WebSocket-з'єднання.
+
+### Дизайн-система
+
+**Кольорова палітра:**
+
+- Primary (Sky Blue) — основний колір для кнопок, посилань та акцентів
+- Gray Scale — нейтральні кольори для тексту, фонів та меж
+- Semantic Colors — зелений для успіху, червоний для помилок, жовтий для попереджень
+
+**Типографіка:**
+
+- Шрифт Inter з підтримкою кирилиці
+- Ієрархія заголовків від H1 до H6
+- Розміри тексту від xs до 2xl
+
+**Компоненти UI:**
+
+- Кнопки — primary, secondary, outline, ghost варіанти
+- Картки — з тінню та заокругленими кутами
+- Форми — інпути, селекти, чекбокси зі стилізацією
+- Модальні вікна — для підтверджень та діалогів
+
+### Адаптивний дизайн
+
+Інтерфейс побудований за принципом Mobile-First з використанням брейкпоінтів Tailwind:
+
+- **Mobile (< 640px)** — одноколонковий layout
+- **Tablet (640px - 1024px)** — двоколонковий layout
+- **Desktop (> 1024px)** — повний layout з бічною панеллю
+
+Ключові адаптивні елементи:
+
+- Грід товарів змінюється від 1 до 4 колонок
+- Навігація трансформується в мобільне меню
+- Фільтри згортаються в колапс-панель на мобільних
+- Таблиці перетворюються на картки
+
+### Основні сторінки інтерфейсу
+
+**Каталог товарів** — сторінка з сіткою товарів, бічною панеллю фільтрів, сортуванням та пагінацією. Підтримує режими відображення grid та list.
+
+**Сторінка товару** — детальна інформація з галереєю зображень, описом, характеристиками, відгуками та рекомендованими товарами.
+
+**Кошик** — список доданих товарів з можливістю зміни кількості, видалення та переходу до оформлення.
+
+**Оформлення замовлення** — багатокроковий процес з введенням адреси доставки, вибором способу оплати та підтвердженням.
+
+**Профіль користувача** — особистий кабінет з історією замовлень, збереженими адресами та налаштуваннями.
+
+**Список бажань** — збережені товари для подальшої покупки.
+
+**Порівняння товарів** — табличне порівняння характеристик до 4 товарів.
+
+### Адміністративна панель
+
+Адмін-панель надає інструменти для управління магазином:
+
+- **Dashboard** — аналітика з графіками продажів, замовлень та відвідувачів
+- **Товари** — CRUD операції, масовий імпорт з CSV/Excel
+- **Категорії** — ієрархічне управління категоріями
+- **Замовлення** — перегляд та обробка замовлень
+- **Клієнти** — управління користувачами
+- **Купони** — створення та управління знижками
+- **Аналітика** — детальні звіти та метрики
+
+### UX-патерни
+
+В інтерфейсі реалізовані наступні UX-патерни:
+
+- **Loading States** — скелетон-лоадери та спінери під час завантаження
+- **Empty States** — інформативні повідомлення з call-to-action для порожніх сторінок
+- **Error Handling** — toast-повідомлення та inline-помилки у формах
+- **Confirmation Dialogs** — модальні вікна для підтвердження критичних дій
+- **Optimistic UI** — миттєве відображення змін у кошику до відповіді сервера
+- **Infinite Scroll** — підтримка безкінечної прокрутки для каталогу
+
+### Доступність (Accessibility)
+
+Інтерфейс відповідає стандартам WCAG:
+
+- Семантична HTML-розмітка з правильними тегами
+- ARIA-атрибути для інтерактивних елементів
+- Підтримка навігації клавіатурою
+- Достатній контраст кольорів
+- Alt-текст для всіх зображень
+- Focus-стани для інтерактивних елементів
+
+### SEO-оптимізація
+
+Для покращення індексації пошуковими системами реалізовано:
+
+- Server-side rendering критичних сторінок
+- Structured Data (JSON-LD) для товарів, хлібних крихт та організації
+- Meta-теги Open Graph та Twitter Cards
+- Канонічні URL
+- Семантична розмітка заголовків
+- Оптимізація зображень з lazy loading

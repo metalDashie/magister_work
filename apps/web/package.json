@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@fullmag/common": "workspace:*",
+    "@stripe/react-stripe-js": "^5.4.0",
+    "@stripe/stripe-js": "^8.5.2",
     "axios": "^1.6.5",
     "next": "^14.1.0",
     "react": "^18.2.0",

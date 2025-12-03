@@ -104,9 +104,16 @@ api.interceptors.response.use(
     })
 
     if (error.response?.status === 401) {
+      // Clear all auth-related storage
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      window.location.href = '/auth/login'
+      localStorage.removeItem('auth-storage')
+
+      // Only redirect if not already on auth pages to prevent infinite loops
+      const isAuthPage = window.location.pathname.startsWith('/auth')
+      if (!isAuthPage) {
+        window.location.href = '/auth/login'
+      }
     }
     return Promise.reject(error)
   }

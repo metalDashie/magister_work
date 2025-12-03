@@ -7,7 +7,10 @@ import {
   Param,
   UseGuards,
   Request,
+  Res,
+  Header,
 } from '@nestjs/common'
+import { Response } from 'express'
 import { OrdersService } from './orders.service'
 import { CreateOrderDto, UserRole, OrderStatus } from '@fullmag/common'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -34,6 +37,11 @@ export class OrdersController {
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
     return this.ordersService.findOne(id, req.user.userId)
+  }
+
+  @Get(':id/invoice')
+  async getInvoice(@Request() req, @Param('id') id: string) {
+    return this.ordersService.generateInvoice(id, req.user.userId, req.user.role)
   }
 
   @Post()

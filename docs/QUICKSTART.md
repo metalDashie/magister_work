@@ -247,8 +247,8 @@ curl http://localhost:10001/api/products
 
 ## 📚 Next Steps
 
-1. **Full Documentation**: See [README.md](./README.md) for complete setup guide
-2. **Features Documentation**: Check [FEATURES.md](./FEATURES.md) for feature list
+1. **Full Documentation**: See [README.md](../README.md) for complete setup guide
+2. **Features Documentation**: Check [FEATURES.md](FEATURES.md) for feature list
 3. **Architecture**: Review project structure in README
 4. **Customization**: Modify branding in `apps/web/tailwind.config.js`
 
@@ -256,8 +256,8 @@ curl http://localhost:10001/api/products
 
 ## 🆘 Need More Help?
 
-- **Detailed Setup**: [README.md](./README.md)
-- **Features**: [FEATURES.md](./FEATURES.md)
+- **Detailed Setup**: [README.md](../README.md)
+- **Features**: [FEATURES.md](FEATURES.md)
 - **Troubleshooting**: See README.md → Troubleshooting section
 - **Issues**: Create an issue in the repository
 

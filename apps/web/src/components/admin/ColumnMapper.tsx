@@ -1,12 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { api } from '@/lib/api'
+
+interface Attribute {
+  id: string
+  name: string
+  slug: string
+  type: string
+  unit?: string
+}
 
 interface ColumnMapperProps {
   headers: string[]
   preview: any[]
   mapping: Record<string, string>
   onMappingChange: (mapping: Record<string, string>) => void
+  attributeMapping?: Record<string, string>
+  onAttributeMappingChange?: (mapping: Record<string, string>) => void
 }
 
 const SYSTEM_FIELDS = [
@@ -25,8 +36,25 @@ export default function ColumnMapper({
   preview,
   mapping,
   onMappingChange,
+  attributeMapping = {},
+  onAttributeMappingChange,
 }: ColumnMapperProps) {
   const [draggedColumn, setDraggedColumn] = useState<string | null>(null)
+  const [attributes, setAttributes] = useState<Attribute[]>([])
+  const [showAttributes, setShowAttributes] = useState(false)
+
+  useEffect(() => {
+    fetchAttributes()
+  }, [])
+
+  const fetchAttributes = async () => {
+    try {
+      const response = await api.get('/attributes')
+      setAttributes(response.data)
+    } catch (error) {
+      console.error('Failed to fetch attributes:', error)
+    }
+  }
 
   const handleDrop = (systemField: string) => {
     if (!draggedColumn) return
@@ -66,6 +94,37 @@ export default function ColumnMapper({
       return preview[0][column].toString().substring(0, 30)
     }
     return 'No preview'
+  }
+
+  // Attribute mapping handlers
+  const handleAttributeSelectChange = (attrSlug: string, csvColumn: string) => {
+    if (!onAttributeMappingChange) return
+    if (csvColumn === '') {
+      const newMapping = { ...attributeMapping }
+      delete newMapping[attrSlug]
+      onAttributeMappingChange(newMapping)
+    } else {
+      onAttributeMappingChange({
+        ...attributeMapping,
+        [attrSlug]: csvColumn,
+      })
+    }
+  }
+
+  const handleClearAttributeMapping = (attrSlug: string) => {
+    if (!onAttributeMappingChange) return
+    const newMapping = { ...attributeMapping }
+    delete newMapping[attrSlug]
+    onAttributeMappingChange(newMapping)
+  }
+
+  const handleAttributeDrop = (attrSlug: string) => {
+    if (!draggedColumn || !onAttributeMappingChange) return
+    onAttributeMappingChange({
+      ...attributeMapping,
+      [attrSlug]: draggedColumn,
+    })
+    setDraggedColumn(null)
   }
 
   return (
@@ -200,10 +259,99 @@ export default function ColumnMapper({
         </div>
       </div>
 
+      {/* Attribute Mapping Section */}
+      {onAttributeMappingChange && attributes.length > 0 && (
+        <div className="border-t pt-6">
+          <button
+            onClick={() => setShowAttributes(!showAttributes)}
+            className="flex items-center gap-2 text-lg font-semibold mb-4 hover:text-primary-600 transition-colors"
+          >
+            <svg
+              className={`w-5 h-5 transition-transform ${showAttributes ? 'rotate-90' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            Product Attributes ({Object.keys(attributeMapping).length} mapped)
+          </button>
+
+          {showAttributes && (
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-purple-800 mb-4">
+                Map CSV columns to product attributes. These will be stored as product specifications
+                (e.g., Brand, Color, RAM, Storage, Screen Size).
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {attributes.map((attr) => {
+                  const mappedColumn = attributeMapping[attr.slug]
+
+                  return (
+                    <div
+                      key={attr.id}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => handleAttributeDrop(attr.slug)}
+                      className={`p-3 rounded-lg border-2 transition-all ${
+                        mappedColumn
+                          ? 'border-purple-500 bg-purple-100'
+                          : 'border-gray-300 bg-white'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-900 text-sm">
+                          {attr.name}
+                          {attr.unit && (
+                            <span className="text-gray-500 ml-1">({attr.unit})</span>
+                          )}
+                        </span>
+                        {mappedColumn && (
+                          <button
+                            onClick={() => handleClearAttributeMapping(attr.slug)}
+                            className="text-gray-400 hover:text-red-500 transition-colors"
+                            title="Clear mapping"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+
+                      {mappedColumn ? (
+                        <div className="flex items-center gap-2 p-2 bg-white rounded border border-purple-300 text-sm">
+                          <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <span className="font-medium text-gray-900 truncate">{mappedColumn}</span>
+                        </div>
+                      ) : (
+                        <select
+                          value=""
+                          onChange={(e) => handleAttributeSelectChange(attr.slug, e.target.value)}
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                        >
+                          <option value="">Select column...</option>
+                          {headers.map((header) => (
+                            <option key={header} value={header}>
+                              {header}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Validation Summary */}
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-medium mb-2">Mapping Status:</h4>
-        <div className="grid grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-4 gap-4 text-sm">
           <div>
             <span className="text-gray-600">Total Fields:</span>
             <span className="ml-2 font-semibold">{SYSTEM_FIELDS.length}</span>
@@ -217,6 +365,10 @@ export default function ColumnMapper({
             <span className="ml-2 font-semibold text-red-600">
               {SYSTEM_FIELDS.filter((f) => f.required && !mapping[f.key]).length}
             </span>
+          </div>
+          <div>
+            <span className="text-gray-600">Attributes Mapped:</span>
+            <span className="ml-2 font-semibold text-purple-600">{Object.keys(attributeMapping).length}</span>
           </div>
         </div>
       </div>

@@ -6,7 +6,10 @@ import { useAuthStore } from '@/lib/store/authStore'
 import { useCartStore } from '@/lib/store/cartStore'
 import { api } from '@/lib/api'
 import { formatPrice } from '@fullmag/common'
-import { DeliveryForm, DeliveryFormData } from '@/components/delivery/DeliveryForm'
+import {
+  DeliveryForm,
+  DeliveryFormData,
+} from '@/components/delivery/DeliveryForm'
 
 const PaymentMethodValues = {
   ONLINE: 'online',
@@ -21,16 +24,33 @@ export default function CheckoutPage() {
   const { cart, totalAmount, clearCart } = useCartStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [deliveryData, setDeliveryData] = useState<DeliveryFormData | null>(null)
+  const [deliveryData, setDeliveryData] = useState<DeliveryFormData | null>(
+    null
+  )
   const [paymentMethod, setPaymentMethod] = useState<string>('online')
 
   useEffect(() => {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] checkout/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
     }
   }, [_hasHydrated, isAuthenticated, router])
+
+  // Show loading while hydrating
+  if (!_hasHydrated) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    )
+  }
 
   const handleCheckout = async () => {
     if (!cart || !cart.items || cart.items.length === 0) {
@@ -68,11 +88,11 @@ export default function CheckoutPage() {
       // Clear cart
       await clearCart()
 
-      // If online payment, simulate payment success and redirect to success page
+      // If online payment, redirect to payment page for Stripe
       // If cash on delivery, redirect directly to success page
       if (paymentMethod === PaymentMethodValues.ONLINE) {
-        // Simulated online payment - order is already marked as PAID by backend
-        router.push(`/checkout/success?orderId=${order.id}`)
+        // Redirect to Stripe payment page
+        router.push(`/payment/${order.id}`)
       } else {
         // Cash on delivery - order is marked as PENDING
         router.push(`/checkout/success?orderId=${order.id}`)
@@ -88,7 +108,9 @@ export default function CheckoutPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Your cart is empty</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Your cart is empty
+          </h2>
           <button
             onClick={() => router.push('/products')}
             className="mt-4 text-primary-600 hover:text-primary-700"
@@ -133,13 +155,25 @@ export default function CheckoutPage() {
             />
             <div className="ml-3 flex-1">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                <svg
+                  className="w-5 h-5 text-primary-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  />
                 </svg>
-                <span className="font-semibold text-gray-900">Онлайн оплата</span>
+                <span className="font-semibold text-gray-900">
+                  Онлайн оплата
+                </span>
               </div>
               <p className="text-sm text-gray-600 mt-1">
-                Оплата картою (симуляція). Замовлення буде автоматично оплачене
+                Оплата картою через Stripe. Використайте тестову картку 4242 4242 4242 4242
               </p>
             </div>
           </label>
@@ -155,10 +189,22 @@ export default function CheckoutPage() {
             />
             <div className="ml-3 flex-1">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                <svg
+                  className="w-5 h-5 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
                 </svg>
-                <span className="font-semibold text-gray-900">Готівкою при отриманні</span>
+                <span className="font-semibold text-gray-900">
+                  Готівкою при отриманні
+                </span>
               </div>
               <p className="text-sm text-gray-600 mt-1">
                 Оплата готівкою або картою при отриманні товару

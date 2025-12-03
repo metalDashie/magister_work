@@ -18,12 +18,22 @@ export default function CartPage() {
   useEffect(() => {
     if (!_hasHydrated) return
 
-    if (!isAuthenticated) {
-      router.push('/auth/login')
+    if (isAuthenticated) {
+      fetchCart()
       return
     }
-    fetchCart()
   }, [_hasHydrated, isAuthenticated, fetchCart, router])
+
+  // Show loading while hydrating to prevent flash of empty cart
+  if (!_hasHydrated) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    )
+  }
 
   const handleClearCart = async () => {
     setClearing(true)
@@ -37,7 +47,8 @@ export default function CartPage() {
     }
   }
 
-  const itemCount = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const itemCount =
+    cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
 
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
@@ -58,7 +69,9 @@ export default function CartPage() {
               />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Your cart is empty
+          </h2>
           <p className="text-gray-600 mb-8">
             Start shopping to add items to your cart
           </p>
@@ -66,7 +79,12 @@ export default function CartPage() {
             href="/products"
             className="inline-flex items-center gap-2 bg-primary-600 text-white px-8 py-3 rounded-md hover:bg-primary-700 transition-colors font-semibold"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -88,7 +106,8 @@ export default function CartPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <p className="text-gray-600 mt-1">
-            {cart.items.length} {cart.items.length === 1 ? 'item' : 'items'} ({itemCount} total units)
+            {cart.items.length} {cart.items.length === 1 ? 'item' : 'items'} (
+            {itemCount} total units)
           </p>
         </div>
 
@@ -96,7 +115,12 @@ export default function CartPage() {
           onClick={() => setShowClearConfirm(true)}
           className="text-red-600 hover:text-red-800 font-medium flex items-center gap-2 hover:bg-red-50 px-4 py-2 rounded-md transition-colors"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -136,7 +160,9 @@ export default function CartPage() {
               </div>
               <div className="border-t-2 border-gray-200 pt-3 flex justify-between font-bold text-xl">
                 <span>Total</span>
-                <span className="text-primary-600">{formatPrice(totalAmount, 'UAH')}</span>
+                <span className="text-primary-600">
+                  {formatPrice(totalAmount, 'UAH')}
+                </span>
               </div>
             </div>
 
@@ -157,7 +183,12 @@ export default function CartPage() {
             {/* Security Badge */}
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-5 h-5 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -200,7 +231,8 @@ export default function CartPage() {
                 Clear Entire Cart?
               </h3>
               <p className="text-gray-600 text-center mb-6">
-                This will remove all {cart.items.length} items from your cart. This action cannot be undone.
+                This will remove all {cart.items.length} items from your cart.
+                This action cannot be undone.
               </p>
               <div className="flex gap-3">
                 <button

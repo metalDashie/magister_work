@@ -24,6 +24,7 @@ export enum PaymentStatus {
 export enum PaymentProvider {
   MONOBANK = 'monobank',
   FONDY = 'fondy',
+  STRIPE = 'stripe',
 }
 
 export const OrderItemSchema = z.object({

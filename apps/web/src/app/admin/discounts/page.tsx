@@ -55,7 +55,11 @@ export default function AdminDiscountsPage() {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] admin/discounts/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
       return
     }
 
@@ -239,7 +243,9 @@ export default function AdminDiscountsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Discount Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Discount Management
+        </h1>
         <p className="mt-2 text-gray-600">Set and manage product discounts</p>
       </div>
 
@@ -372,7 +378,10 @@ export default function AdminDiscountsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                  <td
+                    colSpan={8}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
                     No products found.
                   </td>
                 </tr>
@@ -432,7 +441,8 @@ export default function AdminDiscountsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        {product.discountStartDate || product.discountEndDate ? (
+                        {product.discountStartDate ||
+                        product.discountEndDate ? (
                           <div className="text-xs text-gray-500">
                             {product.discountStartDate && (
                               <div>
@@ -518,7 +528,9 @@ export default function AdminDiscountsPage() {
                     }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
-                  <span className="absolute right-4 top-2 text-gray-500">%</span>
+                  <span className="absolute right-4 top-2 text-gray-500">
+                    %
+                  </span>
                 </div>
               </div>
 
@@ -582,7 +594,10 @@ export default function AdminDiscountsPage() {
                   <div className="text-sm text-gray-600">Preview:</div>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-gray-400 line-through">
-                      {formatPrice(editingProduct.price, editingProduct.currency)}
+                      {formatPrice(
+                        editingProduct.price,
+                        editingProduct.currency
+                      )}
                     </span>
                     <span className="text-lg font-bold text-green-600">
                       {formatPrice(

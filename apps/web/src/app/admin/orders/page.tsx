@@ -4,6 +4,21 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/authStore'
 import { api } from '@/lib/api'
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 
 interface Order {
   id: string
@@ -45,6 +60,8 @@ const ORDER_STATUSES = [
   { value: 'CANCELLED', label: 'Cancelled', color: 'red' },
 ]
 
+const PIE_COLORS = ['#EAB308', '#3B82F6', '#8B5CF6', '#6366F1', '#22C55E', '#EF4444']
+
 export default function AdminOrders() {
   const router = useRouter()
   const { user, isLoading } = useAuthStore()
@@ -54,6 +71,7 @@ export default function AdminOrders() {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<'date' | 'amount'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [showCharts, setShowCharts] = useState(true)
 
   const isAdmin = user?.role === 'admin' || user?.role === 'manager'
 
@@ -166,17 +184,205 @@ export default function AdminOrders() {
     cancelled: orders.filter((o) => o.status === 'CANCELLED').length,
   }
 
+  // Prepare chart data
+  const statusChartData = ORDER_STATUSES.map((status, index) => ({
+    name: status.label,
+    value: orders.filter((o) => o.status === status.value).length,
+    color: PIE_COLORS[index],
+  })).filter((d) => d.value > 0)
+
+  const revenueByStatus = ORDER_STATUSES.map((status) => ({
+    name: status.label,
+    revenue: orders
+      .filter((o) => o.status === status.value)
+      .reduce((sum, o) => sum + Number(o.totalAmount), 0),
+  })).filter((d) => d.revenue > 0)
+
+  // Orders by day (last 14 days)
+  const getLast14Days = () => {
+    const days: { date: string; orders: number; revenue: number }[] = []
+    for (let i = 13; i >= 0; i--) {
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      const dateStr = date.toISOString().split('T')[0]
+      const dayOrders = orders.filter((o) => o.createdAt.split('T')[0] === dateStr)
+      days.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        orders: dayOrders.length,
+        revenue: dayOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0),
+      })
+    }
+    return days
+  }
+
+  const dailyData = getLast14Days()
+
+  // Payment method distribution
+  const paymentMethodData = [
+    {
+      name: 'Online Payment',
+      value: orders.filter((o) => o.paymentMethod === 'ONLINE').length,
+    },
+    {
+      name: 'Cash on Delivery',
+      value: orders.filter((o) => o.paymentMethod === 'CASH_ON_DELIVERY').length,
+    },
+  ].filter((d) => d.value > 0)
+
+  // Calculate totals
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o.totalAmount), 0)
+  const avgOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Order Management</h1>
-        <button
-          onClick={fetchOrders}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Refresh
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowCharts(!showCharts)}
+            className={`px-4 py-2 rounded ${showCharts ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            {showCharts ? 'Hide Charts' : 'Show Charts'}
+          </button>
+          <button
+            onClick={fetchOrders}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Total Revenue</div>
+          <div className="text-2xl font-bold text-primary-600">{formatCurrency(totalRevenue)}</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Total Orders</div>
+          <div className="text-2xl font-bold">{orders.length}</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Avg Order Value</div>
+          <div className="text-2xl font-bold">{formatCurrency(avgOrderValue)}</div>
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <div className="text-sm text-gray-500">Completion Rate</div>
+          <div className="text-2xl font-bold text-green-600">
+            {orders.length > 0 ? ((orderStats.delivered / orders.length) * 100).toFixed(1) : 0}%
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      {showCharts && orders.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Orders Trend Line Chart */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Orders Trend (Last 14 Days)</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={dailyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" fontSize={12} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="orders" stroke="#3B82F6" strokeWidth={2} name="Orders" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Revenue Trend */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Revenue Trend (Last 14 Days)</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={dailyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" fontSize={12} />
+                <YAxis />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Bar dataKey="revenue" fill="#22C55E" name="Revenue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Orders by Status Pie Chart */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Orders by Status</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={statusChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {statusChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Revenue by Status */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Revenue by Status</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={revenueByStatus} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis dataKey="name" type="category" width={80} fontSize={12} />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Bar dataKey="revenue" fill="#8B5CF6" name="Revenue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Payment Method Distribution */}
+          {paymentMethodData.length > 0 && (
+            <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
+              <h3 className="text-lg font-semibold mb-4">Payment Method Distribution</h3>
+              <div className="flex items-center justify-center gap-8">
+                <ResponsiveContainer width="50%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={paymentMethodData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                    >
+                      <Cell fill="#3B82F6" />
+                      <Cell fill="#F59E0B" />
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-2">
+                  {paymentMethodData.map((item, index) => (
+                    <div key={item.name} className="flex items-center gap-2">
+                      <div
+                        className="w-4 h-4 rounded"
+                        style={{ backgroundColor: index === 0 ? '#3B82F6' : '#F59E0B' }}
+                      />
+                      <span className="text-sm">{item.name}: {item.value} orders</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Order Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">

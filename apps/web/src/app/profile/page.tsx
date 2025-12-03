@@ -13,12 +13,23 @@ export default function ProfilePage() {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] profile/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
     }
   }, [_hasHydrated, isAuthenticated, router])
 
-  if (!user) {
-    return null
+  // Show loading while hydrating
+  if (!_hasHydrated || !user) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    )
   }
 
   return (

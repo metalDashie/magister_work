@@ -14,6 +14,7 @@ export interface ImportStats {
   successful: number
   failed: number
   skipped: number
+  mapped: number
   errors: Array<{
     row: number
     field?: string

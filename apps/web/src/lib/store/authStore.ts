@@ -26,14 +26,17 @@ export const useAuthStore = create<AuthState>()(
       _hasHydrated: false,
 
       setHasHydrated: (state) => {
+        console.log('[AUTH STORE] setHasHydrated called', { state })
         set({ _hasHydrated: state, isLoading: !state })
       },
 
       login: async (credentials) => {
+        console.log('[AUTH STORE] login called')
         const response = await api.post('/auth/login', credentials)
         const { access_token, user } = response.data
 
         localStorage.setItem('token', access_token)
+        console.log('[AUTH STORE] login success, setting isAuthenticated: true')
         set({ user, token: access_token, isAuthenticated: true })
       },
 
@@ -46,6 +49,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        console.log('[AUTH STORE] logout called')
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         set({ user: null, token: null, isAuthenticated: false })
@@ -58,6 +62,10 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
       onRehydrateStorage: () => (state) => {
+        console.log('[AUTH STORE] onRehydrateStorage complete', {
+          isAuthenticated: state?.isAuthenticated,
+          user: state?.user?.email,
+        })
         state?.setHasHydrated(true)
       },
     }

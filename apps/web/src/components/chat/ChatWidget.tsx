@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAuthStore } from '@/lib/store/authStore'
 import { useChatStore } from '@/lib/store/chatStore'
 import ChatWindow from './ChatWindow'
@@ -8,14 +8,14 @@ import ChatWindow from './ChatWindow'
 export default function ChatWidget() {
   const { user, isAuthenticated } = useAuthStore()
   const { isOpen, openChat, unreadCount, initialize } = useChatStore()
-  const [isInitialized, setIsInitialized] = useState(false)
+  const isInitializedRef = useRef(false)
 
   useEffect(() => {
-    if (isAuthenticated && user && !isInitialized) {
+    if (isAuthenticated && user && !isInitializedRef.current) {
+      isInitializedRef.current = true
       initialize(user.id)
-      setIsInitialized(true)
     }
-  }, [isAuthenticated, user, isInitialized, initialize])
+  }, [isAuthenticated, user, initialize])
 
   if (!isAuthenticated) {
     return null

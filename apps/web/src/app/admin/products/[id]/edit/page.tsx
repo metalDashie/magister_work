@@ -32,7 +32,11 @@ export default function EditProductPage() {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log(
+        '[REDIRECT] admin/products/[id]/edit/page.tsx -> /auth/login',
+        { _hasHydrated, isAuthenticated }
+      )
+      // router.push('/auth/login')
       return
     }
 

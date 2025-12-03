@@ -75,6 +75,7 @@ export class EmailService {
         'payment-success.hbs',
         'password-reset.hbs',
         'email-verification.hbs',
+        'cart-reminder.hbs',
       ]
 
       for (const file of templateFiles) {
@@ -245,6 +246,35 @@ export class EmailService {
         name,
         verificationUrl,
         expiryHours: 24,
+        year: new Date().getFullYear(),
+      },
+    })
+  }
+
+  async sendAbandonedCartReminder(
+    email: string,
+    name: string | undefined,
+    items: Array<{ name: string; quantity: number; price: string }>,
+    totalAmount: string,
+    cartUrl: string,
+    discountCode?: string,
+    discountPercent?: number
+  ): Promise<boolean> {
+    const frontendUrl = this.configService.get('FRONTEND_URL', 'http://localhost:10002')
+
+    return this.sendEmail({
+      to: email,
+      subject: 'Ви залишили товари в кошику! - FullMag',
+      template: 'cart-reminder',
+      context: {
+        name,
+        items,
+        totalAmount,
+        cartUrl,
+        hasDiscount: !!discountCode,
+        discountCode,
+        discountPercent,
+        unsubscribeUrl: `${frontendUrl}/profile/notifications`,
         year: new Date().getFullYear(),
       },
     })

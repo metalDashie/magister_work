@@ -16,7 +16,11 @@ export default function NewProductPage() {
     if (!_hasHydrated) return
 
     if (!isAuthenticated) {
-      router.push('/auth/login')
+      console.log('[REDIRECT] admin/products/new/page.tsx -> /auth/login', {
+        _hasHydrated,
+        isAuthenticated,
+      })
+      // router.push('/auth/login')
       return
     }
 
@@ -43,7 +47,9 @@ export default function NewProductPage() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
-        <p className="mt-2 text-gray-600">Create a new product in your catalog</p>
+        <p className="mt-2 text-gray-600">
+          Create a new product in your catalog
+        </p>
       </div>
 
       {error && (
@@ -53,7 +59,11 @@ export default function NewProductPage() {
       )}
 
       <div className="bg-white rounded-lg shadow p-6">
-        <ProductForm onSubmit={handleSubmit} submitText="Create Product" isLoading={loading} />
+        <ProductForm
+          onSubmit={handleSubmit}
+          submitText="Create Product"
+          isLoading={loading}
+        />
       </div>
     </div>
   )

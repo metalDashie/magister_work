@@ -46,6 +46,10 @@ export interface ValidationRules {
   requiredFields?: string[]
 }
 
+export interface AttributeMapping {
+  [attrSlug: string]: string // attribute slug → CSV column name
+}
+
 @Entity('import_profiles')
 export class ImportProfile {
   @PrimaryGeneratedColumn('uuid')
@@ -74,6 +78,9 @@ export class ImportProfile {
 
   @Column({ type: 'jsonb', nullable: true })
   validationRules: ValidationRules
+
+  @Column({ type: 'jsonb', nullable: true })
+  attributeMapping: AttributeMapping
 
   @Column({ type: 'boolean', default: false })
   isDefault: boolean

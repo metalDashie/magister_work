@@ -71,6 +71,7 @@ export class ImportController {
   async importProducts(
     @UploadedFile() file: Express.Multer.File,
     @Body('profileId') profileId: string,
+    @Body('productMappings') productMappingsJson: string,
     @Req() req: any
   ) {
     if (!file) {
@@ -81,8 +82,18 @@ export class ImportController {
       throw new BadRequestException('Profile ID is required')
     }
 
+    // Parse product mappings if provided
+    let productMappings: Record<number, { id: string; name: string; sku: string; price: number; stock: number }> | undefined
+    if (productMappingsJson) {
+      try {
+        productMappings = JSON.parse(productMappingsJson)
+      } catch (e) {
+        throw new BadRequestException('Invalid product mappings format')
+      }
+    }
+
     const fileContent = file.buffer.toString('utf-8')
-    return this.importService.importProducts(fileContent, file.originalname, profileId, req.user.userId)
+    return this.importService.importProducts(fileContent, file.originalname, profileId, req.user.userId, productMappings)
   }
 
   // ========== Import History ==========

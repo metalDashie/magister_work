@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { useProductStore } from '@/lib/store/productStore'
 import ProductCard from './ProductCard'
 import ProductListItem from './ProductListItem'
@@ -9,19 +10,74 @@ import FilterSidebar from './FilterSidebar'
 import SortDropdown from './SortDropdown'
 import ViewToggle from './ViewToggle'
 
-export default function ProductList() {
+interface ProductListProps {
+  initialCategory?: number
+  initialMinPrice?: number
+  initialMaxPrice?: number
+  initialInStock?: boolean
+  initialPage?: number
+  initialSortBy?: string
+  initialSortOrder?: 'ASC' | 'DESC'
+  initialViewMode?: 'grid' | 'list'
+}
+
+export default function ProductList({
+  initialCategory,
+  initialMinPrice,
+  initialMaxPrice,
+  initialInStock,
+  initialPage = 1,
+  initialSortBy = 'createdAt',
+  initialSortOrder = 'DESC',
+  initialViewMode = 'grid',
+}: ProductListProps) {
+  const router = useRouter()
+  const pathname = usePathname()
   const { products, loading, error, total, fetchProducts } = useProductStore()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filters, setFilters] = useState<{
-    categoryId?: number
-    minPrice?: number
-    maxPrice?: number
-    inStock?: boolean
-  }>({})
-  const [sortBy, setSortBy] = useState('createdAt')
-  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('DESC')
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
+  // Initialize state from props (which come from server-side searchParams)
+  const [filters, setFilters] = useState({
+    categoryId: initialCategory,
+    minPrice: initialMinPrice,
+    maxPrice: initialMaxPrice,
+    inStock: initialInStock,
+  })
+  const [currentPage, setCurrentPage] = useState(initialPage)
+  const [sortBy, setSortBy] = useState(initialSortBy)
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>(initialSortOrder)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(initialViewMode)
   const itemsPerPage = 20
+
+  // Update URL when state changes
+  const updateURL = useCallback((
+    newFilters: typeof filters,
+    newPage: number,
+    newSortBy: string,
+    newSortOrder: 'ASC' | 'DESC',
+    newViewMode: 'grid' | 'list'
+  ) => {
+    const params = new URLSearchParams()
+
+    // Add filters
+    if (newFilters.categoryId) params.set('category', newFilters.categoryId.toString())
+    if (newFilters.minPrice) params.set('minPrice', newFilters.minPrice.toString())
+    if (newFilters.maxPrice) params.set('maxPrice', newFilters.maxPrice.toString())
+    if (newFilters.inStock !== undefined) params.set('inStock', newFilters.inStock.toString())
+
+    // Add pagination (only if not page 1)
+    if (newPage > 1) params.set('page', newPage.toString())
+
+    // Add sorting (only if not default)
+    if (newSortBy !== 'createdAt') params.set('sortBy', newSortBy)
+    if (newSortOrder !== 'DESC') params.set('sortOrder', newSortOrder)
+
+    // Add view mode (only if not default)
+    if (newViewMode !== 'grid') params.set('view', newViewMode)
+
+    const queryString = params.toString()
+    const newURL = queryString ? `${pathname}?${queryString}` : pathname
+    router.replace(newURL, { scroll: false })
+  }, [pathname, router])
 
   useEffect(() => {
     fetchProducts(currentPage, itemsPerPage, {
@@ -33,6 +89,7 @@ export default function ProductList() {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
+    updateURL(filters, newPage, sortBy, sortOrder, viewMode)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -42,14 +99,27 @@ export default function ProductList() {
     maxPrice?: number
     inStock?: boolean
   }) => {
-    setFilters(newFilters)
+    const normalizedFilters = {
+      categoryId: newFilters.categoryId,
+      minPrice: newFilters.minPrice,
+      maxPrice: newFilters.maxPrice,
+      inStock: newFilters.inStock,
+    }
+    setFilters(normalizedFilters)
     setCurrentPage(1) // Reset to first page when filters change
+    updateURL(normalizedFilters, 1, sortBy, sortOrder, viewMode)
   }
 
   const handleSortChange = (newSortBy: string, newSortOrder: 'ASC' | 'DESC') => {
     setSortBy(newSortBy)
     setSortOrder(newSortOrder)
     setCurrentPage(1) // Reset to first page when sorting changes
+    updateURL(filters, 1, newSortBy, newSortOrder, viewMode)
+  }
+
+  const handleViewChange = (newViewMode: 'grid' | 'list') => {
+    setViewMode(newViewMode)
+    updateURL(filters, currentPage, sortBy, sortOrder, newViewMode)
   }
 
   if (loading && products.length === 0) {
@@ -91,7 +161,7 @@ export default function ProductList() {
             {total === 0 && <span>No products found</span>}
           </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={viewMode} onViewChange={setViewMode} />
+            <ViewToggle view={viewMode} onViewChange={handleViewChange} />
             <SortDropdown
               sortBy={sortBy}
               sortOrder={sortOrder}

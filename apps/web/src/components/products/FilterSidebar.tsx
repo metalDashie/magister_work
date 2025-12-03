@@ -9,6 +9,81 @@ interface Category {
   children?: Category[]
 }
 
+interface CategoryItemProps {
+  category: Category
+  selectedId?: number
+  onSelect: (id: number | undefined) => void
+  expandedCategories: Set<number>
+  onToggleExpand: (id: number) => void
+  depth: number
+}
+
+function CategoryItem({
+  category,
+  selectedId,
+  onSelect,
+  expandedCategories,
+  onToggleExpand,
+  depth,
+}: CategoryItemProps) {
+  const hasChildren = category.children && category.children.length > 0
+  const isExpanded = expandedCategories.has(category.id)
+  // Ensure numeric comparison (URL params might come as different types)
+  const isSelected = selectedId !== undefined && Number(selectedId) === Number(category.id)
+
+  return (
+    <div className={depth > 0 ? 'ml-4' : ''}>
+      <div className="flex items-center py-1">
+        {hasChildren && (
+          <button
+            type="button"
+            onClick={() => onToggleExpand(category.id)}
+            className="mr-1 p-0.5 hover:bg-gray-100 rounded"
+          >
+            <svg
+              className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+                isExpanded ? 'rotate-90' : ''
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+        <label className={`flex items-center flex-1 ${!hasChildren ? 'ml-5' : ''}`}>
+          <input
+            type="radio"
+            name="category"
+            checked={isSelected}
+            onChange={() => onSelect(category.id)}
+            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+          />
+          <span className={`ml-2 text-sm ${depth === 0 ? 'text-gray-700 font-medium' : 'text-gray-600'}`}>
+            {category.name}
+          </span>
+        </label>
+      </div>
+      {hasChildren && isExpanded && (
+        <div className="border-l border-gray-200 ml-2">
+          {category.children!.map((child) => (
+            <CategoryItem
+              key={child.id}
+              category={child}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              expandedCategories={expandedCategories}
+              onToggleExpand={onToggleExpand}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 interface FilterSidebarProps {
   filters: {
     categoryId?: number
@@ -35,10 +110,45 @@ export default function FilterSidebar({ filters, onFilterChange }: FilterSidebar
     price: true,
     stock: true,
   })
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     fetchCategories()
   }, [])
+
+  // Sync price range when filters change from URL
+  useEffect(() => {
+    setPriceRange({
+      min: filters.minPrice?.toString() || '',
+      max: filters.maxPrice?.toString() || '',
+    })
+  }, [filters.minPrice, filters.maxPrice])
+
+  // Auto-expand parent categories when a child is selected
+  useEffect(() => {
+    if (filters.categoryId && categories.length > 0) {
+      const parentIds = findParentIds(categories, filters.categoryId)
+      if (parentIds.length > 0) {
+        setExpandedCategories(new Set(parentIds))
+      }
+    }
+  }, [filters.categoryId, categories])
+
+  const findParentIds = (cats: Category[], targetId: number, parents: number[] = []): number[] => {
+    for (const cat of cats) {
+      // Ensure numeric comparison
+      if (Number(cat.id) === Number(targetId)) {
+        return parents
+      }
+      if (cat.children && cat.children.length > 0) {
+        const found = findParentIds(cat.children, targetId, [...parents, cat.id])
+        if (found.length > 0) {
+          return found
+        }
+      }
+    }
+    return []
+  }
 
   const fetchCategories = async () => {
     try {
@@ -47,6 +157,18 @@ export default function FilterSidebar({ filters, onFilterChange }: FilterSidebar
     } catch (error) {
       console.error('Failed to fetch categories:', error)
     }
+  }
+
+  const toggleCategoryExpand = (categoryId: number) => {
+    setExpandedCategories((prev) => {
+      const next = new Set(prev)
+      if (next.has(categoryId)) {
+        next.delete(categoryId)
+      } else {
+        next.add(categoryId)
+      }
+      return next
+    })
   }
 
   const handleCategoryChange = (categoryId: number | undefined) => {
@@ -111,50 +233,30 @@ export default function FilterSidebar({ filters, onFilterChange }: FilterSidebar
           </svg>
         </button>
         <div
-          className={`space-y-2 overflow-hidden transition-all duration-300 ease-in-out ${
-            openSections.category ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          className={`space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
+            openSections.category ? 'max-h-[500px] overflow-y-auto opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
-          <label className="flex items-center">
+          <label className="flex items-center py-1 ml-5">
             <input
               type="radio"
               name="category"
-              checked={!filters.categoryId}
+              checked={filters.categoryId === undefined}
               onChange={() => handleCategoryChange(undefined)}
               className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
             />
             <span className="ml-2 text-sm text-gray-700">All Categories</span>
           </label>
           {categories.map((category) => (
-            <div key={category.id}>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="category"
-                  checked={filters.categoryId === category.id}
-                  onChange={() => handleCategoryChange(category.id)}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                />
-                <span className="ml-2 text-sm text-gray-700">{category.name}</span>
-              </label>
-              {/* Subcategories */}
-              {category.children && category.children.length > 0 && (
-                <div className="ml-6 mt-2 space-y-2">
-                  {category.children.map((child) => (
-                    <label key={child.id} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="category"
-                        checked={filters.categoryId === child.id}
-                        onChange={() => handleCategoryChange(child.id)}
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                      />
-                      <span className="ml-2 text-sm text-gray-600">{child.name}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
+            <CategoryItem
+              key={category.id}
+              category={category}
+              selectedId={filters.categoryId}
+              onSelect={handleCategoryChange}
+              expandedCategories={expandedCategories}
+              onToggleExpand={toggleCategoryExpand}
+              depth={0}
+            />
           ))}
         </div>
       </div>

@@ -8,11 +8,13 @@ import {
   ImportHistory,
   Product,
   Category,
+  Attribute,
+  ProductAttribute,
 } from '../../database/entities'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ImportProfile, ImportHistory, Product, Category]),
+    TypeOrmModule.forFeature([ImportProfile, ImportHistory, Product, Category, Attribute, ProductAttribute]),
     MulterModule.register({
       limits: {
         fileSize: 10 * 1024 * 1024, // 10MB
