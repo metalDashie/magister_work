@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Висновки та список використаних джерел</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14pt;
+            line-height: 1.5;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+        }
+        p {
+            text-align: justify;
+            text-indent: 1.25cm;
+        }
+        ol {
+            margin-left: 0;
+            padding-left: 1.25cm;
+        }
+        ol li {
+            text-align: justify;
+            margin-bottom: 10px;
+        }
+        .reference-list {
+            counter-reset: ref-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+        .reference-list li {
+            counter-increment: ref-counter;
+            margin-bottom: 8px;
+            padding-left: 1.25cm;
+            text-indent: -1.25cm;
+        }
+        .reference-list li::before {
+            content: counter(ref-counter) ". ";
+        }
+    </style>
+</head>
+<body>
+
+<h1>ВИСНОВКИ</h1>
+
+<p>У результаті виконання магістерської роботи було спроєктовано та розроблено багатоплатформну систему електронної комерції FullMag, яка забезпечує повний цикл онлайн-продажів від перегляду каталогу товарів до оформлення замовлення та оплати.</p>
+
+<p>У ході виконання роботи було досягнуто наступних результатів:</p>
+
+<ol>
+    <li>Проведено аналіз предметної області електронної комерції та досліджено існуючі рішення на ринку. Визначено основні функціональні вимоги до сучасних систем онлайн-торгівлі та виявлено їх переваги і недоліки. На основі проведеного аналізу сформульовано вимоги до розроблюваної системи.</li>
+
+    <li>Обґрунтовано вибір технологій для реалізації системи. Для серверної частини обрано фреймворк NestJS з використанням TypeScript, що забезпечує типобезпеку та модульну архітектуру. Для веб-клієнта використано Next.js 14 з React 18, що дозволяє реалізувати серверний рендеринг та оптимізувати продуктивність. Мобільний застосунок розроблено на React Native 0.82 для підтримки платформ Android та iOS з єдиної кодової бази.</li>
+
+    <li>Спроєктовано архітектуру системи на основі монорепозиторію з використанням pnpm workspaces. Розроблено структуру бази даних PostgreSQL з 25+ сутностями для зберігання інформації про товари, користувачів, замовлення, відгуки та інші бізнес-об'єкти. Реалізовано кешування даних за допомогою Redis для підвищення швидкодії системи.</li>
+
+    <li>Реалізовано серверну частину системи (REST API) з наступними модулями: автентифікація та авторизація з JWT-токенами, управління товарами та категоріями, кошик та оформлення замовлень, система відгуків та рейтингів, інтеграція з платіжною системою Stripe, інтеграція з службою доставки Нова Пошта, повнотекстовий пошук через Elasticsearch, система сповіщень через email, Telegram та WhatsApp.</li>
+
+    <li>Розроблено веб-застосунок з адаптивним дизайном, який коректно відображається на пристроях з різною роздільною здатністю екрану. Реалізовано адміністративну панель для управління товарами, замовленнями, користувачами, аналітикою продажів та іншими аспектами системи.</li>
+
+    <li>Створено мобільний застосунок для платформ Android та iOS з використанням React Native. Застосунок підтримує всі основні функції покупця: перегляд каталогу, пошук та фільтрацію товарів, управління кошиком, оформлення замовлень та перегляд історії покупок.</li>
+
+    <li>Проведено комплексне тестування системи, що включає функціональне тестування всіх модулів, UI-тестування веб та мобільного інтерфейсів, тестування безпеки на відповідність стандартам OWASP Top 10, крос-браузерне тестування та тестування адаптивності.</li>
+
+    <li>Налаштовано інфраструктуру розгортання з використанням Docker та Docker Compose, що забезпечує однакове середовище для розробки та продакшену. Підготовлено конфігурації для локального розгортання та хмарного середовища.</li>
+</ol>
+
+<p>Розроблена система FullMag відповідає сучасним вимогам до платформ електронної комерції та може бути використана як основа для створення повноцінного інтернет-магазину. Модульна архітектура системи дозволяє легко розширювати функціональність та адаптувати її під конкретні бізнес-потреби.</p>
+
+<p>Перспективами подальшого розвитку системи є: інтеграція з додатковими платіжними системами (LiqPay, Приват24), розширення можливостей аналітики з використанням машинного навчання для рекомендацій товарів, додавання підтримки мультимовності та мультивалютності, інтеграція з маркетплейсами (Rozetka, Prom.ua) та реалізація Progressive Web App (PWA) версії веб-застосунку.</p>
+
+<br><br>
+
+<h1>СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ</h1>
+
+<ol class="reference-list">
+    <li>Frain B. Responsive Web Design with HTML5 and CSS: Build future-proof responsive websites using the latest HTML5 and CSS techniques. 4th ed. Birmingham: Packt Publishing, 2022. 408 p.</li>
+
+    <li>Flanagan D. JavaScript: The Definitive Guide: Master the World's Most-Used Programming Language. 7th ed. Sebastopol: O'Reilly Media, 2020. 706 p.</li>
+
+    <li>Freeman A. Pro React 18 for JavaScript Development. 5th ed. New York: Apress, 2022. 968 p.</li>
+
+    <li>Wieruch R. The Road to React: Your journey to master plain yet pragmatic React.js. Self-published, 2023. 350 p.</li>
+
+    <li>Boduch A., Derks R. React and React Native: Build cross-platform JavaScript and TypeScript apps for the web, desktop, and mobile. 5th ed. Birmingham: Packt Publishing, 2024. 518 p.</li>
+
+    <li>Katz M., Nance C. React Native Cookbook: Recipes for solving common React Native development problems. 2nd ed. Birmingham: Packt Publishing, 2023. 450 p.</li>
+
+    <li>Kamil Mysliwiec. NestJS Documentation. URL: https://docs.nestjs.com/ (дата звернення: 15.10.2024).</li>
+
+    <li>Cherny B. Programming TypeScript: Making Your JavaScript Applications Scale. Sebastopol: O'Reilly Media, 2019. 324 p.</li>
+
+    <li>Vanderkam D. Effective TypeScript: 83 Specific Ways to Improve Your TypeScript. 2nd ed. Sebastopol: O'Reilly Media, 2024. 400 p.</li>
+
+    <li>Next.js Documentation. Vercel Inc. URL: https://nextjs.org/docs (дата звернення: 20.10.2024).</li>
+
+    <li>PostgreSQL 16 Documentation. The PostgreSQL Global Development Group. URL: https://www.postgresql.org/docs/16/ (дата звернення: 10.10.2024).</li>
+
+    <li>Carlson J. Redis in Action. Shelter Island: Manning Publications, 2013. 320 p.</li>
+
+    <li>Gormley C., Tong Z. Elasticsearch: The Definitive Guide: A Distributed Real-Time Search and Analytics Engine. Sebastopol: O'Reilly Media, 2015. 724 p.</li>
+
+    <li>Stripe API Documentation. Stripe Inc. URL: https://stripe.com/docs/api (дата звернення: 25.10.2024).</li>
+
+    <li>Docker Documentation. Docker Inc. URL: https://docs.docker.com/ (дата звернення: 05.11.2024).</li>
+
+    <li>Turnbull J. The Docker Book: Containerization is the new virtualization. Self-published, 2023. 342 p.</li>
+
+    <li>OWASP Top Ten. OWASP Foundation. URL: https://owasp.org/www-project-top-ten/ (дата звернення: 01.11.2024).</li>
+
+    <li>Martin R. C. Clean Architecture: A Craftsman's Guide to Software Structure and Design. Boston: Prentice Hall, 2017. 432 p.</li>
+
+    <li>Fowler M. Patterns of Enterprise Application Architecture. Boston: Addison-Wesley Professional, 2002. 560 p.</li>
+
+    <li>Newman S. Building Microservices: Designing Fine-Grained Systems. 2nd ed. Sebastopol: O'Reilly Media, 2021. 616 p.</li>
+
+    <li>Banks A., Porcello E. Learning React: Modern Patterns for Developing React Apps. 2nd ed. Sebastopol: O'Reilly Media, 2020. 310 p.</li>
+
+    <li>Нова Пошта API Documentation. URL: https://developers.novaposhta.ua/documentation (дата звернення: 15.11.2024).</li>
+
+    <li>WhatsApp Business API Documentation. Meta Platforms Inc. URL: https://developers.facebook.com/docs/whatsapp (дата звернення: 20.11.2024).</li>
+
+    <li>Telegram Bot API Documentation. Telegram FZ LLC. URL: https://core.telegram.org/bots/api (дата звернення: 18.11.2024).</li>
+
+    <li>React Native Documentation. Meta Platforms Inc. URL: https://reactnative.dev/docs/getting-started (дата звернення: 22.10.2024).</li>
+
+    <li>TypeORM Documentation. URL: https://typeorm.io/ (дата звернення: 12.10.2024).</li>
+
+    <li>Jest Documentation. Meta Platforms Inc. URL: https://jestjs.io/docs/getting-started (дата звернення: 28.10.2024).</li>
+
+    <li>Sentry Documentation. Functional Software Inc. URL: https://docs.sentry.io/ (дата звернення: 30.10.2024).</li>
+
+    <li>Richardson L., Ruby S. RESTful Web APIs: Services for a Changing World. Sebastopol: O'Reilly Media, 2013. 406 p.</li>
+
+    <li>Kleppmann M. Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems. Sebastopol: O'Reilly Media, 2017. 616 p.</li>
+</ol>
+
+</body>
+</html>

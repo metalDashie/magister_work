@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розділ 3. Реалізація системи - Огляд інструментів</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14pt;
+            line-height: 1.5;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            text-align: justify;
+        }
+        h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 1.5em;
+        }
+        h3 {
+            font-size: 14pt;
+            font-weight: bold;
+            font-style: italic;
+            margin-top: 1.2em;
+        }
+        p {
+            text-indent: 1.25cm;
+            margin: 0.5em 0;
+        }
+        p.no-indent {
+            text-indent: 0;
+        }
+        ul, ol {
+            margin-left: 1.25cm;
+        }
+        li {
+            margin: 0.3em 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            font-size: 12pt;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .table-caption {
+            text-align: center;
+            font-weight: normal;
+            margin-bottom: 0.5em;
+        }
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 12pt;
+            background-color: #f5f5f5;
+            padding: 1px 4px;
+        }
+        pre {
+            font-family: 'Courier New', monospace;
+            font-size: 11pt;
+            background-color: #f5f5f5;
+            padding: 10px;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>РОЗДІЛ 3. РЕАЛІЗАЦІЯ СИСТЕМИ</h1>
+
+<h2>3.1 Огляд інструментів та засобів для розробки</h2>
+
+<p>Реалізація системи електронної комерції FullMag базується на сучасному стеку технологій, що забезпечує високу продуктивність, масштабованість та зручність розробки. У цьому розділі наведено детальний огляд усіх інструментів та засобів, використаних при створенні системи.</p>
+
+<h3>3.1.1 Архітектура проекту та менеджмент залежностей</h3>
+
+<p><strong>Монорепозиторій (Monorepo)</strong></p>
+
+<p>Проект організовано як монорепозиторій — єдине сховище коду, що містить усі компоненти системи: веб-застосунок, мобільний застосунок, серверну частину та спільні бібліотеки. Така архітектура забезпечує:</p>
+<ul>
+    <li>єдину точку управління версіями коду;</li>
+    <li>спрощене повторне використання коду між різними застосунками;</li>
+    <li>атомарні коміти, що охоплюють зміни в декількох пакетах;</li>
+    <li>централізоване управління залежностями.</li>
+</ul>
+
+<p><strong>pnpm 10.23.0</strong></p>
+
+<p>Для управління залежностями використовується pnpm (Performant NPM) — сучасний менеджер пакетів для Node.js. Основні переваги pnpm:</p>
+<ul>
+    <li>ефективне використання дискового простору завдяки глобальному сховищу пакетів;</li>
+    <li>суворий режим залежностей, що запобігає фантомним залежностям;</li>
+    <li>вбудована підтримка монорепозиторіїв через механізм workspaces;</li>
+    <li>значно швидша швидкість встановлення пакетів порівняно з npm.</li>
+</ul>
+
+<h3>3.1.2 Мова програмування та середовище виконання</h3>
+
+<p><strong>TypeScript 5.3.3</strong></p>
+
+<p>TypeScript є основною мовою програмування проекту. Це надмножина JavaScript, що додає статичну типізацію. Переваги використання TypeScript:</p>
+<ul>
+    <li>раннє виявлення помилок на етапі компіляції;</li>
+    <li>покращена підтримка IDE (автодоповнення, рефакторинг);</li>
+    <li>самодокументований код завдяки типам;</li>
+    <li>підтримка сучасних можливостей ECMAScript.</li>
+</ul>
+
+<p>Базова конфігурація TypeScript включає: Target ES2020, Module ESNext, Strict mode увімкнено, підтримка декораторів увімкнена, Source maps увімкнено для налагодження.</p>
+
+<p><strong>Node.js >= 20.0.0</strong></p>
+
+<p>Node.js є середовищем виконання для серверної частини та інструментів розробки. Версія 20 LTS забезпечує:</p>
+<ul>
+    <li>нативну підтримку ES-модулів;</li>
+    <li>покращену продуктивність JavaScript-рушія V8;</li>
+    <li>вбудований test runner;</li>
+    <li>підтримку watch mode для автоматичного перезавантаження.</li>
+</ul>
+
+<h3>3.1.3 Серверна частина (Backend)</h3>
+
+<p><strong>NestJS 10.3.0</strong></p>
+
+<p>NestJS є основним фреймворком для побудови серверної частини. Це прогресивний Node.js-фреймворк для створення ефективних та масштабованих серверних застосунків. Основні характеристики:</p>
+<ul>
+    <li>архітектура, натхненна Angular (модулі, контролери, сервіси);</li>
+    <li>підтримка TypeScript з коробки;</li>
+    <li>ін'єкція залежностей (Dependency Injection);</li>
+    <li>модульна структура для кращої організації коду;</li>
+    <li>декларативний підхід з використанням декораторів.</li>
+</ul>
+
+<p class="table-caption">Таблиця 3.1 — Основні модулі NestJS</p>
+<table>
+    <tr>
+        <th>Модуль</th>
+        <th>Версія</th>
+        <th>Призначення</th>
+    </tr>
+    <tr>
+        <td>@nestjs/common</td>
+        <td>10.3.0</td>
+        <td>Базові декоратори та утиліти</td>
+    </tr>
+    <tr>
+        <td>@nestjs/core</td>
+        <td>10.3.0</td>
+        <td>Ядро фреймворку</td>
+    </tr>
+    <tr>
+        <td>@nestjs/platform-express</td>
+        <td>10.3.0</td>
+        <td>Інтеграція з Express.js</td>
+    </tr>
+    <tr>
+        <td>@nestjs/config</td>
+        <td>3.1.1</td>
+        <td>Управління конфігурацією</td>
+    </tr>
+    <tr>
+        <td>@nestjs/jwt</td>
+        <td>10.2.0</td>
+        <td>JWT-автентифікація</td>
+    </tr>
+    <tr>
+        <td>@nestjs/passport</td>
+        <td>10.0.3</td>
+        <td>Стратегії автентифікації</td>
+    </tr>
+    <tr>
+        <td>@nestjs/websockets</td>
+        <td>10.3.0</td>
+        <td>WebSocket-підтримка</td>
+    </tr>
+    <tr>
+        <td>@nestjs/platform-socket.io</td>
+        <td>10.3.0</td>
+        <td>Socket.io інтеграція</td>
+    </tr>
+    <tr>
+        <td>@nestjs/bull</td>
+        <td>10.0.1</td>
+        <td>Черги завдань</td>
+    </tr>
+    <tr>
+        <td>@nestjs/schedule</td>
+        <td>6.0.1</td>
+        <td>Планування завдань (cron)</td>
+    </tr>
+</table>
+
+<p><strong>Express.js</strong></p>
+
+<p>Express.js використовується як HTTP-платформа для NestJS. Це мінімалістичний та гнучкий веб-фреймворк для Node.js, що забезпечує обробку HTTP-запитів та відповідей, middleware для розширення функціональності та маршрутизацію запитів.</p>
+
+<h3>3.1.4 База даних та ORM</h3>
+
+<p><strong>PostgreSQL 16</strong></p>
+
+<p>PostgreSQL є основною системою управління базами даних проекту. Це потужна об'єктно-реляційна СУБД з відкритим кодом. Переваги PostgreSQL:</p>
+<ul>
+    <li>ACID-сумісність для надійних транзакцій;</li>
+    <li>розширена підтримка JSON для гнучкого зберігання даних;</li>
+    <li>повнотекстовий пошук;</li>
+    <li>підтримка складних запитів та індексів;</li>
+    <li>висока масштабованість та продуктивність.</li>
+</ul>
+
+<p><strong>TypeORM 0.3.19</strong></p>
+
+<p>TypeORM є Object-Relational Mapping (ORM) бібліотекою для TypeScript та JavaScript. Основні можливості:</p>
+<ul>
+    <li>визначення сутностей за допомогою декораторів;</li>
+    <li>автоматична генерація схеми бази даних;</li>
+    <li>підтримка міграцій для версіонування схеми;</li>
+    <li>Query Builder для складних запитів;</li>
+    <li>підтримка відношень між сутностями (one-to-one, one-to-many, many-to-many).</li>
+</ul>
+
+<p>У проекті визначено 27 сутностей бази даних: User (користувачі системи), Product та ProductAttribute (товари та їх атрибути), Category та Attribute (категорії та характеристики), Cart та CartItem (кошик покупок), Order та OrderItem (замовлення), Payment (платежі), DeliveryAddress (адреси доставки), Review, ReviewLike, ReviewReply та ReviewComplaint (система відгуків), ChatRoom та ChatMessage (чат підтримки), Notification (сповіщення), Coupon та CouponUsage (купони та знижки), Banner (рекламні банери), Wishlist та CompareItem (список бажань та порівняння), ReturnRequest (повернення товарів), AnalyticsSnapshot (аналітика), ImportProfile та ImportHistory (імпорт даних).</p>
+
+<h3>3.1.5 Кешування та черги завдань</h3>
+
+<p><strong>Redis 7</strong></p>
+
+<p>Redis використовується як in-memory сховище даних для кешування та черг завдань. Переваги Redis:</p>
+<ul>
+    <li>надзвичайно висока швидкість операцій читання/запису;</li>
+    <li>підтримка різних структур даних (рядки, хеші, списки, множини);</li>
+    <li>механізм pub/sub для повідомлень;</li>
+    <li>персистентність даних за потреби.</li>
+</ul>
+
+<p><strong>Bull 4.12.0</strong></p>
+
+<p>Bull — бібліотека для управління чергами завдань на основі Redis. Використовується для асинхронної обробки email-сповіщень, фонових завдань імпорту даних, відкладених операцій (нагадування про покинуті кошики) та розподілу навантаження.</p>
+
+<h3>3.1.6 Пошукова система</h3>
+
+<p><strong>Elasticsearch 8.11.0</strong></p>
+
+<p>Elasticsearch використовується для повнотекстового пошуку товарів. Це розподілена пошукова та аналітична система. Можливості:</p>
+<ul>
+    <li>швидкий повнотекстовий пошук;</li>
+    <li>нечіткий пошук (fuzzy search) для обробки помилок;</li>
+    <li>фасетна фільтрація;</li>
+    <li>автодоповнення та підказки;</li>
+    <li>масштабування на кілька вузлів.</li>
+</ul>
+
+<p>Інтеграція реалізована через офіційний клієнт @elastic/elasticsearch версії 9.2.0.</p>
+
+<h3>3.1.7 Веб-застосунок (Frontend)</h3>
+
+<p><strong>Next.js 14.1.0</strong></p>
+
+<p>Next.js є React-фреймворком для веб-застосунку. Це production-ready фреймворк з підтримкою серверного рендерингу. Ключові можливості:</p>
+<ul>
+    <li>Server-Side Rendering (SSR) для SEO-оптимізації;</li>
+    <li>Static Site Generation (SSG) для статичних сторінок;</li>
+    <li>App Router для маршрутизації;</li>
+    <li>API Routes для серверних endpoint'ів;</li>
+    <li>автоматична оптимізація зображень;</li>
+    <li>вбудована підтримка CSS та Sass.</li>
+</ul>
+
+<p><strong>React 18.2.0</strong></p>
+
+<p>React є основною бібліотекою для побудови користувацького інтерфейсу. Особливості версії 18:</p>
+<ul>
+    <li>Concurrent Rendering для покращеної відгуку;</li>
+    <li>Automatic Batching для оптимізації оновлень;</li>
+    <li>Transitions API для плавних переходів;</li>
+    <li>Suspense для асинхронного завантаження.</li>
+</ul>
+
+<p><strong>Tailwind CSS 3.4.1</strong></p>
+
+<p>Tailwind CSS — utility-first CSS-фреймворк для швидкої розробки інтерфейсів. Переваги:</p>
+<ul>
+    <li>низькорівневі утилітарні класи;</li>
+    <li>кастомізація через конфігурацію;</li>
+    <li>автоматичне видалення невикористаних стилів (PurgeCSS);</li>
+    <li>адаптивний дизайн з коробки;</li>
+    <li>темна тема та кастомні кольори.</li>
+</ul>
+
+<p><strong>Zustand 4.5.0</strong></p>
+
+<p>Zustand використовується для управління станом застосунку. Це легка альтернатива Redux з простим API: мінімалістичний розмір бандлу, відсутність boilerplate-коду, підтримка middleware та інтеграція з React DevTools.</p>
+
+<p><strong>React Hook Form 7.49.3 + Zod 3.22.4</strong></p>
+
+<p>Для роботи з формами використовується комбінація React Hook Form та Zod: декларативна валідація через схеми Zod, мінімальні ре-рендери компонентів, підтримка складних форм та масивів, TypeScript-first підхід до валідації.</p>
+
+<p><strong>Recharts 3.4.1</strong></p>
+
+<p>Recharts — бібліотека для візуалізації даних в адмін-панелі: побудова графіків та діаграм, адаптивність та анімації, інтеграція з React-компонентами.</p>
+
+<h3>3.1.8 Мобільний застосунок</h3>
+
+<p><strong>React Native 0.82.1</strong></p>
+
+<p>React Native використовується для розробки кросплатформного мобільного застосунку. Переваги:</p>
+<ul>
+    <li>єдина кодова база для iOS та Android;</li>
+    <li>нативна продуктивність;</li>
+    <li>hot reloading для швидкої розробки;</li>
+    <li>великий екосистем бібліотек.</li>
+</ul>
+
+<p class="table-caption">Таблиця 3.2 — Бібліотеки навігації React Navigation</p>
+<table>
+    <tr>
+        <th>Модуль</th>
+        <th>Версія</th>
+        <th>Призначення</th>
+    </tr>
+    <tr>
+        <td>@react-navigation/native</td>
+        <td>7.1.20</td>
+        <td>Базова навігація</td>
+    </tr>
+    <tr>
+        <td>@react-navigation/bottom-tabs</td>
+        <td>7.8.6</td>
+        <td>Нижня панель вкладок</td>
+    </tr>
+    <tr>
+        <td>@react-navigation/stack</td>
+        <td>7.6.5</td>
+        <td>Стекова навігація</td>
+    </tr>
+</table>
+
+<p><strong>Redux Toolkit 2.10.1 + Redux-Persist 6.0.0</strong></p>
+
+<p>Для управління станом мобільного застосунку використовується Redux Toolkit: централізоване сховище стану, Redux-Persist для збереження стану між сесіями, інтеграція з react-native-mmkv для шифрованого сховища.</p>
+
+<p><strong>react-native-mmkv 3.1.0</strong></p>
+
+<p>MMKV — високопродуктивне key-value сховище від WeChat: швидкість в 30 разів вища за AsyncStorage, підтримка шифрування, синхронний API.</p>
+
+<p><strong>Додаткові бібліотеки мобільного застосунку:</strong></p>
+<ul>
+    <li>react-native-gesture-handler 2.29.1 — обробка жестів;</li>
+    <li>react-native-screens 4.18.0 — нативні екрани;</li>
+    <li>react-native-safe-area-context 5.6.2 — безпечні зони;</li>
+    <li>react-native-vector-icons 10.3.0 — іконки.</li>
+</ul>
+
+<h3>3.1.9 Комунікація в реальному часі</h3>
+
+<p><strong>Socket.io 4.6.1</strong></p>
+
+<p>Socket.io забезпечує двосторонню комунікацію в реальному часі:</p>
+<ul>
+    <li>WebSocket з fallback на HTTP long-polling;</li>
+    <li>автоматичне перепідключення;</li>
+    <li>кімнати та простори імен;</li>
+    <li>broadcast-повідомлення.</li>
+</ul>
+
+<p>Використовується для онлайн-чату підтримки, сповіщень у реальному часі та оновлення статусу замовлень.</p>
+
+<h3>3.1.10 Автентифікація та безпека</h3>
+
+<p><strong>Passport.js 0.7.0 + JWT</strong></p>
+
+<p>Система автентифікації побудована на Passport.js з JWT-стратегією:</p>
+<ul>
+    <li>Local Strategy — автентифікація за email/паролем;</li>
+    <li>JWT Strategy — перевірка токенів доступу;</li>
+    <li>bcryptjs 2.4.3 — хешування паролів;</li>
+    <li>Refresh tokens — оновлення токенів доступу.</li>
+</ul>
+
+<p><strong>Захист від OWASP Top 10:</strong></p>
+<ul>
+    <li>SQL Injection — параметризовані запити TypeORM;</li>
+    <li>XSS — автоматичне екранування React;</li>
+    <li>CSRF — CORS та перевірка origin;</li>
+    <li>Broken Authentication — JWT з обмеженим терміном дії.</li>
+</ul>
+
+<h3>3.1.11 Платіжна система</h3>
+
+<p><strong>Stripe 20.0.0</strong></p>
+
+<p>Stripe використовується для обробки онлайн-платежів:</p>
+<ul>
+    <li>Stripe Elements для безпечного введення карткових даних;</li>
+    <li>Payment Intents API для керування платежами;</li>
+    <li>Webhooks для підтвердження оплати;</li>
+    <li>PCI DSS Level 1 сумісність.</li>
+</ul>
+
+<p>Клієнтські бібліотеки: @stripe/stripe-js 8.5.2 (JavaScript SDK), @stripe/react-stripe-js 5.4.0 (React-компоненти).</p>
+
+<h3>3.1.12 Email та сповіщення</h3>
+
+<p><strong>Nodemailer 6.9.8</strong></p>
+
+<p>Nodemailer використовується для надсилання email-повідомлень: підтвердження реєстрації, відновлення паролю, сповіщення про замовлення, нагадування про покинуті кошики.</p>
+
+<p><strong>Handlebars 4.7.8</strong></p>
+
+<p>Handlebars — шаблонізатор для HTML-листів з підтримкою змінних та виразів, умовних блоків, циклів та ітерацій.</p>
+
+<p><strong>Mailpit</strong> (середовище розробки)</p>
+
+<p>Mailpit використовується для тестування email у локальному середовищі: веб-інтерфейс на порту 8025, SMTP-сервер на порту 1025, перехоплення всіх вихідних листів.</p>
+
+<h3>3.1.13 Інтеграція з месенджерами</h3>
+
+<p><strong>node-telegram-bot-api 0.66.0</strong></p>
+
+<p>Telegram Bot API для сповіщень адміністраторів: сповіщення про нові замовлення, критичні помилки системи, статистика продажів.</p>
+
+<p><strong>WhatsApp Cloud API</strong></p>
+
+<p>Окремий мікросервіс для інтеграції з WhatsApp Business: сповіщення клієнтів про статус замовлень, автоматичні відповіді, маркетингові розсилки.</p>
+
+<h3>3.1.14 Моніторинг та логування</h3>
+
+<p><strong>Sentry 10.26.0</strong></p>
+
+<p>Sentry використовується для моніторингу помилок:</p>
+<ul>
+    <li>автоматичне відстеження винятків;</li>
+    <li>контекст помилок (користувач, запит);</li>
+    <li>performance monitoring;</li>
+    <li>release tracking.</li>
+</ul>
+
+<p>Модулі: @sentry/nestjs 10.26.0 (інтеграція з NestJS), @sentry/profiling-node 10.26.0 (профілювання продуктивності).</p>
+
+<h3>3.1.15 Валідація даних</h3>
+
+<p><strong>class-validator 0.14.1 + class-transformer 0.5.1</strong></p>
+
+<p>Валідація вхідних даних на рівні API: декоратори для визначення правил валідації, автоматична трансформація типів, кастомні валідатори, глобальний ValidationPipe в NestJS.</p>
+
+<p><strong>Zod 3.22.4</strong></p>
+
+<p>Валідація на рівні клієнтських застосунків та спільних типів: TypeScript-first схеми, автоматичне виведення типів, парсинг та валідація даних.</p>
+
+<h3>3.1.16 Тестування</h3>
+
+<p><strong>Jest 29.x</strong></p>
+
+<p>Jest — основний фреймворк для тестування: модульні тести, інтеграційні тести, coverage reports, snapshot testing.</p>
+
+<p>Додаткові інструменти: ts-jest 29.1.1 (підтримка TypeScript), @nestjs/testing 10.3.0 (тестування NestJS-модулів), React Test Renderer 19.1.1 (тестування React Native).</p>
+
+<h3>3.1.17 Інструменти якості коду</h3>
+
+<p><strong>ESLint 8.56.0</strong></p>
+
+<p>ESLint забезпечує статичний аналіз коду: виявлення потенційних помилок, дотримання стилю коду, TypeScript-специфічні правила. Плагіни: @typescript-eslint/parser 6.19.0, @typescript-eslint/eslint-plugin 6.19.0.</p>
+
+<p><strong>Prettier 3.2.4</strong></p>
+
+<p>Prettier — форматувальник коду: автоматичне форматування, інтеграція з ESLint, підтримка багатьох форматів файлів.</p>
+
+<h3>3.1.18 Контейнеризація та розгортання</h3>
+
+<p><strong>Docker</strong></p>
+
+<p>Docker використовується для контейнеризації сервісів: ізоляція середовища виконання, відтворюваність builds, простота розгортання.</p>
+
+<p>Dockerfile'и використовують multi-stage builds для оптимізації: base (встановлення pnpm), dependencies (встановлення залежностей), build (компіляція TypeScript), production (фінальний образ).</p>
+
+<p><strong>Docker Compose</strong></p>
+
+<p>Docker Compose оркеструє багатоконтейнерне середовище:</p>
+
+<p class="table-caption">Таблиця 3.3 — Сервіси Docker Compose</p>
+<table>
+    <tr>
+        <th>Сервіс</th>
+        <th>Образ</th>
+        <th>Порт</th>
+        <th>Призначення</th>
+    </tr>
+    <tr>
+        <td>PostgreSQL</td>
+        <td>postgres:16-alpine</td>
+        <td>10050</td>
+        <td>База даних</td>
+    </tr>
+    <tr>
+        <td>Redis</td>
+        <td>redis:7-alpine</td>
+        <td>10100</td>
+        <td>Кеш та черги</td>
+    </tr>
+    <tr>
+        <td>Elasticsearch</td>
+        <td>elasticsearch:8.11.0</td>
+        <td>9200</td>
+        <td>Пошук</td>
+    </tr>
+    <tr>
+        <td>Mailpit</td>
+        <td>mailpit</td>
+        <td>8025/1025</td>
+        <td>Email (dev)</td>
+    </tr>
+    <tr>
+        <td>API</td>
+        <td>node:20-alpine</td>
+        <td>10001</td>
+        <td>Backend</td>
+    </tr>
+    <tr>
+        <td>Web</td>
+        <td>node:20-alpine</td>
+        <td>10002</td>
+        <td>Frontend</td>
+    </tr>
+</table>
+
+<p><strong>Nginx</strong></p>
+
+<p>Nginx використовується як reverse proxy: маршрутизація запитів до сервісів, SSL/TLS термінація, статичні файли, load balancing.</p>
+
+<h3>3.1.19 Обробка даних</h3>
+
+<p><strong>PapaParse 5.4.1</strong></p>
+
+<p>PapaParse використовується для імпорту CSV-файлів: парсинг великих файлів, потокова обробка, автоматичне визначення типів.</p>
+
+<p><strong>Multer 1.4.5-lts.1</strong></p>
+
+<p>Multer — middleware для завантаження файлів: обробка multipart/form-data, конфігурація збереження файлів, валідація типів та розмірів.</p>
+
+<h3>3.1.20 HTTP-клієнт</h3>
+
+<p><strong>Axios 1.6.x</strong></p>
+
+<p>Axios використовується для HTTP-запитів на всіх платформах: Promise-based API, interceptors для токенів та помилок, автоматична серіалізація JSON, підтримка скасування запитів.</p>
+
+<h3>3.1.21 Інтернаціоналізація</h3>
+
+<p>Мобільний застосунок підтримує локалізацію: українська мова (uk), англійська мова (en). Локалізаційні файли розташовані в директорії apps/mobile_cool/src/i18n/.</p>
+
+<h3>3.1.22 Зведена таблиця технологій</h3>
+
+<p class="table-caption">Таблиця 3.4 — Основні технології системи FullMag</p>
+<table>
+    <tr>
+        <th>Категорія</th>
+        <th>Технологія</th>
+        <th>Версія</th>
+        <th>Призначення</th>
+    </tr>
+    <tr>
+        <td>Мова</td>
+        <td>TypeScript</td>
+        <td>5.3.3</td>
+        <td>Основна мова розробки</td>
+    </tr>
+    <tr>
+        <td>Runtime</td>
+        <td>Node.js</td>
+        <td>>=20.0.0</td>
+        <td>Середовище виконання</td>
+    </tr>
+    <tr>
+        <td>Package Manager</td>
+        <td>pnpm</td>
+        <td>10.23.0</td>
+        <td>Управління залежностями</td>
+    </tr>
+    <tr>
+        <td>Backend Framework</td>
+        <td>NestJS</td>
+        <td>10.3.0</td>
+        <td>Серверний фреймворк</td>
+    </tr>
+    <tr>
+        <td>Web Framework</td>
+        <td>Next.js</td>
+        <td>14.1.0</td>
+        <td>Веб-застосунок</td>
+    </tr>
+    <tr>
+        <td>Mobile Framework</td>
+        <td>React Native</td>
+        <td>0.82.1</td>
+        <td>Мобільний застосунок</td>
+    </tr>
+    <tr>
+        <td>UI Library</td>
+        <td>React</td>
+        <td>18.2.0 / 19.1.1</td>
+        <td>Користувацький інтерфейс</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>PostgreSQL</td>
+        <td>16</td>
+        <td>Реляційна БД</td>
+    </tr>
+    <tr>
+        <td>ORM</td>
+        <td>TypeORM</td>
+        <td>0.3.19</td>
+        <td>Object-Relational Mapping</td>
+    </tr>
+    <tr>
+        <td>Cache</td>
+        <td>Redis</td>
+        <td>7</td>
+        <td>Кешування</td>
+    </tr>
+    <tr>
+        <td>Search</td>
+        <td>Elasticsearch</td>
+        <td>8.11.0</td>
+        <td>Повнотекстовий пошук</td>
+    </tr>
+    <tr>
+        <td>Queue</td>
+        <td>Bull</td>
+        <td>4.12.0</td>
+        <td>Черги завдань</td>
+    </tr>
+    <tr>
+        <td>Real-time</td>
+        <td>Socket.io</td>
+        <td>4.6.1</td>
+        <td>WebSocket комунікація</td>
+    </tr>
+    <tr>
+        <td>Auth</td>
+        <td>Passport + JWT</td>
+        <td>0.7.0</td>
+        <td>Автентифікація</td>
+    </tr>
+    <tr>
+        <td>Payments</td>
+        <td>Stripe</td>
+        <td>20.0.0</td>
+        <td>Обробка платежів</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>Nodemailer</td>
+        <td>6.9.8</td>
+        <td>Email-розсилки</td>
+    </tr>
+    <tr>
+        <td>Monitoring</td>
+        <td>Sentry</td>
+        <td>10.26.0</td>
+        <td>Моніторинг помилок</td>
+    </tr>
+    <tr>
+        <td>CSS</td>
+        <td>Tailwind CSS</td>
+        <td>3.4.1</td>
+        <td>Стилізація (web)</td>
+    </tr>
+    <tr>
+        <td>State (Web)</td>
+        <td>Zustand</td>
+        <td>4.5.0</td>
+        <td>Управління станом</td>
+    </tr>
+    <tr>
+        <td>State (Mobile)</td>
+        <td>Redux Toolkit</td>
+        <td>2.10.1</td>
+        <td>Управління станом</td>
+    </tr>
+    <tr>
+        <td>Testing</td>
+        <td>Jest</td>
+        <td>29.x</td>
+        <td>Тестування</td>
+    </tr>
+    <tr>
+        <td>Linting</td>
+        <td>ESLint</td>
+        <td>8.56.0</td>
+        <td>Аналіз коду</td>
+    </tr>
+    <tr>
+        <td>Formatting</td>
+        <td>Prettier</td>
+        <td>3.2.4</td>
+        <td>Форматування коду</td>
+    </tr>
+    <tr>
+        <td>Containerization</td>
+        <td>Docker</td>
+        <td>-</td>
+        <td>Контейнеризація</td>
+    </tr>
+    <tr>
+        <td>Orchestration</td>
+        <td>Docker Compose</td>
+        <td>3.8</td>
+        <td>Оркестрація контейнерів</td>
+    </tr>
+    <tr>
+        <td>Reverse Proxy</td>
+        <td>Nginx</td>
+        <td>alpine</td>
+        <td>Проксі-сервер</td>
+    </tr>
+</table>
+
+<h3>3.1.23 Структура проекту</h3>
+
+<pre>
+fullmag/
+├── apps/
+│   ├── web/                    # Next.js веб-застосунок
+│   │   ├── src/
+│   │   │   ├── app/           # App Router сторінки
+│   │   │   ├── components/    # React компоненти
+│   │   │   ├── lib/           # Утиліти та сервіси
+│   │   │   └── styles/        # Tailwind стилі
+│   │   ├── public/            # Статичні файли
+│   │   └── Dockerfile
+│   └── mobile_cool/           # React Native застосунок
+│       ├── src/
+│       │   ├── screens/       # Екрани застосунку
+│       │   ├── components/    # UI компоненти
+│       │   ├── navigation/    # Навігація
+│       │   ├── store/         # Redux store
+│       │   ├── services/      # API сервіси
+│       │   └── i18n/          # Локалізація
+│       └── android/ios/       # Нативний код
+├── services/
+│   ├── api/                   # NestJS API сервіс
+│   │   ├── src/
+│   │   │   ├── modules/       # Функціональні модулі
+│   │   │   ├── database/      # Сутності та міграції
+│   │   │   ├── gateways/      # WebSocket гейтвеї
+│   │   │   └── templates/     # Email шаблони
+│   │   └── Dockerfile
+│   └── whatsapp/              # WhatsApp мікросервіс
+├── packages/
+│   └── common/                # Спільні типи та утиліти
+├── infra/                     # Інфраструктурні конфігурації
+├── nginx/                     # Nginx конфігурація
+├── docker-compose.yml         # Docker Compose для розробки
+└── docker-compose.prod.yml    # Docker Compose для production
+</pre>
+
+<h3>3.1.24 Порти та сервіси</h3>
+
+<p class="table-caption">Таблиця 3.5 — Конфігурація портів системи</p>
+<table>
+    <tr>
+        <th>Сервіс</th>
+        <th>Порт</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>API (NestJS)</td>
+        <td>10001</td>
+        <td>REST API та WebSocket</td>
+    </tr>
+    <tr>
+        <td>Web (Next.js)</td>
+        <td>10002</td>
+        <td>Веб-застосунок</td>
+    </tr>
+    <tr>
+        <td>Mobile Metro</td>
+        <td>10050</td>
+        <td>Metro bundler</td>
+    </tr>
+    <tr>
+        <td>PostgreSQL</td>
+        <td>10050</td>
+        <td>База даних</td>
+    </tr>
+    <tr>
+        <td>Redis</td>
+        <td>10100</td>
+        <td>Кеш та черги</td>
+    </tr>
+    <tr>
+        <td>Elasticsearch</td>
+        <td>9200</td>
+        <td>Пошукова система</td>
+    </tr>
+    <tr>
+        <td>Mailpit Web UI</td>
+        <td>8025</td>
+        <td>Email тестування</td>
+    </tr>
+    <tr>
+        <td>Mailpit SMTP</td>
+        <td>1025</td>
+        <td>SMTP сервер</td>
+    </tr>
+</table>
+
+<h3>3.1.25 Висновки до підрозділу</h3>
+
+<p>Обрані інструменти та технології забезпечують:</p>
+
+<p><strong>1. Продуктивність розробки</strong> — TypeScript, NestJS та React забезпечують швидку розробку з мінімальною кількістю помилок завдяки статичній типізації.</p>
+
+<p><strong>2. Масштабованість</strong> — мікросервісна архітектура, Redis для кешування та Bull для черг дозволяють системі масштабуватися горизонтально.</p>
+
+<p><strong>3. Кросплатформність</strong> — спільна кодова база для веб та мобільних платформ через React та React Native знижує витрати на підтримку.</p>
+
+<p><strong>4. Безпека</strong> — JWT-автентифікація, bcrypt-хешування паролів, CORS та захист від OWASP Top 10 забезпечують надійний захист даних.</p>
+
+<p><strong>5. Зручність розгортання</strong> — Docker та Docker Compose спрощують налаштування середовищ розробки та production.</p>
+
+<p><strong>6. Якість коду</strong> — ESLint, Prettier та Jest забезпечують дотримання стандартів коду та покриття тестами.</p>
+
+</body>
+</html>

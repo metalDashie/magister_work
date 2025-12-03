@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Розділ 4. Тестування та налагодження системи</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14pt;
+            line-height: 1.5;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        p {
+            text-align: justify;
+            text-indent: 1.25cm;
+        }
+        ul {
+            margin-left: 1.25cm;
+        }
+        li {
+            text-align: justify;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0 20px 0;
+            font-size: 12pt;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table-caption {
+            text-align: center;
+            font-weight: normal;
+            margin: 15px 0 5px 0;
+        }
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>РОЗДІЛ 4. ТЕСТУВАННЯ ТА НАЛАГОДЖЕННЯ СИСТЕМИ</h1>
+
+<h2>4.1 Загальні положення тестування застосунку</h2>
+
+<p>Тестування програмного забезпечення є невід'ємною частиною процесу розробки та забезпечує якість, надійність і стабільність роботи системи FullMag. Метою тестування є виявлення дефектів, перевірка відповідності функціональних вимог та забезпечення належного рівня користувацького досвіду.</p>
+
+<p>Для тестування системи використовуються наступні інструменти та фреймворки:</p>
+<ul>
+    <li>Jest — основний фреймворк для модульного та інтеграційного тестування;</li>
+    <li>React Testing Library — бібліотека для тестування React-компонентів;</li>
+    <li>React Test Renderer — інструмент для тестування React Native компонентів;</li>
+    <li>Postman — інструмент для ручного тестування API-ендпоінтів;</li>
+    <li>Chrome DevTools — інструменти розробника для налагодження веб-застосунку.</li>
+</ul>
+
+<p>Рівні тестування, що застосовуються у проєкті:</p>
+<ul>
+    <li>модульне тестування (Unit Testing) — перевірка окремих функцій, сервісів та компонентів;</li>
+    <li>інтеграційне тестування (Integration Testing) — перевірка взаємодії між модулями системи;</li>
+    <li>функціональне тестування (Functional Testing) — перевірка відповідності бізнес-вимогам;</li>
+    <li>UI-тестування (User Interface Testing) — перевірка коректності відображення інтерфейсу;</li>
+    <li>тестування безпеки (Security Testing) — перевірка захищеності системи від вразливостей.</li>
+</ul>
+
+<p>Процес тестування включає наступні етапи:</p>
+<ul>
+    <li>планування тестування та визначення тестових сценаріїв;</li>
+    <li>розробка тестових випадків (test cases);</li>
+    <li>виконання тестів та фіксація результатів;</li>
+    <li>аналіз виявлених дефектів та їх класифікація;</li>
+    <li>повторне тестування після виправлення дефектів;</li>
+    <li>регресійне тестування для перевірки стабільності системи.</li>
+</ul>
+
+<h2>4.2 Функціональне тестування</h2>
+
+<p>Функціональне тестування спрямоване на перевірку відповідності реалізованих функцій системи визначеним вимогам. Тестування охоплює всі основні модулі системи.</p>
+
+<p>Тестування модуля автентифікації:</p>
+
+<p class="table-caption">Таблиця 4.1 — Тестові випадки модуля автентифікації</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Вхідні дані</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Реєстрація нового користувача</td>
+        <td>email: test@mail.com, password: Test123!</td>
+        <td>Користувача створено, надіслано лист підтвердження</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Реєстрація з існуючим email</td>
+        <td>email: existing@mail.com</td>
+        <td>Помилка: "User with this email already exists"</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Вхід з валідними даними</td>
+        <td>email: test@mail.com, password: Test123!</td>
+        <td>Отримано access_token, перенаправлення на головну сторінку</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Вхід з невірним паролем</td>
+        <td>email: test@mail.com, password: wrong</td>
+        <td>Помилка: "Invalid credentials"</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Відновлення паролю</td>
+        <td>email: test@mail.com</td>
+        <td>Надіслано лист з посиланням для скидання</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>Верифікація email</td>
+        <td>token: valid_token</td>
+        <td>Email підтверджено успішно</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування модуля товарів:</p>
+
+<p class="table-caption">Таблиця 4.2 — Тестові випадки модуля товарів</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Вхідні дані</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Отримання списку товарів</td>
+        <td>GET /products</td>
+        <td>Масив товарів з пагінацією</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Пошук товару за назвою</td>
+        <td>search: "телефон"</td>
+        <td>Відфільтровані товари</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Фільтрація за категорією</td>
+        <td>categoryId: 1</td>
+        <td>Товари обраної категорії</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Сортування за ціною</td>
+        <td>sort: price_asc</td>
+        <td>Товари відсортовані за зростанням ціни</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Перегляд деталей товару</td>
+        <td>GET /products/1</td>
+        <td>Повна інформація про товар</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>Додавання товару (адмін)</td>
+        <td>POST /products з даними</td>
+        <td>Товар створено успішно</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування модуля кошика та замовлень:</p>
+
+<p class="table-caption">Таблиця 4.3 — Тестові випадки модуля кошика та замовлень</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Вхідні дані</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Додавання товару в кошик</td>
+        <td>productId: 1, quantity: 2</td>
+        <td>Товар додано до кошика</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Зміна кількості товару</td>
+        <td>cartItemId: 1, quantity: 5</td>
+        <td>Кількість оновлено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Видалення товару з кошика</td>
+        <td>cartItemId: 1</td>
+        <td>Товар видалено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Застосування купона</td>
+        <td>code: "DISCOUNT10"</td>
+        <td>Знижку застосовано</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Оформлення замовлення</td>
+        <td>Дані доставки, оплати</td>
+        <td>Замовлення створено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>Перегляд історії замовлень</td>
+        <td>GET /orders</td>
+        <td>Список замовлень користувача</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування модуля оплати (Stripe):</p>
+
+<p class="table-caption">Таблиця 4.4 — Тестові випадки модуля оплати</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Вхідні дані</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Створення платіжного наміру</td>
+        <td>orderId, amount</td>
+        <td>PaymentIntent створено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Успішна оплата</td>
+        <td>Тестова картка 4242...</td>
+        <td>Платіж підтверджено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Відхилена картка</td>
+        <td>Тестова картка 4000...</td>
+        <td>Помилка оплати</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Webhook підтвердження</td>
+        <td>payment_intent.succeeded</td>
+        <td>Статус замовлення оновлено</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<h2>4.3 UI Тестування</h2>
+
+<p>UI-тестування забезпечує перевірку коректності відображення та поведінки користувацького інтерфейсу на різних платформах та пристроях.</p>
+
+<p>Тестування веб-інтерфейсу:</p>
+
+<p class="table-caption">Таблиця 4.5 — Тестові випадки веб-інтерфейсу</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Компонент</th>
+        <th>Критерій перевірки</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Header</td>
+        <td>Відображення навігації</td>
+        <td>Логотип, меню, пошук, кошик відображаються</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>ProductCard</td>
+        <td>Відображення картки товару</td>
+        <td>Зображення, назва, ціна, кнопка "В кошик"</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>FilterSidebar</td>
+        <td>Фільтри на сторінці товарів</td>
+        <td>Категорії, ціна, атрибути працюють</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>CartPage</td>
+        <td>Сторінка кошика</td>
+        <td>Список товарів, підсумок, кнопка оформлення</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>CheckoutPage</td>
+        <td>Сторінка оформлення</td>
+        <td>Форма доставки, вибір оплати</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>AdminDashboard</td>
+        <td>Панель адміністратора</td>
+        <td>Статистика, графіки, навігація</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування адаптивності веб-інтерфейсу:</p>
+
+<p class="table-caption">Таблиця 4.6 — Тестування адаптивності</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Роздільна здатність</th>
+        <th>Пристрій</th>
+        <th>Результат відображення</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>1920×1080</td>
+        <td>Desktop</td>
+        <td>Повне відображення, 4 колонки товарів</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>1366×768</td>
+        <td>Laptop</td>
+        <td>Коректне відображення, 3 колонки</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>768×1024</td>
+        <td>Tablet</td>
+        <td>Адаптивне меню, 2 колонки</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>375×667</td>
+        <td>Mobile</td>
+        <td>Мобільне меню, 1 колонка</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування мобільного застосунку:</p>
+
+<p class="table-caption">Таблиця 4.7 — Тестові випадки мобільного застосунку</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Екран</th>
+        <th>Критерій перевірки</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>HomeScreen</td>
+        <td>Головний екран</td>
+        <td>Банери, категорії, популярні товари</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>ProductsScreen</td>
+        <td>Каталог товарів</td>
+        <td>Список товарів, фільтри, пошук</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>ProductDetailScreen</td>
+        <td>Деталі товару</td>
+        <td>Галерея, опис, характеристики, кнопки</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>CartScreen</td>
+        <td>Кошик</td>
+        <td>Список товарів, зміна кількості, підсумок</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>LoginScreen</td>
+        <td>Авторизація</td>
+        <td>Форма входу, валідація, помилки</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>ProfileScreen</td>
+        <td>Профіль користувача</td>
+        <td>Дані профілю, налаштування, вихід</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Крос-браузерне тестування:</p>
+
+<p class="table-caption">Таблиця 4.8 — Результати крос-браузерного тестування</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Браузер</th>
+        <th>Версія</th>
+        <th>Платформа</th>
+        <th>Результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Google Chrome</td>
+        <td>120+</td>
+        <td>Windows/macOS</td>
+        <td>Повна сумісність</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Mozilla Firefox</td>
+        <td>120+</td>
+        <td>Windows/macOS</td>
+        <td>Повна сумісність</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Safari</td>
+        <td>17+</td>
+        <td>macOS</td>
+        <td>Повна сумісність</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Microsoft Edge</td>
+        <td>120+</td>
+        <td>Windows</td>
+        <td>Повна сумісність</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<h2>4.4 Тестування безпеки</h2>
+
+<p>Тестування безпеки спрямоване на виявлення вразливостей та забезпечення захисту даних користувачів і системи в цілому.</p>
+
+<p>Тестування автентифікації та авторизації:</p>
+
+<p class="table-caption">Таблиця 4.9 — Тестові випадки безпеки автентифікації</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Метод перевірки</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Хешування паролів</td>
+        <td>Перевірка БД</td>
+        <td>Паролі зберігаються у вигляді bcrypt-хешу</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>JWT токени</td>
+        <td>Аналіз токена</td>
+        <td>Токен містить мінімум даних, має термін дії</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Захист маршрутів</td>
+        <td>Запит без токена</td>
+        <td>Відповідь 401 Unauthorized</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Перевірка ролей</td>
+        <td>Запит адмін-ендпоінту</td>
+        <td>Доступ лише для ролі admin</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Брутфорс захист</td>
+        <td>Множинні невірні спроби</td>
+        <td>Rate limiting активовано</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування захисту від OWASP Top 10:</p>
+
+<p class="table-caption">Таблиця 4.10 — Тестування OWASP вразливостей</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Вразливість</th>
+        <th>Метод тестування</th>
+        <th>Результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>SQL Injection</td>
+        <td>Ін'єкція в параметри</td>
+        <td>Запити параметризовані (TypeORM)</td>
+        <td class="center">Захищено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>XSS (Cross-Site Scripting)</td>
+        <td>Введення скриптів</td>
+        <td>React екранує вивід автоматично</td>
+        <td class="center">Захищено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>CSRF</td>
+        <td>Підроблені запити</td>
+        <td>CORS налаштовано, перевірка origin</td>
+        <td class="center">Захищено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Broken Authentication</td>
+        <td>Перевірка сесій</td>
+        <td>JWT з обмеженим терміном дії</td>
+        <td class="center">Захищено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Sensitive Data Exposure</td>
+        <td>Аналіз відповідей API</td>
+        <td>Паролі та токени не повертаються</td>
+        <td class="center">Захищено</td>
+    </tr>
+    <tr>
+        <td class="center">6</td>
+        <td>Security Misconfiguration</td>
+        <td>Перевірка заголовків</td>
+        <td>HTTP security headers налаштовано</td>
+        <td class="center">Захищено</td>
+    </tr>
+</table>
+
+<p>Тестування захисту даних:</p>
+
+<p class="table-caption">Таблиця 4.11 — Тестові випадки захисту даних</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Опис перевірки</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Шифрування з'єднання</td>
+        <td>Перевірка HTTPS</td>
+        <td>TLS 1.3 для всіх з'єднань</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Валідація вхідних даних</td>
+        <td>Відправка некоректних даних</td>
+        <td>class-validator відхиляє невалідні дані</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Санітизація даних</td>
+        <td>Введення спецсимволів</td>
+        <td>Дані очищуються перед збереженням</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Захист API ключів</td>
+        <td>Перевірка коду</td>
+        <td>Ключі зберігаються в .env файлах</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">5</td>
+        <td>Логування подій</td>
+        <td>Перевірка логів</td>
+        <td>Критичні події логуються (Sentry)</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+<p>Тестування безпеки платіжної системи:</p>
+
+<p class="table-caption">Таблиця 4.12 — Тестові випадки безпеки платежів</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Тестовий випадок</th>
+        <th>Метод перевірки</th>
+        <th>Очікуваний результат</th>
+        <th>Статус</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>PCI DSS сумісність</td>
+        <td>Аналіз інтеграції</td>
+        <td>Stripe Elements — дані карток не зберігаються</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Webhook автентифікація</td>
+        <td>Перевірка підпису</td>
+        <td>Stripe signature verification активовано</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Ідемпотентність платежів</td>
+        <td>Повторні запити</td>
+        <td>Дублювання платежів неможливе</td>
+        <td class="center">Пройдено</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Захист від підміни суми</td>
+        <td>Маніпуляція запитом</td>
+        <td>Сума перевіряється на сервері</td>
+        <td class="center">Пройдено</td>
+    </tr>
+</table>
+
+</body>
+</html>
