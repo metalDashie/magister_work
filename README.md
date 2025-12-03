@@ -2,6 +2,13 @@
 
 A comprehensive multi-platform e-commerce system built with modern technologies, supporting web, mobile (iOS/Android), and desktop platforms.
 
+
+## Commands
+
+```
+docker-compose -f docker-compose.infra.yml up -d
+```
+
 ## Project Overview
 
 This is a master's thesis project that demonstrates the development of a multi-platform online store system using:

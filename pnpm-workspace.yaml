@@ -1,5 +1,6 @@
 packages:
   - 'apps/*'
   - '!apps/mobile_ok'
+  - '!apps/mobile_cool'
   - 'packages/*'
   - 'services/*'
