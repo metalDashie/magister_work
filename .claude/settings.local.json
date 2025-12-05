@@ -73,7 +73,11 @@
       "Bash(pnpm list:*)",
       "Bash(pnpm start:reset-cache)",
       "Bash(npm install:*)",
-      "Bash(ipconfig:*)"
+      "Bash(ipconfig:*)",
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(wc:*)",
+      "Bash(copy:*)"
     ],
     "deny": [],
     "ask": []

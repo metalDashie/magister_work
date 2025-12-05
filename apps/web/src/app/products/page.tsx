@@ -12,6 +12,7 @@ interface SearchParams {
   sortBy?: string
   sortOrder?: string
   view?: string
+  search?: string
 }
 
 interface Props {
@@ -22,6 +23,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const params = await searchParams
   const parts: string[] = []
 
+  if (params.search) {
+    parts.push(`Search: "${params.search}"`)
+  }
   if (params.category) {
     parts.push(`Category ${params.category}`)
   }
@@ -76,12 +80,14 @@ export default async function ProductsPage({ searchParams }: Props) {
   const params = await searchParams
 
   // Parse filters for display
-  const hasFilters = params.category || params.minPrice || params.maxPrice || params.inStock
+  const hasFilters = params.category || params.minPrice || params.maxPrice || params.inStock || params.search
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">All Products</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {params.search ? `Search results for "${params.search}"` : 'All Products'}
+        </h1>
         <p className="mt-2 text-gray-600">
           {hasFilters
             ? 'Showing filtered results'
@@ -99,6 +105,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           initialSortBy={params.sortBy || 'createdAt'}
           initialSortOrder={(params.sortOrder as 'ASC' | 'DESC') || 'DESC'}
           initialViewMode={(params.view as 'grid' | 'list') || 'grid'}
+          initialSearch={params.search}
         />
       </Suspense>
     </div>

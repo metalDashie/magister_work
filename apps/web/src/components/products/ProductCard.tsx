@@ -118,6 +118,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         productId: product.id,
         quantity: 1,
         price: finalPrice,
+        product: {
+          id: product.id,
+          name: product.name,
+          images: product.images,
+          stock: product.stock,
+        },
       })
     } catch (error) {
       console.error('Failed to add to cart:', error)

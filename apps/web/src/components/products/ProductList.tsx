@@ -19,6 +19,7 @@ interface ProductListProps {
   initialSortBy?: string
   initialSortOrder?: 'ASC' | 'DESC'
   initialViewMode?: 'grid' | 'list'
+  initialSearch?: string
 }
 
 export default function ProductList({
@@ -30,6 +31,7 @@ export default function ProductList({
   initialSortBy = 'createdAt',
   initialSortOrder = 'DESC',
   initialViewMode = 'grid',
+  initialSearch = '',
 }: ProductListProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -42,6 +44,8 @@ export default function ProductList({
     maxPrice: initialMaxPrice,
     inStock: initialInStock,
   })
+  const [searchQuery, setSearchQuery] = useState(initialSearch)
+  const [searchInput, setSearchInput] = useState(initialSearch)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [sortBy, setSortBy] = useState(initialSortBy)
   const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>(initialSortOrder)
@@ -54,9 +58,13 @@ export default function ProductList({
     newPage: number,
     newSortBy: string,
     newSortOrder: 'ASC' | 'DESC',
-    newViewMode: 'grid' | 'list'
+    newViewMode: 'grid' | 'list',
+    newSearch: string = ''
   ) => {
     const params = new URLSearchParams()
+
+    // Add search
+    if (newSearch) params.set('search', newSearch)
 
     // Add filters
     if (newFilters.categoryId) params.set('category', newFilters.categoryId.toString())
@@ -82,14 +90,15 @@ export default function ProductList({
   useEffect(() => {
     fetchProducts(currentPage, itemsPerPage, {
       ...filters,
+      search: searchQuery || undefined,
       sortBy,
       sortOrder,
     })
-  }, [currentPage, filters, sortBy, sortOrder, fetchProducts])
+  }, [currentPage, filters, searchQuery, sortBy, sortOrder, fetchProducts])
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
-    updateURL(filters, newPage, sortBy, sortOrder, viewMode)
+    updateURL(filters, newPage, sortBy, sortOrder, viewMode, searchQuery)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -107,19 +116,33 @@ export default function ProductList({
     }
     setFilters(normalizedFilters)
     setCurrentPage(1) // Reset to first page when filters change
-    updateURL(normalizedFilters, 1, sortBy, sortOrder, viewMode)
+    updateURL(normalizedFilters, 1, sortBy, sortOrder, viewMode, searchQuery)
   }
 
   const handleSortChange = (newSortBy: string, newSortOrder: 'ASC' | 'DESC') => {
     setSortBy(newSortBy)
     setSortOrder(newSortOrder)
     setCurrentPage(1) // Reset to first page when sorting changes
-    updateURL(filters, 1, newSortBy, newSortOrder, viewMode)
+    updateURL(filters, 1, newSortBy, newSortOrder, viewMode, searchQuery)
   }
 
   const handleViewChange = (newViewMode: 'grid' | 'list') => {
     setViewMode(newViewMode)
-    updateURL(filters, currentPage, sortBy, sortOrder, newViewMode)
+    updateURL(filters, currentPage, sortBy, sortOrder, newViewMode, searchQuery)
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    setSearchQuery(searchInput)
+    setCurrentPage(1)
+    updateURL(filters, 1, sortBy, sortOrder, viewMode, searchInput)
+  }
+
+  const handleClearSearch = () => {
+    setSearchInput('')
+    setSearchQuery('')
+    setCurrentPage(1)
+    updateURL(filters, 1, sortBy, sortOrder, viewMode, '')
   }
 
   if (loading && products.length === 0) {
@@ -149,6 +172,63 @@ export default function ProductList({
 
       {/* Products Grid */}
       <div className="lg:col-span-3">
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="mb-6">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search products..."
+                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              />
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+            >
+              Search
+            </button>
+          </div>
+          {searchQuery && (
+            <div className="mt-2 flex items-center gap-2 text-sm text-gray-600">
+              <span>Results for: <strong>"{searchQuery}"</strong></span>
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </form>
+
         {/* Sort, View Toggle, and Results Info */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div className="text-sm text-gray-600">

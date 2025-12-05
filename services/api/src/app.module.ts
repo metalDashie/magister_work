@@ -33,6 +33,7 @@ import { AddressesModule } from './modules/addresses/addresses.module'
 import { AbandonedCartModule } from './modules/abandoned-cart/abandoned-cart.module'
 import { CompareModule } from './modules/compare/compare.module'
 import { ElasticsearchModule } from './modules/elasticsearch/elasticsearch.module'
+import { SmsModule } from './modules/sms/sms.module'
 import { ChatGateway } from './gateways/chat.gateway'
 
 @Module({
@@ -108,6 +109,7 @@ import { ChatGateway } from './gateways/chat.gateway'
     AbandonedCartModule,
     CompareModule,
     ElasticsearchModule,
+    SmsModule,
   ],
   providers: [ChatGateway],
 })

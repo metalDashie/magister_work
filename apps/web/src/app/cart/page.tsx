@@ -10,22 +10,33 @@ import Link from 'next/link'
 
 export default function CartPage() {
   const router = useRouter()
-  const { isAuthenticated, _hasHydrated } = useAuthStore()
-  const { cart, totalAmount, fetchCart, clearCart } = useCartStore()
+  const { isAuthenticated, _hasHydrated: authHydrated } = useAuthStore()
+  const {
+    cart,
+    localCart,
+    totalAmount,
+    itemCount,
+    fetchCart,
+    clearCart,
+    isLoading,
+    _hasHydrated: cartHydrated,
+  } = useCartStore()
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [clearing, setClearing] = useState(false)
 
   useEffect(() => {
-    if (!_hasHydrated) return
+    if (!authHydrated || !cartHydrated) return
 
     if (isAuthenticated) {
       fetchCart()
-      return
     }
-  }, [_hasHydrated, isAuthenticated, fetchCart, router])
+  }, [authHydrated, cartHydrated, isAuthenticated, fetchCart])
+
+  // Get cart items based on auth state
+  const cartItems = isAuthenticated ? cart?.items || [] : localCart
 
   // Show loading while hydrating to prevent flash of empty cart
-  if (!_hasHydrated) {
+  if (!authHydrated || !cartHydrated) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-center justify-center">
@@ -47,10 +58,16 @@ export default function CartPage() {
     }
   }
 
-  const itemCount =
-    cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const handleCheckout = () => {
+    if (!isAuthenticated) {
+      // Redirect to login with return URL
+      router.push('/auth/login?returnUrl=/checkout')
+      return
+    }
+    router.push('/checkout')
+  }
 
-  if (!cart || !cart.items || cart.items.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
@@ -70,10 +87,10 @@ export default function CartPage() {
             </svg>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Your cart is empty
+            Ваш кошик порожній
           </h2>
           <p className="text-gray-600 mb-8">
-            Start shopping to add items to your cart
+            Почніть покупки, щоб додати товари до кошика
           </p>
           <Link
             href="/products"
@@ -92,7 +109,7 @@ export default function CartPage() {
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            Start Shopping
+            Почати покупки
           </Link>
         </div>
       </div>
@@ -101,13 +118,48 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Guest Banner */}
+      {!isAuthenticated && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <svg
+              className="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div>
+              <p className="text-blue-900 font-medium">
+                Увійдіть, щоб зберегти кошик
+              </p>
+              <p className="text-blue-700 text-sm">
+                Ваш кошик буде збережено на всіх пристроях після входу
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/auth/login?returnUrl=/cart"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium text-sm whitespace-nowrap"
+          >
+            Увійти
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Кошик</h1>
           <p className="text-gray-600 mt-1">
-            {cart.items.length} {cart.items.length === 1 ? 'item' : 'items'} (
-            {itemCount} total units)
+            {cartItems.length} {cartItems.length === 1 ? 'товар' : cartItems.length < 5 ? 'товари' : 'товарів'} (
+            {itemCount} шт.)
           </p>
         </div>
 
@@ -128,7 +180,7 @@ export default function CartPage() {
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
             />
           </svg>
-          Clear Cart
+          Очистити кошик
         </button>
       </div>
 
@@ -137,8 +189,12 @@ export default function CartPage() {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow">
             <div className="p-6">
-              {cart.items.map((item) => (
-                <CartItem key={item.id} item={item} />
+              {cartItems.map((item: any) => (
+                <CartItem
+                  key={item.id || item.productId}
+                  item={item}
+                  isLocalCart={!isAuthenticated}
+                />
               ))}
             </div>
           </div>
@@ -147,38 +203,47 @@ export default function CartPage() {
         {/* Order Summary */}
         <div>
           <div className="bg-white rounded-lg shadow p-6 sticky top-4">
-            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <h2 className="text-xl font-semibold mb-4">Підсумок замовлення</h2>
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-gray-600">
-                <span>Subtotal ({itemCount} items)</span>
+                <span>Товарів ({itemCount} шт.)</span>
                 <span>{formatPrice(totalAmount, 'UAH')}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span className="text-green-600 font-medium">Free</span>
+                <span>Доставка</span>
+                <span className="text-green-600 font-medium">Безкоштовно</span>
               </div>
               <div className="border-t-2 border-gray-200 pt-3 flex justify-between font-bold text-xl">
-                <span>Total</span>
+                <span>Всього</span>
                 <span className="text-primary-600">
                   {formatPrice(totalAmount, 'UAH')}
                 </span>
               </div>
             </div>
 
-            <Link
-              href="/checkout"
+            <button
+              onClick={handleCheckout}
               className="block w-full bg-primary-600 text-white text-center py-3 rounded-md font-semibold hover:bg-primary-700 transition-colors mb-3"
             >
-              Proceed to Checkout
-            </Link>
+              {isAuthenticated ? 'Оформити замовлення' : 'Увійти для оформлення'}
+            </button>
 
             <Link
               href="/products"
               className="block w-full text-center text-primary-600 hover:text-primary-700 py-2 font-medium"
             >
-              Continue Shopping
+              Продовжити покупки
             </Link>
+
+            {/* Guest checkout note */}
+            {!isAuthenticated && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-500 text-center">
+                  Для оформлення замовлення необхідно увійти в акаунт
+                </p>
+              </div>
+            )}
 
             {/* Security Badge */}
             <div className="mt-6 pt-6 border-t border-gray-200">
@@ -196,7 +261,7 @@ export default function CartPage() {
                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   />
                 </svg>
-                <span>Secure Checkout</span>
+                <span>Безпечна оплата</span>
               </div>
             </div>
           </div>
@@ -228,11 +293,11 @@ export default function CartPage() {
                 </svg>
               </div>
               <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
-                Clear Entire Cart?
+                Очистити кошик?
               </h3>
               <p className="text-gray-600 text-center mb-6">
-                This will remove all {cart.items.length} items from your cart.
-                This action cannot be undone.
+                Це видалить всі {cartItems.length} товарів з кошика.
+                Цю дію неможливо скасувати.
               </p>
               <div className="flex gap-3">
                 <button
@@ -240,14 +305,14 @@ export default function CartPage() {
                   disabled={clearing}
                   className="flex-1 bg-red-600 text-white px-4 py-3 rounded-md hover:bg-red-700 font-semibold disabled:opacity-50 transition-colors"
                 >
-                  {clearing ? 'Clearing...' : 'Yes, Clear Cart'}
+                  {clearing ? 'Очищення...' : 'Так, очистити'}
                 </button>
                 <button
                   onClick={() => setShowClearConfirm(false)}
                   disabled={clearing}
                   className="flex-1 bg-gray-200 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-300 font-semibold disabled:opacity-50 transition-colors"
                 >
-                  Cancel
+                  Скасувати
                 </button>
               </div>
             </div>

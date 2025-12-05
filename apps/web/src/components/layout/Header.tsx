@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useAuthStore } from '@/lib/store/authStore'
 import { useCartStore } from '@/lib/store/cartStore'
+import { useTranslation } from '@/i18n'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
 import { useEffect, useState, useRef } from 'react'
 
 interface DropdownItem {
@@ -71,6 +73,7 @@ function AdminDropdown({ label, items, icon }: AdminDropdownProps) {
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuthStore()
   const { itemCount, fetchCart } = useCartStore()
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -82,25 +85,25 @@ export default function Header() {
 
   // Admin navigation structure
   const storeItems: DropdownItem[] = [
-    { label: 'Products', href: '/admin/products' },
-    { label: 'Categories', href: '/admin/categories' },
-    { label: 'Attributes', href: '/admin/attributes' },
-    { label: 'Import Products', href: '/admin/products/import' },
-    { label: 'Discounts', href: '/admin/discounts' },
-    { label: 'Coupons', href: '/admin/coupons' },
-    { label: 'Banners', href: '/admin/banners' },
+    { label: t('nav.products'), href: '/admin/products' },
+    { label: t('nav.categories'), href: '/admin/categories' },
+    { label: t('admin.addProduct'), href: '/admin/attributes' },
+    { label: t('admin.addProduct'), href: '/admin/products/import' },
+    { label: t('admin.products'), href: '/admin/discounts' },
+    { label: t('admin.products'), href: '/admin/coupons' },
+    { label: t('admin.products'), href: '/admin/banners' },
   ]
 
   const salesItems: DropdownItem[] = [
-    { label: 'Orders', href: '/admin/orders' },
-    { label: 'Abandoned Carts', href: '/admin/abandoned-carts' },
-    { label: 'Returns', href: '/admin/returns' },
+    { label: t('nav.orders'), href: '/admin/orders' },
+    { label: t('cart.title'), href: '/admin/abandoned-carts' },
+    { label: t('admin.orders'), href: '/admin/returns' },
   ]
 
   const customersItems: DropdownItem[] = [
-    { label: 'Users', href: '/admin/users' },
-    { label: 'Reviews', href: '/admin/reviews' },
-    { label: 'Support Chat', href: '/admin/support' },
+    { label: t('nav.users'), href: '/admin/users' },
+    { label: t('reviews.title'), href: '/admin/reviews' },
+    { label: t('chat.title'), href: '/admin/support' },
   ]
 
   return (

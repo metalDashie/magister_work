@@ -1,12 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuthStore } from '@/lib/store/authStore'
 import { CreateUserSchema } from '@fullmag/common'
 
 export default function RegisterForm() {
-  const router = useRouter()
   const register = useAuthStore((state) => state.register)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,13 +13,14 @@ export default function RegisterForm() {
   const [phone, setPhone] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [registrationComplete, setRegistrationComplete] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Паролі не співпадають')
       return
     }
 
@@ -30,16 +30,52 @@ export default function RegisterForm() {
       const validated = CreateUserSchema.parse({ email, password, phone })
 
       await register(validated)
-      router.push('/products')
+      setRegistrationComplete(true)
     } catch (err: any) {
       if (err.errors) {
         setError(err.errors[0].message)
       } else {
-        setError(err.response?.data?.message || 'Registration failed')
+        setError(err.response?.data?.message || 'Помилка реєстрації')
       }
     } finally {
       setLoading(false)
     }
+  }
+
+  if (registrationComplete) {
+    return (
+      <div className="text-center py-4">
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+          <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          Підтвердіть електронну пошту
+        </h3>
+        <p className="text-gray-600 mb-4">
+          Ми надіслали лист на <strong>{email}</strong>.
+          <br />
+          Перейдіть за посиланням у листі для активації акаунту.
+        </p>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <p className="text-sm text-blue-800">
+            <strong>Не отримали лист?</strong>
+            <br />
+            Перевірте папку "Спам" або{' '}
+            <Link href="/auth/resend-verification" className="underline hover:text-blue-600">
+              надішліть лист повторно
+            </Link>
+          </p>
+        </div>
+        <Link
+          href="/auth/login"
+          className="text-primary-600 hover:text-primary-500 font-medium"
+        >
+          Перейти до входу
+        </Link>
+      </div>
+    )
   }
 
   return (

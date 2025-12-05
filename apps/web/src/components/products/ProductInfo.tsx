@@ -15,6 +15,7 @@ interface ProductInfoProps {
     price: number
     currency: string
     stock: number
+    images?: string[]
     averageRating?: number | null
     reviewsCount: number
     discountPercent?: number | null
@@ -59,6 +60,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         productId: product.id,
         quantity,
         price: finalPrice,
+        product: {
+          id: product.id,
+          name: product.name,
+          images: product.images,
+          stock: product.stock,
+        },
       })
       router.push('/cart')
     } catch (error) {
@@ -75,6 +82,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         productId: product.id,
         quantity,
         price: finalPrice,
+        product: {
+          id: product.id,
+          name: product.name,
+          images: product.images,
+          stock: product.stock,
+        },
       })
       router.push('/checkout')
     } catch (error) {

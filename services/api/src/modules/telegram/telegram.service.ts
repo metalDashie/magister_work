@@ -410,6 +410,27 @@ export class TelegramService implements OnModuleInit {
   }
 
   /**
+   * Send a test message directly to a chat ID
+   */
+  async sendTestMessage(chatId: string, message: string): Promise<boolean> {
+    if (!this.bot || !this.botEnabled) {
+      this.logger.warn('Telegram bot is disabled')
+      return false
+    }
+
+    try {
+      await this.bot.sendMessage(Number(chatId), message, {
+        parse_mode: 'Markdown',
+      })
+      this.logger.log(`Test message sent to chat ${chatId}`)
+      return true
+    } catch (error) {
+      this.logger.error(`Error sending test message to chat ${chatId}`, error)
+      return false
+    }
+  }
+
+  /**
    * Get bot info
    */
   async getBotInfo(): Promise<any> {

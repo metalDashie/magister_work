@@ -70,10 +70,10 @@ export class ProductsService {
       .leftJoinAndSelect('product.productAttributes', 'productAttribute')
       .leftJoinAndSelect('productAttribute.attribute', 'attribute')
 
-    // Search filter
+    // Search filter (use ILIKE for case-insensitive, COALESCE to handle NULLs)
     if (search) {
       queryBuilder.andWhere(
-        '(product.name LIKE :search OR product.description LIKE :search OR product.sku LIKE :search)',
+        '(product.name ILIKE :search OR COALESCE(product.description, \'\') ILIKE :search OR COALESCE(product.sku, \'\') ILIKE :search)',
         { search: `%${search}%` }
       )
     }

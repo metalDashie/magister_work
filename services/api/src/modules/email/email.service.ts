@@ -75,6 +75,7 @@ export class EmailService {
         'payment-success.hbs',
         'password-reset.hbs',
         'email-verification.hbs',
+        'email-change-verification.hbs',
         'cart-reminder.hbs',
       ]
 
@@ -244,6 +245,26 @@ export class EmailService {
       template: 'email-verification',
       context: {
         name,
+        verificationUrl,
+        expiryHours: 24,
+        year: new Date().getFullYear(),
+      },
+    })
+  }
+
+  async sendEmailChangeVerification(
+    currentEmail: string,
+    newEmail: string,
+    verificationToken: string
+  ): Promise<boolean> {
+    const verificationUrl = `${this.configService.get('FRONTEND_URL')}/profile/verify-email-change?token=${verificationToken}`
+
+    return this.sendEmail({
+      to: newEmail,
+      subject: 'Підтвердіть зміну електронної пошти - FullMag',
+      template: 'email-change-verification',
+      context: {
+        newEmail,
         verificationUrl,
         expiryHours: 24,
         year: new Date().getFullYear(),

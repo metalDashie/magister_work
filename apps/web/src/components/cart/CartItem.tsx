@@ -8,13 +8,18 @@ import OptimizedImage from '@/components/common/OptimizedImage'
 
 interface CartItemProps {
   item: any
+  isLocalCart?: boolean
 }
 
-export default function CartItem({ item }: CartItemProps) {
+export default function CartItem({ item, isLocalCart = false }: CartItemProps) {
   const { removeItem, updateQuantity } = useCartStore()
   const [updating, setUpdating] = useState(false)
   const [removing, setRemoving] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
+  // Get product ID for local cart operations
+  const productId = item.productId || item.product?.id
+  const itemId = item.id
 
   const maxStock = item.product?.stock || 99
   const isOutOfStock = maxStock === 0
@@ -25,7 +30,7 @@ export default function CartItem({ item }: CartItemProps) {
 
     setUpdating(true)
     try {
-      await updateQuantity(item.id, newQuantity)
+      await updateQuantity(itemId, newQuantity, productId)
     } catch (error) {
       console.error('Failed to update quantity:', error)
     } finally {
@@ -36,7 +41,7 @@ export default function CartItem({ item }: CartItemProps) {
   const handleRemove = async () => {
     setRemoving(true)
     try {
-      await removeItem(item.id)
+      await removeItem(itemId, productId)
     } catch (error) {
       console.error('Failed to remove item:', error)
       setRemoving(false)
@@ -52,14 +57,17 @@ export default function CartItem({ item }: CartItemProps) {
     handleRemove()
   }
 
+  // Get the correct image source
+  const imageSource = item.product?.images?.[0] || item.product?.imageUrl
+
   return (
     <div className={`flex items-center py-6 border-b last:border-b-0 ${removing ? 'opacity-50' : ''}`}>
       {/* Product Image */}
-      <Link href={`/products/${item.product?.id}`} className="flex-shrink-0">
+      <Link href={`/products/${productId}`} className="flex-shrink-0">
         <div className="w-24 h-24 bg-gray-200 rounded-md overflow-hidden hover:opacity-75 transition-opacity">
           <OptimizedImage
-            src={item.product?.images?.[0]}
-            alt={item.product?.name || 'Product'}
+            src={imageSource}
+            alt={item.product?.name || 'Товар'}
             className="w-full h-full rounded-md"
             contentType="product"
             objectFit="cover"
@@ -69,24 +77,31 @@ export default function CartItem({ item }: CartItemProps) {
 
       {/* Product Info */}
       <div className="ml-4 flex-1">
-        <Link href={`/products/${item.product?.id}`}>
+        <Link href={`/products/${productId}`}>
           <h3 className="text-lg font-semibold text-gray-900 hover:text-primary-600 transition-colors">
-            {item.product?.name}
+            {item.product?.name || 'Товар'}
           </h3>
         </Link>
         <p className="text-sm text-gray-600 mt-1">
-          {formatPrice(item.price, 'UAH')} each
+          {formatPrice(item.price, 'UAH')} за шт.
         </p>
 
         {/* Stock Warning */}
         {isOutOfStock && (
           <span className="inline-block mt-2 text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded">
-            Out of Stock
+            Немає в наявності
           </span>
         )}
         {!isOutOfStock && item.quantity > maxStock && (
           <span className="inline-block mt-2 text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded">
-            Only {maxStock} available
+            Доступно лише {maxStock} шт.
+          </span>
+        )}
+
+        {/* Local cart indicator */}
+        {isLocalCart && (
+          <span className="inline-block mt-2 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded ml-2">
+            Локальний кошик
           </span>
         )}
       </div>
@@ -100,7 +115,7 @@ export default function CartItem({ item }: CartItemProps) {
               onClick={() => handleQuantityChange(item.quantity - 1)}
               disabled={item.quantity <= 1 || updating || removing}
               className="px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label="Decrease quantity"
+              aria-label="Зменшити кількість"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -117,15 +132,15 @@ export default function CartItem({ item }: CartItemProps) {
               onClick={() => handleQuantityChange(item.quantity + 1)}
               disabled={item.quantity >= maxStock || updating || removing}
               className="px-3 py-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label="Increase quantity"
+              aria-label="Збільшити кількість"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </button>
           </div>
-          {maxStock > 0 && (
-            <span className="text-xs text-gray-500 mt-1">Max: {maxStock}</span>
+          {maxStock > 0 && maxStock < 99 && (
+            <span className="text-xs text-gray-500 mt-1">Макс: {maxStock}</span>
           )}
         </div>
 
@@ -140,8 +155,8 @@ export default function CartItem({ item }: CartItemProps) {
             onClick={handleDeleteClick}
             disabled={removing}
             className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition-all disabled:opacity-50"
-            aria-label="Remove item"
-            title="Remove from cart"
+            aria-label="Видалити товар"
+            title="Видалити з кошика"
           >
             {removing ? (
               <div className="animate-spin h-6 w-6 border-2 border-red-600 border-t-transparent rounded-full"></div>
@@ -166,20 +181,20 @@ export default function CartItem({ item }: CartItemProps) {
               ></div>
               <div className="absolute right-0 top-12 bg-white rounded-lg shadow-xl border-2 border-gray-200 p-4 z-50 w-64">
                 <p className="text-sm text-gray-900 font-medium mb-3">
-                  Remove this item from cart?
+                  Видалити товар з кошика?
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={confirmDelete}
                     className="flex-1 bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 text-sm font-medium"
                   >
-                    Remove
+                    Видалити
                   </button>
                   <button
                     onClick={() => setShowDeleteConfirm(false)}
                     className="flex-1 bg-gray-200 text-gray-700 px-3 py-2 rounded-md hover:bg-gray-300 text-sm font-medium"
                   >
-                    Cancel
+                    Скасувати
                   </button>
                 </div>
               </div>
