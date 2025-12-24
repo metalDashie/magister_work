@@ -33,65 +33,7 @@ import { ComplaintReason, ComplaintStatus } from '../../database/entities'
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
-  // ==================== REVIEWS ====================
-
-  /**
-   * Create a new review (authenticated users only)
-   * POST /reviews
-   */
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  async createReview(@Request() req, @Body() dto: CreateReviewDto) {
-    const review = await this.reviewsService.createReview(req.user.id, dto)
-    return { success: true, review }
-  }
-
-  /**
-   * Get reviews list (public, optional auth for like status)
-   * GET /reviews?productId=xxx&sortBy=newest&page=1&limit=10
-   */
-  @Get()
-  async getReviews(@Query() query: GetReviewsQueryDto, @Request() req) {
-    const currentUserId = req.user?.id
-    return await this.reviewsService.getReviews(query, currentUserId)
-  }
-
-  /**
-   * Get single review by ID
-   * GET /reviews/:id
-   */
-  @Get(':id')
-  async getReview(@Param('id') id: string, @Request() req) {
-    const currentUserId = req.user?.id
-    return await this.reviewsService.getReview(id, currentUserId)
-  }
-
-  /**
-   * Update own review
-   * PUT /reviews/:id
-   */
-  @Put(':id')
-  @UseGuards(JwtAuthGuard)
-  async updateReview(
-    @Request() req,
-    @Param('id') id: string,
-    @Body() dto: UpdateReviewDto,
-  ) {
-    const review = await this.reviewsService.updateReview(req.user.id, id, dto)
-    return { success: true, review }
-  }
-
-  /**
-   * Delete own review
-   * DELETE /reviews/:id
-   */
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteReview(@Request() req, @Param('id') id: string) {
-    const isAdmin = req.user.role === UserRole.ADMIN
-    await this.reviewsService.deleteReview(req.user.id, id, isAdmin)
-  }
+  // ==================== STATIC ROUTES (must come before :id routes) ====================
 
   /**
    * Get product rating statistics
@@ -101,69 +43,6 @@ export class ReviewsController {
   async getProductStats(@Param('productId') productId: string) {
     return await this.reviewsService.getProductRatingStats(productId)
   }
-
-  // ==================== LIKES ====================
-
-  /**
-   * Toggle like on a review
-   * POST /reviews/:id/like
-   */
-  @Post(':id/like')
-  @UseGuards(JwtAuthGuard)
-  async toggleLike(@Request() req, @Param('id') reviewId: string) {
-    return await this.reviewsService.toggleLike(req.user.id, reviewId)
-  }
-
-  // ==================== REPLIES ====================
-
-  /**
-   * Get replies for a review
-   * GET /reviews/:id/replies
-   */
-  @Get(':id/replies')
-  async getReplies(@Param('id') reviewId: string) {
-    return await this.reviewsService.getReplies(reviewId)
-  }
-
-  /**
-   * Create a reply to a review
-   * POST /reviews/replies
-   */
-  @Post('replies')
-  @UseGuards(JwtAuthGuard)
-  async createReply(@Request() req, @Body() dto: CreateReplyDto) {
-    const reply = await this.reviewsService.createReply(req.user.id, dto)
-    return { success: true, reply }
-  }
-
-  /**
-   * Update own reply
-   * PUT /reviews/replies/:id
-   */
-  @Put('replies/:id')
-  @UseGuards(JwtAuthGuard)
-  async updateReply(
-    @Request() req,
-    @Param('id') id: string,
-    @Body() dto: UpdateReplyDto,
-  ) {
-    const reply = await this.reviewsService.updateReply(req.user.id, id, dto)
-    return { success: true, reply }
-  }
-
-  /**
-   * Delete own reply
-   * DELETE /reviews/replies/:id
-   */
-  @Delete('replies/:id')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteReply(@Request() req, @Param('id') id: string) {
-    const isAdmin = req.user.role === UserRole.ADMIN
-    await this.reviewsService.deleteReply(req.user.id, id, isAdmin)
-  }
-
-  // ==================== COMPLAINTS ====================
 
   /**
    * Get list of complaint reasons
@@ -177,17 +56,6 @@ export class ReviewsController {
         label: this.getComplaintReasonLabel(reason),
       })),
     }
-  }
-
-  /**
-   * Report a review
-   * POST /reviews/complaints
-   */
-  @Post('complaints')
-  @UseGuards(JwtAuthGuard)
-  async createComplaint(@Request() req, @Body() dto: CreateComplaintDto) {
-    const complaint = await this.reviewsService.createComplaint(req.user.id, dto)
-    return { success: true, complaint }
   }
 
   /**
@@ -227,16 +95,76 @@ export class ReviewsController {
     return await this.reviewsService.getReviewStats()
   }
 
+  // ==================== REVIEWS ====================
+
   /**
-   * Toggle review visibility (Admin only)
-   * PATCH /reviews/:id/visibility
+   * Create a new review (authenticated users only)
+   * POST /reviews
    */
-  @Patch(':id/visibility')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MANAGER)
-  async toggleVisibility(@Param('id') id: string) {
-    const review = await this.reviewsService.toggleReviewVisibility(id)
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async createReview(@Request() req, @Body() dto: CreateReviewDto) {
+    const review = await this.reviewsService.createReview(req.user.userId, dto)
     return { success: true, review }
+  }
+
+  /**
+   * Get reviews list (public, optional auth for like status)
+   * GET /reviews?productId=xxx&sortBy=newest&page=1&limit=10
+   */
+  @Get()
+  async getReviews(@Query() query: GetReviewsQueryDto, @Request() req) {
+    const currentUserId = req.user?.userId
+    return await this.reviewsService.getReviews(query, currentUserId)
+  }
+
+  /**
+   * Create a reply to a review
+   * POST /reviews/replies
+   */
+  @Post('replies')
+  @UseGuards(JwtAuthGuard)
+  async createReply(@Request() req, @Body() dto: CreateReplyDto) {
+    const reply = await this.reviewsService.createReply(req.user.userId, dto)
+    return { success: true, reply }
+  }
+
+  /**
+   * Update own reply
+   * PUT /reviews/replies/:id
+   */
+  @Put('replies/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateReply(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateReplyDto,
+  ) {
+    const reply = await this.reviewsService.updateReply(req.user.userId, id, dto)
+    return { success: true, reply }
+  }
+
+  /**
+   * Delete own reply
+   * DELETE /reviews/replies/:id
+   */
+  @Delete('replies/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteReply(@Request() req, @Param('id') id: string) {
+    const isAdmin = req.user.role === UserRole.ADMIN
+    await this.reviewsService.deleteReply(req.user.userId, id, isAdmin)
+  }
+
+  /**
+   * Report a review
+   * POST /reviews/complaints
+   */
+  @Post('complaints')
+  @UseGuards(JwtAuthGuard)
+  async createComplaint(@Request() req, @Body() dto: CreateComplaintDto) {
+    const complaint = await this.reviewsService.createComplaint(req.user.userId, dto)
+    return { success: true, complaint }
   }
 
   /**
@@ -251,8 +179,78 @@ export class ReviewsController {
     @Param('id') id: string,
     @Body() dto: ResolveComplaintDto,
   ) {
-    const complaint = await this.reviewsService.resolveComplaint(req.user.id, id, dto)
+    const complaint = await this.reviewsService.resolveComplaint(req.user.userId, id, dto)
     return { success: true, complaint }
+  }
+
+  // ==================== DYNAMIC :id ROUTES (must come after static routes) ====================
+
+  /**
+   * Get single review by ID
+   * GET /reviews/:id
+   */
+  @Get(':id')
+  async getReview(@Param('id') id: string, @Request() req) {
+    const currentUserId = req.user?.userId
+    return await this.reviewsService.getReview(id, currentUserId)
+  }
+
+  /**
+   * Update own review
+   * PUT /reviews/:id
+   */
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async updateReview(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() dto: UpdateReviewDto,
+  ) {
+    const review = await this.reviewsService.updateReview(req.user.userId, id, dto)
+    return { success: true, review }
+  }
+
+  /**
+   * Delete own review
+   * DELETE /reviews/:id
+   */
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteReview(@Request() req, @Param('id') id: string) {
+    const isAdmin = req.user.role === UserRole.ADMIN
+    await this.reviewsService.deleteReview(req.user.userId, id, isAdmin)
+  }
+
+  /**
+   * Toggle like on a review
+   * POST /reviews/:id/like
+   */
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  async toggleLike(@Request() req, @Param('id') reviewId: string) {
+    return await this.reviewsService.toggleLike(req.user.userId, reviewId)
+  }
+
+  /**
+   * Get replies for a review
+   * GET /reviews/:id/replies
+   */
+  @Get(':id/replies')
+  async getReplies(@Param('id') reviewId: string) {
+    return await this.reviewsService.getReplies(reviewId)
+  }
+
+  /**
+   * Toggle review visibility (Admin only)
+   * PATCH /reviews/:id/visibility
+   */
+  @Patch(':id/visibility')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async toggleVisibility(@Param('id') id: string) {
+    const review = await this.reviewsService.toggleReviewVisibility(id)
+    return { success: true, review }
   }
 
   // Helper to get human-readable complaint reason labels

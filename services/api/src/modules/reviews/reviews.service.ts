@@ -147,10 +147,10 @@ export class ReviewsService {
     return {
       ...review,
       isLikedByCurrentUser,
-      user: {
+      user: review.user ? {
         id: review.user.id,
         email: review.user.email.replace(/(.{2}).*(@.*)/, '$1***$2'), // Mask email
-      },
+      } : null,
     }
   }
 
@@ -246,10 +246,10 @@ export class ReviewsService {
       reviews: reviews.map(review => ({
         ...review,
         isLikedByCurrentUser: userLikes[review.id] || false,
-        user: {
+        user: review.user ? {
           id: review.user.id,
           email: review.user.email.replace(/(.{2}).*(@.*)/, '$1***$2'),
-        },
+        } : null,
       })),
       total,
       page,
@@ -517,13 +517,13 @@ export class ReviewsService {
   }
 
   private async checkVerifiedPurchase(userId: string, productId: string): Promise<boolean> {
-    // Check if user has a completed order containing this product
+    // Check if user has a delivered order containing this product
     const order = await this.orderRepo
       .createQueryBuilder('order')
       .innerJoin('order.items', 'item')
       .where('order.userId = :userId', { userId })
       .andWhere('item.productId = :productId', { productId })
-      .andWhere('order.status IN (:...statuses)', { statuses: ['delivered', 'completed'] })
+      .andWhere('order.status = :status', { status: 'delivered' })
       .getOne()
 
     return !!order

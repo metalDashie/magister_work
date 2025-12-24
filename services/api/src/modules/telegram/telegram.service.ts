@@ -1,10 +1,15 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Repository, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 import TelegramBot = require('node-telegram-bot-api')
 import { TelegramUser } from '../../database/entities/telegram-user.entity'
 import { User } from '../../database/entities/user.entity'
+import { Cart } from '../../database/entities/cart.entity'
+import { Coupon, CouponStatus } from '../../database/entities/coupon.entity'
+import { Order } from '../../database/entities/order.entity'
+import { Product } from '../../database/entities/product.entity'
+import { formatPrice } from '@fullmag/common'
 
 export interface BroadcastMessageDto {
   message: string
@@ -29,6 +34,14 @@ export class TelegramService implements OnModuleInit {
     private telegramUserRepo: Repository<TelegramUser>,
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(Cart)
+    private cartRepo: Repository<Cart>,
+    @InjectRepository(Coupon)
+    private couponRepo: Repository<Coupon>,
+    @InjectRepository(Order)
+    private orderRepo: Repository<Order>,
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
     private configService: ConfigService,
   ) {
     const botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN')
@@ -139,16 +152,65 @@ export class TelegramService implements OnModuleInit {
       return
     }
 
+    // Handle /cart command - view cart
+    if (text === '/cart') {
+      await this.sendCart(chatId)
+      return
+    }
+
+    // Handle /promotions command - view active promotions
+    if (text === '/promotions' || text === '/promo') {
+      await this.sendPromotions(chatId)
+      return
+    }
+
+    // Handle /orders command - view orders
+    if (text === '/orders') {
+      await this.sendOrders(chatId)
+      return
+    }
+
+    // Handle /deals command - view discounted products
+    if (text === '/deals') {
+      await this.sendDeals(chatId)
+      return
+    }
+
+    // Handle /help command
+    if (text === '/help') {
+      await this.sendHelp(chatId)
+      return
+    }
+
     // Simple hello response for testing
     this.logger.log(`Received message from ${chatId}: ${text}`)
+    await this.sendHelp(chatId)
+  }
+
+  /**
+   * Send help message with all available commands
+   */
+  private async sendHelp(chatId: number): Promise<void> {
+    if (!this.bot) return
+
     await this.bot.sendMessage(
       chatId,
-      'Hello, I got your message! 👋\n\n' +
-        'Доступні команди:\n' +
-        '/start - Почати\n' +
+      '🛍️ *FullMag Bot* - Ваш помічник у покупках!\n\n' +
+        '*Доступні команди:*\n\n' +
+        '📋 *Основні:*\n' +
+        '/start - Почати роботу з ботом\n' +
+        '/help - Показати цю довідку\n' +
+        '/status - Статус вашого акаунту\n\n' +
+        '🔗 *Акаунт:*\n' +
         '/link EMAIL - Прив\'язати акаунт\n' +
-        '/unlink - Від\'єднати акаунт\n' +
-        '/status - Переглянути статус',
+        '/unlink - Від\'єднати акаунт\n\n' +
+        '🛒 *Покупки:*\n' +
+        '/cart - Переглянути кошик\n' +
+        '/orders - Мої замовлення\n\n' +
+        '🏷️ *Акції:*\n' +
+        '/promotions - Активні промокоди\n' +
+        '/deals - Товари зі знижками',
+      { parse_mode: 'Markdown' }
     )
   }
 
@@ -303,6 +365,273 @@ export class TelegramService implements OnModuleInit {
       await this.bot.sendMessage(chatId, statusMessage)
     } catch (error) {
       this.logger.error('Error sending status', error)
+    }
+  }
+
+  /**
+   * Send cart information to user
+   */
+  private async sendCart(chatId: number): Promise<void> {
+    if (!this.bot) return
+
+    try {
+      const telegramUser = await this.telegramUserRepo.findOne({
+        where: { chatId: chatId.toString() },
+      })
+
+      if (!telegramUser?.userId) {
+        await this.bot.sendMessage(
+          chatId,
+          '❌ Спочатку прив\'яжіть акаунт командою /link EMAIL',
+        )
+        return
+      }
+
+      const cart = await this.cartRepo.findOne({
+        where: { userId: telegramUser.userId },
+        relations: ['items', 'items.product'],
+      })
+
+      if (!cart || !cart.items || cart.items.length === 0) {
+        await this.bot.sendMessage(
+          chatId,
+          '🛒 Ваш кошик порожній\n\n' +
+            'Перейдіть на сайт, щоб додати товари:\n' +
+            `${this.configService.get('FRONTEND_URL', 'http://localhost:10002')}/catalog`,
+        )
+        return
+      }
+
+      let message = '🛒 *Ваш кошик:*\n\n'
+      let total = 0
+
+      for (const item of cart.items) {
+        const itemTotal = item.price * item.quantity
+        total += itemTotal
+        message += `📦 *${item.product?.name || 'Товар'}*\n`
+        message += `   Кількість: ${item.quantity} шт.\n`
+        message += `   Ціна: ${formatPrice(item.price, 'UAH')}\n`
+        message += `   Сума: ${formatPrice(itemTotal, 'UAH')}\n\n`
+      }
+
+      message += `━━━━━━━━━━━━━━━━━━\n`
+      message += `💰 *Загальна сума: ${formatPrice(total, 'UAH')}*\n\n`
+      message += `🔗 [Оформити замовлення](${this.configService.get('FRONTEND_URL', 'http://localhost:10002')}/checkout)`
+
+      await this.bot.sendMessage(chatId, message, {
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    } catch (error) {
+      this.logger.error('Error sending cart', error)
+      await this.bot.sendMessage(chatId, '❌ Помилка при завантаженні кошика')
+    }
+  }
+
+  /**
+   * Send active promotions to user
+   */
+  private async sendPromotions(chatId: number): Promise<void> {
+    if (!this.bot) return
+
+    try {
+      const now = new Date()
+
+      const coupons = await this.couponRepo.find({
+        where: {
+          status: CouponStatus.ACTIVE,
+        },
+        order: { endDate: 'ASC' },
+        take: 10,
+      })
+
+      // Filter valid coupons
+      const validCoupons = coupons.filter(c => c.isValid())
+
+      if (validCoupons.length === 0) {
+        await this.bot.sendMessage(
+          chatId,
+          '🏷️ Наразі немає активних промокодів\n\n' +
+            'Слідкуйте за оновленнями!',
+        )
+        return
+      }
+
+      let message = '🏷️ *Активні промокоди:*\n\n'
+
+      for (const coupon of validCoupons) {
+        message += `🎫 *${coupon.code}*\n`
+
+        if (coupon.description) {
+          message += `   ${coupon.description}\n`
+        }
+
+        if (coupon.type === 'percentage') {
+          message += `   💰 Знижка: ${coupon.value}%\n`
+        } else if (coupon.type === 'fixed_amount') {
+          message += `   💰 Знижка: ${formatPrice(coupon.value, 'UAH')}\n`
+        } else if (coupon.type === 'free_shipping') {
+          message += `   🚚 Безкоштовна доставка\n`
+        }
+
+        if (coupon.minOrderAmount) {
+          message += `   📦 Мін. замовлення: ${formatPrice(coupon.minOrderAmount, 'UAH')}\n`
+        }
+
+        if (coupon.endDate) {
+          const endDate = new Date(coupon.endDate)
+          message += `   ⏰ Діє до: ${endDate.toLocaleDateString('uk-UA')}\n`
+        }
+
+        message += '\n'
+      }
+
+      message += `💡 Використайте промокод при оформленні замовлення на сайті`
+
+      await this.bot.sendMessage(chatId, message, { parse_mode: 'Markdown' })
+    } catch (error) {
+      this.logger.error('Error sending promotions', error)
+      await this.bot.sendMessage(chatId, '❌ Помилка при завантаженні акцій')
+    }
+  }
+
+  /**
+   * Send user orders
+   */
+  private async sendOrders(chatId: number): Promise<void> {
+    if (!this.bot) return
+
+    try {
+      const telegramUser = await this.telegramUserRepo.findOne({
+        where: { chatId: chatId.toString() },
+      })
+
+      if (!telegramUser?.userId) {
+        await this.bot.sendMessage(
+          chatId,
+          '❌ Спочатку прив\'яжіть акаунт командою /link EMAIL',
+        )
+        return
+      }
+
+      const orders = await this.orderRepo.find({
+        where: { userId: telegramUser.userId },
+        relations: ['items'],
+        order: { createdAt: 'DESC' },
+        take: 5,
+      })
+
+      if (orders.length === 0) {
+        await this.bot.sendMessage(
+          chatId,
+          '📦 У вас ще немає замовлень\n\n' +
+            'Перейдіть на сайт, щоб зробити перше замовлення:\n' +
+            `${this.configService.get('FRONTEND_URL', 'http://localhost:10002')}/catalog`,
+        )
+        return
+      }
+
+      const statusEmoji: Record<string, string> = {
+        pending: '⏳',
+        processing: '🔄',
+        paid: '✅',
+        shipped: '🚚',
+        delivered: '📬',
+        cancelled: '❌',
+      }
+
+      const statusNames: Record<string, string> = {
+        pending: 'Очікує обробки',
+        processing: 'В обробці',
+        paid: 'Оплачено',
+        shipped: 'Відправлено',
+        delivered: 'Доставлено',
+        cancelled: 'Скасовано',
+      }
+
+      let message = '📦 *Ваші останні замовлення:*\n\n'
+
+      for (const order of orders) {
+        const emoji = statusEmoji[order.status] || '📋'
+        const statusName = statusNames[order.status] || order.status
+        const date = new Date(order.createdAt).toLocaleDateString('uk-UA')
+
+        message += `${emoji} *№${order.id.slice(0, 8)}*\n`
+        message += `   Дата: ${date}\n`
+        message += `   Статус: ${statusName}\n`
+        message += `   Сума: ${formatPrice(order.totalAmount, 'UAH')}\n`
+        message += `   Товарів: ${order.items?.length || 0} шт.\n\n`
+      }
+
+      message += `🔗 [Детальніше на сайті](${this.configService.get('FRONTEND_URL', 'http://localhost:10002')}/profile/orders)`
+
+      await this.bot.sendMessage(chatId, message, {
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    } catch (error) {
+      this.logger.error('Error sending orders', error)
+      await this.bot.sendMessage(chatId, '❌ Помилка при завантаженні замовлень')
+    }
+  }
+
+  /**
+   * Send discounted products (deals)
+   */
+  private async sendDeals(chatId: number): Promise<void> {
+    if (!this.bot) return
+
+    try {
+      const now = new Date()
+
+      // Find products with active discounts
+      const products = await this.productRepo
+        .createQueryBuilder('product')
+        .where('product.discountActive = :active', { active: true })
+        .andWhere('product.discountPercent IS NOT NULL')
+        .andWhere('product.discountPercent > 0')
+        .andWhere('(product.discountStartDate IS NULL OR product.discountStartDate <= :now)', { now })
+        .andWhere('(product.discountEndDate IS NULL OR product.discountEndDate >= :now)', { now })
+        .orderBy('product.discountPercent', 'DESC')
+        .take(10)
+        .getMany()
+
+      if (products.length === 0) {
+        await this.bot.sendMessage(
+          chatId,
+          '🏷️ Наразі немає товарів зі знижками\n\n' +
+            'Слідкуйте за оновленнями!',
+        )
+        return
+      }
+
+      let message = '🔥 *Товари зі знижками:*\n\n'
+
+      for (const product of products) {
+        const discount = Math.round(Number(product.discountPercent))
+        const originalPrice = Number(product.price)
+        const finalPrice = product.finalPrice
+
+        message += `🏷️ *${product.name}*\n`
+        message += `   ~${formatPrice(originalPrice, 'UAH')}~ → *${formatPrice(finalPrice, 'UAH')}*\n`
+        message += `   💥 Знижка: -${discount}%\n`
+
+        if (product.discountEndDate) {
+          const endDate = new Date(product.discountEndDate)
+          message += `   ⏰ До: ${endDate.toLocaleDateString('uk-UA')}\n`
+        }
+        message += '\n'
+      }
+
+      message += `🔗 [Всі акції на сайті](${this.configService.get('FRONTEND_URL', 'http://localhost:10002')}/catalog?sale=true)`
+
+      await this.bot.sendMessage(chatId, message, {
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    } catch (error) {
+      this.logger.error('Error sending deals', error)
+      await this.bot.sendMessage(chatId, '❌ Помилка при завантаженні знижок')
     }
   }
 

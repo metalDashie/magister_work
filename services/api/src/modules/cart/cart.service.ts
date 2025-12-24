@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Cart, CartItem } from '../../database/entities'
+import { Cart, CartItem, Product } from '../../database/entities'
 import { AddToCartDto } from '@fullmag/common'
 
 @Injectable()
@@ -10,7 +10,9 @@ export class CartService {
     @InjectRepository(Cart)
     private cartRepository: Repository<Cart>,
     @InjectRepository(CartItem)
-    private cartItemRepository: Repository<CartItem>
+    private cartItemRepository: Repository<CartItem>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>
   ) {}
 
   async getCart(userId: string): Promise<Cart> {
@@ -20,8 +22,13 @@ export class CartService {
     })
 
     if (!cart) {
-      cart = this.cartRepository.create({ userId })
+      cart = this.cartRepository.create({ userId, items: [] })
       await this.cartRepository.save(cart)
+    }
+
+    // Ensure items is always an array
+    if (!cart.items) {
+      cart.items = []
     }
 
     return cart
@@ -30,17 +37,30 @@ export class CartService {
   async addItem(userId: string, addToCartDto: AddToCartDto): Promise<Cart> {
     const cart = await this.getCart(userId)
 
+    // Fetch product to get the current price
+    const product = await this.productRepository.findOne({
+      where: { id: addToCartDto.productId },
+    })
+
+    if (!product) {
+      throw new NotFoundException('Product not found')
+    }
+
     const existingItem = cart.items?.find(
       (item) => item.productId === addToCartDto.productId
     )
 
     if (existingItem) {
       existingItem.quantity += addToCartDto.quantity
+      // Update price to current product price
+      existingItem.price = product.price
       await this.cartItemRepository.save(existingItem)
     } else {
       const newItem = this.cartItemRepository.create({
         cartId: cart.id,
-        ...addToCartDto,
+        productId: addToCartDto.productId,
+        quantity: addToCartDto.quantity,
+        price: product.price,
       })
       await this.cartItemRepository.save(newItem)
     }

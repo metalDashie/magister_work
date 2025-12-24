@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Структура бази даних - Магазин музичних інструментів</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 40px;
+        }
+        h2 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .table-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Таблиця 3.1 – Структура таблиці users</h2>
+<p>Таблиця users (таблиця 3.1) зберігає облікові записи користувачів системи з їхніми персональними даними, обліковими даними для автентифікації та ролями доступу.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор користувача (UUID)</td>
+    </tr>
+    <tr>
+        <td>email</td>
+        <td>VARCHAR(255) UNIQUE</td>
+        <td>Електронна пошта користувача</td>
+    </tr>
+    <tr>
+        <td>password</td>
+        <td>VARCHAR(255)</td>
+        <td>Хешований пароль</td>
+    </tr>
+    <tr>
+        <td>firstName</td>
+        <td>VARCHAR(100)</td>
+        <td>Ім'я користувача</td>
+    </tr>
+    <tr>
+        <td>lastName</td>
+        <td>VARCHAR(100)</td>
+        <td>Прізвище користувача</td>
+    </tr>
+    <tr>
+        <td>phone</td>
+        <td>VARCHAR(20)</td>
+        <td>Номер телефону</td>
+    </tr>
+    <tr>
+        <td>role</td>
+        <td>ENUM('customer', 'employee', 'admin')</td>
+        <td>Роль користувача в системі</td>
+    </tr>
+    <tr>
+        <td>avatar</td>
+        <td>VARCHAR(500)</td>
+        <td>URL аватара користувача</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Статус активності облікового запису</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.2 – Структура таблиці categories</h2>
+<p>Таблиця categories (таблиця 3.2) представляє ієрархічний каталог категорій товарів з підтримкою вкладеності через посилання на батьківську категорію.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор категорії (UUID)</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>VARCHAR(100)</td>
+        <td>Назва категорії</td>
+    </tr>
+    <tr>
+        <td>slug</td>
+        <td>VARCHAR(100) UNIQUE</td>
+        <td>URL-friendly ідентифікатор категорії</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Опис категорії</td>
+    </tr>
+    <tr>
+        <td>image</td>
+        <td>VARCHAR(500)</td>
+        <td>URL зображення категорії</td>
+    </tr>
+    <tr>
+        <td>parentId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на батьківську категорію</td>
+    </tr>
+    <tr>
+        <td>sortOrder</td>
+        <td>INT</td>
+        <td>Порядок сортування категорії</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Статус активності категорії</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.3 – Структура таблиці characteristics</h2>
+<p>Таблиця characteristics (таблиця 3.3) визначає типи характеристик товарів (розмір, колір, матеріал тощо), які можна призначати товарам певної категорії.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор характеристики (UUID)</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>VARCHAR(100)</td>
+        <td>Назва характеристики</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('string', 'number', 'boolean', 'select')</td>
+        <td>Тип значення характеристики</td>
+    </tr>
+    <tr>
+        <td>unit</td>
+        <td>VARCHAR(50)</td>
+        <td>Одиниця виміру (якщо застосовно)</td>
+    </tr>
+    <tr>
+        <td>options</td>
+        <td>JSON</td>
+        <td>Можливі значення для типу select</td>
+    </tr>
+    <tr>
+        <td>categoryId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на категорію</td>
+    </tr>
+    <tr>
+        <td>isRequired</td>
+        <td>BOOLEAN</td>
+        <td>Чи є характеристика обов'язковою</td>
+    </tr>
+    <tr>
+        <td>isFilterable</td>
+        <td>BOOLEAN</td>
+        <td>Чи використовується для фільтрації</td>
+    </tr>
+    <tr>
+        <td>sortOrder</td>
+        <td>INT</td>
+        <td>Порядок відображення</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.4 – Структура таблиці products</h2>
+<p>Таблиця products (таблиця 3.4) зберігає каталог товарів магазину з повною інформацією про назву, артикул, ціну, кількість на складі та зображення.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор товару (UUID)</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва товару</td>
+    </tr>
+    <tr>
+        <td>slug</td>
+        <td>VARCHAR(255) UNIQUE</td>
+        <td>URL-friendly ідентифікатор товару</td>
+    </tr>
+    <tr>
+        <td>sku</td>
+        <td>VARCHAR(50) UNIQUE</td>
+        <td>Артикул товару</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Повний опис товару</td>
+    </tr>
+    <tr>
+        <td>shortDescription</td>
+        <td>VARCHAR(500)</td>
+        <td>Короткий опис товару</td>
+    </tr>
+    <tr>
+        <td>price</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Ціна товару</td>
+    </tr>
+    <tr>
+        <td>oldPrice</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Стара ціна (для акцій)</td>
+    </tr>
+    <tr>
+        <td>quantity</td>
+        <td>INT</td>
+        <td>Кількість на складі</td>
+    </tr>
+    <tr>
+        <td>categoryId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на категорію</td>
+    </tr>
+    <tr>
+        <td>brand</td>
+        <td>VARCHAR(100)</td>
+        <td>Бренд виробника</td>
+    </tr>
+    <tr>
+        <td>images</td>
+        <td>JSON</td>
+        <td>Масив URL зображень товару</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Статус активності товару</td>
+    </tr>
+    <tr>
+        <td>isFeatured</td>
+        <td>BOOLEAN</td>
+        <td>Чи є товар рекомендованим</td>
+    </tr>
+    <tr>
+        <td>viewsCount</td>
+        <td>INT</td>
+        <td>Кількість переглядів</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.5 – Структура таблиці product_characteristics</h2>
+<p>Таблиця product_characteristics (таблиця 3.5) представляє зв'язок між товарами та їх характеристиками, зберігаючи конкретні значення атрибутів для кожного товару.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор зв'язку (UUID)</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>characteristicId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на характеристику</td>
+    </tr>
+    <tr>
+        <td>value</td>
+        <td>VARCHAR(500)</td>
+        <td>Значення характеристики для товару</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.6 – Структура таблиці reviews</h2>
+<p>Таблиця reviews (таблиця 3.6) зберігає відгуки користувачів на товари з рейтинговими оцінками, перевагами та недоліками.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор відгуку (UUID)</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>rating</td>
+        <td>INT</td>
+        <td>Оцінка товару (1-5)</td>
+    </tr>
+    <tr>
+        <td>title</td>
+        <td>VARCHAR(200)</td>
+        <td>Заголовок відгуку</td>
+    </tr>
+    <tr>
+        <td>comment</td>
+        <td>TEXT</td>
+        <td>Текст відгуку</td>
+    </tr>
+    <tr>
+        <td>pros</td>
+        <td>TEXT</td>
+        <td>Переваги товару</td>
+    </tr>
+    <tr>
+        <td>cons</td>
+        <td>TEXT</td>
+        <td>Недоліки товару</td>
+    </tr>
+    <tr>
+        <td>isVerified</td>
+        <td>BOOLEAN</td>
+        <td>Чи підтверджена покупка</td>
+    </tr>
+    <tr>
+        <td>isApproved</td>
+        <td>BOOLEAN</td>
+        <td>Чи схвалений відгук модератором</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.7 – Структура таблиці orders</h2>
+<p>Таблиця orders (таблиця 3.7) зберігає замовлення клієнтів з інформацією про доставку, метод оплати та поточний статус виконання.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор замовлення (UUID)</td>
+    </tr>
+    <tr>
+        <td>orderNumber</td>
+        <td>VARCHAR(20) UNIQUE</td>
+        <td>Номер замовлення</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled')</td>
+        <td>Статус замовлення</td>
+    </tr>
+    <tr>
+        <td>totalAmount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Загальна сума замовлення</td>
+    </tr>
+    <tr>
+        <td>shippingAddress</td>
+        <td>JSON</td>
+        <td>Адреса доставки</td>
+    </tr>
+    <tr>
+        <td>shippingMethod</td>
+        <td>VARCHAR(50)</td>
+        <td>Спосіб доставки</td>
+    </tr>
+    <tr>
+        <td>shippingCost</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Вартість доставки</td>
+    </tr>
+    <tr>
+        <td>paymentMethod</td>
+        <td>VARCHAR(50)</td>
+        <td>Спосіб оплати</td>
+    </tr>
+    <tr>
+        <td>paymentStatus</td>
+        <td>ENUM('pending', 'paid', 'failed', 'refunded')</td>
+        <td>Статус оплати</td>
+    </tr>
+    <tr>
+        <td>notes</td>
+        <td>TEXT</td>
+        <td>Примітки до замовлення</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення замовлення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.8 – Структура таблиці order_items</h2>
+<p>Таблиця order_items (таблиця 3.8) представляє позиції замовлень, фіксуючи товари, їх кількість та ціну на момент здійснення покупки.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор позиції (UUID)</td>
+    </tr>
+    <tr>
+        <td>orderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на замовлення</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>productName</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва товару на момент замовлення</td>
+    </tr>
+    <tr>
+        <td>productSku</td>
+        <td>VARCHAR(50)</td>
+        <td>Артикул товару на момент замовлення</td>
+    </tr>
+    <tr>
+        <td>price</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Ціна за одиницю на момент замовлення</td>
+    </tr>
+    <tr>
+        <td>quantity</td>
+        <td>INT</td>
+        <td>Кількість одиниць товару</td>
+    </tr>
+    <tr>
+        <td>totalPrice</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Загальна вартість позиції</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення запису</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.9 – Структура таблиці chats</h2>
+<p>Таблиця chats (таблиця 3.9) зберігає чати підтримки між клієнтами та працівниками магазину з можливістю прив'язки до конкретних замовлень.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор чату (UUID)</td>
+    </tr>
+    <tr>
+        <td>customerId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на клієнта</td>
+    </tr>
+    <tr>
+        <td>employeeId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на працівника</td>
+    </tr>
+    <tr>
+        <td>subject</td>
+        <td>VARCHAR(200)</td>
+        <td>Тема чату</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('open', 'in_progress', 'resolved', 'closed')</td>
+        <td>Статус чату</td>
+    </tr>
+    <tr>
+        <td>priority</td>
+        <td>ENUM('low', 'medium', 'high')</td>
+        <td>Пріоритет звернення</td>
+    </tr>
+    <tr>
+        <td>orderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на замовлення (якщо пов'язано)</td>
+    </tr>
+    <tr>
+        <td>lastMessageAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього повідомлення</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення чату</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.10 – Структура таблиці messages</h2>
+<p>Таблиця messages (таблиця 3.10) зберігає повідомлення в чатах з підтримкою різних типів контенту: текст, зображення та файли.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор повідомлення (UUID)</td>
+    </tr>
+    <tr>
+        <td>chatId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на чат</td>
+    </tr>
+    <tr>
+        <td>senderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на відправника</td>
+    </tr>
+    <tr>
+        <td>content</td>
+        <td>TEXT</td>
+        <td>Текст повідомлення</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('text', 'image', 'file', 'system')</td>
+        <td>Тип повідомлення</td>
+    </tr>
+    <tr>
+        <td>attachments</td>
+        <td>JSON</td>
+        <td>Прикріплені файли</td>
+    </tr>
+    <tr>
+        <td>isRead</td>
+        <td>BOOLEAN</td>
+        <td>Чи прочитане повідомлення</td>
+    </tr>
+    <tr>
+        <td>readAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час прочитання</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час відправлення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.11 – Структура таблиці carts</h2>
+<p>Таблиця carts (таблиця 3.11) представляє кошики покупців для збереження обраних товарів перед оформленням замовлення.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор кошика (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення кошика</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.12 – Структура таблиці cart_items</h2>
+<p>Таблиця cart_items (таблиця 3.12) зберігає позиції кошика з інформацією про обрані товари та їх кількість.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор позиції (UUID)</td>
+    </tr>
+    <tr>
+        <td>cartId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на кошик</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>quantity</td>
+        <td>INT</td>
+        <td>Кількість одиниць товару</td>
+    </tr>
+    <tr>
+        <td>price</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Ціна товару на момент додавання</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час додавання до кошика</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.13 – Структура таблиці wishlists</h2>
+<p>Таблиця wishlists (таблиця 3.13) представляє списки бажаних товарів користувачів для збереження цікавих позицій.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час додавання до списку</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.14 – Структура таблиці payments</h2>
+<p>Таблиця payments (таблиця 3.14) зберігає інформацію про платежі замовлень через різні платіжні системи (LiqPay, Monobank, ПриватБанк).</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор платежу (UUID)</td>
+    </tr>
+    <tr>
+        <td>orderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на замовлення</td>
+    </tr>
+    <tr>
+        <td>provider</td>
+        <td>ENUM('liqpay', 'monobank', 'privat24', 'cash')</td>
+        <td>Платіжний провайдер</td>
+    </tr>
+    <tr>
+        <td>providerPaymentId</td>
+        <td>VARCHAR(255)</td>
+        <td>Ідентифікатор платежу у провайдера</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'processing', 'success', 'failed', 'refunded')</td>
+        <td>Статус платежу</td>
+    </tr>
+    <tr>
+        <td>amount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Сума платежу</td>
+    </tr>
+    <tr>
+        <td>currency</td>
+        <td>VARCHAR(3)</td>
+        <td>Валюта платежу (UAH, USD, EUR)</td>
+    </tr>
+    <tr>
+        <td>providerResponse</td>
+        <td>JSONB</td>
+        <td>Відповідь платіжної системи</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення платежу</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.15 – Структура таблиці coupons</h2>
+<p>Таблиця coupons (таблиця 3.15) зберігає промокоди та купони на знижки з гнучкими налаштуваннями лімітів використання.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор купона (UUID)</td>
+    </tr>
+    <tr>
+        <td>code</td>
+        <td>VARCHAR(50) UNIQUE</td>
+        <td>Код купона</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Опис купона</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('percentage', 'fixed')</td>
+        <td>Тип знижки (відсоток або фіксована сума)</td>
+    </tr>
+    <tr>
+        <td>value</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Значення знижки</td>
+    </tr>
+    <tr>
+        <td>minOrderAmount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Мінімальна сума замовлення</td>
+    </tr>
+    <tr>
+        <td>maxDiscount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Максимальна знижка</td>
+    </tr>
+    <tr>
+        <td>usageLimit</td>
+        <td>INT</td>
+        <td>Загальний ліміт використань</td>
+    </tr>
+    <tr>
+        <td>usageCount</td>
+        <td>INT</td>
+        <td>Кількість використань</td>
+    </tr>
+    <tr>
+        <td>perUserLimit</td>
+        <td>INT</td>
+        <td>Ліміт використань на користувача</td>
+    </tr>
+    <tr>
+        <td>startDate</td>
+        <td>TIMESTAMP</td>
+        <td>Дата початку дії</td>
+    </tr>
+    <tr>
+        <td>endDate</td>
+        <td>TIMESTAMP</td>
+        <td>Дата закінчення дії</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Статус активності купона</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.16 – Структура таблиці coupon_usages</h2>
+<p>Таблиця coupon_usages (таблиця 3.16) фіксує історію використання купонів користувачами із зазначенням суми отриманої знижки.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>couponId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на купон</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>orderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на замовлення</td>
+    </tr>
+    <tr>
+        <td>discountAmount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Сума отриманої знижки</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час використання</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.17 – Структура таблиці notifications</h2>
+<p>Таблиця notifications (таблиця 3.17) зберігає сповіщення користувачам через різні канали доставки: email, push-повідомлення, SMS та Telegram.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор сповіщення (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>VARCHAR(50)</td>
+        <td>Тип сповіщення</td>
+    </tr>
+    <tr>
+        <td>channel</td>
+        <td>ENUM('email', 'push', 'sms', 'telegram')</td>
+        <td>Канал доставки</td>
+    </tr>
+    <tr>
+        <td>title</td>
+        <td>VARCHAR(255)</td>
+        <td>Заголовок сповіщення</td>
+    </tr>
+    <tr>
+        <td>payload</td>
+        <td>JSONB</td>
+        <td>Дані сповіщення</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'sent', 'delivered', 'failed', 'read')</td>
+        <td>Статус доставки</td>
+    </tr>
+    <tr>
+        <td>sentAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час відправки</td>
+    </tr>
+    <tr>
+        <td>readAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час прочитання</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.18 – Структура таблиці banners</h2>
+<p>Таблиця banners (таблиця 3.18) представляє рекламні банери для головної сторінки та сторінок категорій із налаштуванням періоду показу.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор банера (UUID)</td>
+    </tr>
+    <tr>
+        <td>title</td>
+        <td>VARCHAR(255)</td>
+        <td>Заголовок банера</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Опис банера</td>
+    </tr>
+    <tr>
+        <td>imageUrl</td>
+        <td>VARCHAR(500)</td>
+        <td>URL зображення банера</td>
+    </tr>
+    <tr>
+        <td>linkUrl</td>
+        <td>VARCHAR(500)</td>
+        <td>URL посилання при кліку</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('hero', 'promo', 'category', 'sidebar')</td>
+        <td>Тип банера</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('draft', 'active', 'scheduled', 'expired')</td>
+        <td>Статус банера</td>
+    </tr>
+    <tr>
+        <td>startDate</td>
+        <td>TIMESTAMP</td>
+        <td>Дата початку показу</td>
+    </tr>
+    <tr>
+        <td>endDate</td>
+        <td>TIMESTAMP</td>
+        <td>Дата закінчення показу</td>
+    </tr>
+    <tr>
+        <td>priority</td>
+        <td>INT</td>
+        <td>Пріоритет відображення</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.19 – Структура таблиці return_requests</h2>
+<p>Таблиця return_requests (таблиця 3.19) зберігає заявки на повернення товарів з причинами, статусами обробки та інформацією про повернення коштів.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор заявки (UUID)</td>
+    </tr>
+    <tr>
+        <td>orderId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на замовлення</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>orderItemId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на позицію замовлення</td>
+    </tr>
+    <tr>
+        <td>reason</td>
+        <td>ENUM('defective', 'wrong_item', 'not_as_described', 'changed_mind', 'other')</td>
+        <td>Причина повернення</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Детальний опис проблеми</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'approved', 'rejected', 'processing', 'completed')</td>
+        <td>Статус заявки</td>
+    </tr>
+    <tr>
+        <td>images</td>
+        <td>JSONB</td>
+        <td>Фотографії товару</td>
+    </tr>
+    <tr>
+        <td>refundAmount</td>
+        <td>DECIMAL(10,2)</td>
+        <td>Сума повернення</td>
+    </tr>
+    <tr>
+        <td>adminNotes</td>
+        <td>TEXT</td>
+        <td>Примітки адміністратора</td>
+    </tr>
+    <tr>
+        <td>processedById</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на працівника, що обробив заявку</td>
+    </tr>
+    <tr>
+        <td>processedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час обробки</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення заявки</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.20 – Структура таблиці user_addresses</h2>
+<p>Таблиця user_addresses (таблиця 3.20) зберігає адреси доставки користувачів з підтримкою різних типів доставки та інтеграцією з Новою Поштою.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор адреси (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>title</td>
+        <td>VARCHAR(100)</td>
+        <td>Назва адреси (Дім, Робота тощо)</td>
+    </tr>
+    <tr>
+        <td>recipientName</td>
+        <td>VARCHAR(200)</td>
+        <td>Ім'я отримувача</td>
+    </tr>
+    <tr>
+        <td>recipientPhone</td>
+        <td>VARCHAR(20)</td>
+        <td>Телефон отримувача</td>
+    </tr>
+    <tr>
+        <td>city</td>
+        <td>VARCHAR(100)</td>
+        <td>Місто доставки</td>
+    </tr>
+    <tr>
+        <td>address</td>
+        <td>VARCHAR(255)</td>
+        <td>Адреса доставки</td>
+    </tr>
+    <tr>
+        <td>deliveryType</td>
+        <td>ENUM('nova_poshta_warehouse', 'nova_poshta_courier', 'ukrposhta', 'self_pickup')</td>
+        <td>Тип доставки</td>
+    </tr>
+    <tr>
+        <td>warehouseRef</td>
+        <td>VARCHAR(50)</td>
+        <td>Референс відділення Нової Пошти</td>
+    </tr>
+    <tr>
+        <td>warehouseNumber</td>
+        <td>VARCHAR(20)</td>
+        <td>Номер відділення</td>
+    </tr>
+    <tr>
+        <td>isDefault</td>
+        <td>BOOLEAN</td>
+        <td>Чи є адреса за замовчуванням</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.21 – Структура таблиці telegram_users</h2>
+<p>Таблиця telegram_users (таблиця 3.21) представляє зв'язок облікових записів користувачів системи з їхніми акаунтами Telegram для надсилання сповіщень.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>chatId</td>
+        <td>BIGINT UNIQUE</td>
+        <td>Ідентифікатор чату Telegram</td>
+    </tr>
+    <tr>
+        <td>username</td>
+        <td>VARCHAR(100)</td>
+        <td>Username в Telegram</td>
+    </tr>
+    <tr>
+        <td>firstName</td>
+        <td>VARCHAR(100)</td>
+        <td>Ім'я в Telegram</td>
+    </tr>
+    <tr>
+        <td>lastName</td>
+        <td>VARCHAR(100)</td>
+        <td>Прізвище в Telegram</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Чи активний зв'язок</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час прив'язки</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.22 – Структура таблиці whatsapp_users</h2>
+<p>Таблиця whatsapp_users (таблиця 3.22) представляє зв'язок облікових записів користувачів системи з їхніми акаунтами WhatsApp для надсилання сповіщень.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>phoneNumber</td>
+        <td>VARCHAR(20) UNIQUE</td>
+        <td>Номер телефону WhatsApp</td>
+    </tr>
+    <tr>
+        <td>whatsappId</td>
+        <td>VARCHAR(50)</td>
+        <td>Ідентифікатор WhatsApp</td>
+    </tr>
+    <tr>
+        <td>pushName</td>
+        <td>VARCHAR(100)</td>
+        <td>Ім'я в WhatsApp</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Чи активний зв'язок</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час прив'язки</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.23 – Структура таблиці review_likes</h2>
+<p>Таблиця review_likes (таблиця 3.23) зберігає відмітки «корисно» для відгуків, залишені іншими користувачами.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор відмітки (UUID)</td>
+    </tr>
+    <tr>
+        <td>reviewId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на відгук</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час відмітки</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.24 – Структура таблиці review_replies</h2>
+<p>Таблиця review_replies (таблиця 3.24) зберігає відповіді на відгуки від адміністрації магазину або інших користувачів з підтримкою вкладеності.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор відповіді (UUID)</td>
+    </tr>
+    <tr>
+        <td>reviewId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на відгук</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на автора відповіді</td>
+    </tr>
+    <tr>
+        <td>parentReplyId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на батьківську відповідь (для вкладених відповідей)</td>
+    </tr>
+    <tr>
+        <td>content</td>
+        <td>TEXT</td>
+        <td>Текст відповіді</td>
+    </tr>
+    <tr>
+        <td>isOfficial</td>
+        <td>BOOLEAN</td>
+        <td>Чи є відповідь офіційною від магазину</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.25 – Структура таблиці review_complaints</h2>
+<p>Таблиця review_complaints (таблиця 3.25) зберігає скарги користувачів на відгуки для подальшої модерації адміністрацією.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор скарги (UUID)</td>
+    </tr>
+    <tr>
+        <td>reviewId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на відгук</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на автора скарги</td>
+    </tr>
+    <tr>
+        <td>reason</td>
+        <td>ENUM('spam', 'inappropriate', 'fake', 'offensive', 'other')</td>
+        <td>Причина скарги</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Детальний опис скарги</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'reviewed', 'resolved', 'rejected')</td>
+        <td>Статус скарги</td>
+    </tr>
+    <tr>
+        <td>resolvedById</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на модератора</td>
+    </tr>
+    <tr>
+        <td>resolvedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час розгляду</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення скарги</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.26 – Структура таблиці compare_items</h2>
+<p>Таблиця compare_items (таблиця 3.26) зберігає товари, додані користувачами до списку порівняння для зіставлення характеристик.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>productId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на товар</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час додавання до порівняння</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.27 – Структура таблиці cart_reminders</h2>
+<p>Таблиця cart_reminders (таблиця 3.27) зберігає записи про нагадування щодо покинутих кошиків для маркетингових email-розсилок.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор нагадування (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>cartId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на кошик</td>
+    </tr>
+    <tr>
+        <td>reminderNumber</td>
+        <td>INT</td>
+        <td>Порядковий номер нагадування (1, 2, 3...)</td>
+    </tr>
+    <tr>
+        <td>emailSent</td>
+        <td>BOOLEAN</td>
+        <td>Чи було відправлено email</td>
+    </tr>
+    <tr>
+        <td>sentAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час відправки нагадування</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.28 – Структура таблиці delivery_addresses</h2>
+<p>Таблиця delivery_addresses (таблиця 3.28) зберігає адреси доставки з інтеграцією API Нової Пошти для вибору відділень та кур'єрської доставки.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор адреси (UUID)</td>
+    </tr>
+    <tr>
+        <td>userId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('nova_poshta_warehouse', 'nova_poshta_courier', 'self_pickup')</td>
+        <td>Тип доставки</td>
+    </tr>
+    <tr>
+        <td>cityRef</td>
+        <td>VARCHAR(50)</td>
+        <td>Референс міста в API Нової Пошти</td>
+    </tr>
+    <tr>
+        <td>cityName</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва міста</td>
+    </tr>
+    <tr>
+        <td>warehouseRef</td>
+        <td>VARCHAR(50)</td>
+        <td>Референс відділення Нової Пошти</td>
+    </tr>
+    <tr>
+        <td>warehouseDescription</td>
+        <td>VARCHAR(500)</td>
+        <td>Опис відділення (адреса)</td>
+    </tr>
+    <tr>
+        <td>streetRef</td>
+        <td>VARCHAR(50)</td>
+        <td>Референс вулиці для кур'єрської доставки</td>
+    </tr>
+    <tr>
+        <td>streetName</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва вулиці</td>
+    </tr>
+    <tr>
+        <td>houseNumber</td>
+        <td>VARCHAR(20)</td>
+        <td>Номер будинку</td>
+    </tr>
+    <tr>
+        <td>apartmentNumber</td>
+        <td>VARCHAR(20)</td>
+        <td>Номер квартири</td>
+    </tr>
+    <tr>
+        <td>recipientName</td>
+        <td>VARCHAR(200)</td>
+        <td>Ім'я отримувача</td>
+    </tr>
+    <tr>
+        <td>recipientPhone</td>
+        <td>VARCHAR(20)</td>
+        <td>Телефон отримувача</td>
+    </tr>
+    <tr>
+        <td>isDefault</td>
+        <td>BOOLEAN</td>
+        <td>Чи є адреса за замовчуванням</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.29 – Структура таблиці analytics_snapshots</h2>
+<p>Таблиця analytics_snapshots (таблиця 3.29) зберігає агреговані знімки аналітичних даних для побудови звітності та дашбордів.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор знімка (UUID)</td>
+    </tr>
+    <tr>
+        <td>snapshotDate</td>
+        <td>DATE</td>
+        <td>Дата знімка даних</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>ENUM('daily', 'weekly', 'monthly')</td>
+        <td>Тип періоду агрегації</td>
+    </tr>
+    <tr>
+        <td>totalRevenue</td>
+        <td>DECIMAL(12,2)</td>
+        <td>Загальний дохід за період</td>
+    </tr>
+    <tr>
+        <td>totalOrders</td>
+        <td>INT</td>
+        <td>Кількість замовлень</td>
+    </tr>
+    <tr>
+        <td>completedOrders</td>
+        <td>INT</td>
+        <td>Кількість завершених замовлень</td>
+    </tr>
+    <tr>
+        <td>cancelledOrders</td>
+        <td>INT</td>
+        <td>Кількість скасованих замовлень</td>
+    </tr>
+    <tr>
+        <td>averageOrderValue</td>
+        <td>DECIMAL(12,2)</td>
+        <td>Середній чек замовлення</td>
+    </tr>
+    <tr>
+        <td>newCustomers</td>
+        <td>INT</td>
+        <td>Кількість нових клієнтів</td>
+    </tr>
+    <tr>
+        <td>returningCustomers</td>
+        <td>INT</td>
+        <td>Кількість повторних клієнтів</td>
+    </tr>
+    <tr>
+        <td>productsSold</td>
+        <td>INT</td>
+        <td>Кількість проданих товарів</td>
+    </tr>
+    <tr>
+        <td>lowStockProducts</td>
+        <td>INT</td>
+        <td>Кількість товарів з низьким залишком</td>
+    </tr>
+    <tr>
+        <td>topProducts</td>
+        <td>JSONB</td>
+        <td>Топ продуктів за продажами</td>
+    </tr>
+    <tr>
+        <td>topCategories</td>
+        <td>JSONB</td>
+        <td>Топ категорій за доходом</td>
+    </tr>
+    <tr>
+        <td>revenueByPaymentMethod</td>
+        <td>JSONB</td>
+        <td>Дохід за методами оплати</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення знімка</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.30 – Структура таблиці import_profiles</h2>
+<p>Таблиця import_profiles (таблиця 3.30) зберігає профілі налаштувань для імпорту товарів з CSV/Excel файлів з правилами маппінгу та валідації.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор профілю (UUID)</td>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва профілю імпорту</td>
+    </tr>
+    <tr>
+        <td>description</td>
+        <td>TEXT</td>
+        <td>Опис профілю</td>
+    </tr>
+    <tr>
+        <td>delimiter</td>
+        <td>VARCHAR(10)</td>
+        <td>Роздільник колонок (кома, крапка з комою тощо)</td>
+    </tr>
+    <tr>
+        <td>encoding</td>
+        <td>VARCHAR(50)</td>
+        <td>Кодування файлу (utf-8, windows-1251 тощо)</td>
+    </tr>
+    <tr>
+        <td>hasHeader</td>
+        <td>BOOLEAN</td>
+        <td>Чи має файл заголовок</td>
+    </tr>
+    <tr>
+        <td>columnMapping</td>
+        <td>JSONB</td>
+        <td>Відповідність колонок файлу полям товару</td>
+    </tr>
+    <tr>
+        <td>transformations</td>
+        <td>JSONB</td>
+        <td>Правила трансформації даних (конвертація валют, ціни)</td>
+    </tr>
+    <tr>
+        <td>validationRules</td>
+        <td>JSONB</td>
+        <td>Правила валідації даних</td>
+    </tr>
+    <tr>
+        <td>attributeMapping</td>
+        <td>JSONB</td>
+        <td>Відповідність атрибутів товарів</td>
+    </tr>
+    <tr>
+        <td>isDefault</td>
+        <td>BOOLEAN</td>
+        <td>Чи є профіль за замовчуванням</td>
+    </tr>
+    <tr>
+        <td>isActive</td>
+        <td>BOOLEAN</td>
+        <td>Чи активний профіль</td>
+    </tr>
+    <tr>
+        <td>createdById</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача, що створив профіль</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час створення</td>
+    </tr>
+    <tr>
+        <td>updatedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час останнього оновлення</td>
+    </tr>
+</table>
+
+<h2>Таблиця 3.31 – Структура таблиці import_history</h2>
+<p>Таблиця import_history (таблиця 3.31) фіксує історію операцій імпорту товарів з детальною статистикою успішних та невдалих записів.</p>
+<table>
+    <tr>
+        <th>Поле</th>
+        <th>Тип даних</th>
+        <th>Опис</th>
+    </tr>
+    <tr>
+        <td>id</td>
+        <td>VARCHAR(36) PK</td>
+        <td>Унікальний ідентифікатор запису (UUID)</td>
+    </tr>
+    <tr>
+        <td>fileName</td>
+        <td>VARCHAR(255)</td>
+        <td>Назва імпортованого файлу</td>
+    </tr>
+    <tr>
+        <td>profileId</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на профіль імпорту</td>
+    </tr>
+    <tr>
+        <td>importedById</td>
+        <td>VARCHAR(36) FK</td>
+        <td>Посилання на користувача, що виконав імпорт</td>
+    </tr>
+    <tr>
+        <td>status</td>
+        <td>ENUM('pending', 'processing', 'completed', 'failed')</td>
+        <td>Статус операції імпорту</td>
+    </tr>
+    <tr>
+        <td>stats</td>
+        <td>JSONB</td>
+        <td>Статистика імпорту (успішних, невдалих, пропущених)</td>
+    </tr>
+    <tr>
+        <td>errorMessage</td>
+        <td>TEXT</td>
+        <td>Повідомлення про помилку (якщо є)</td>
+    </tr>
+    <tr>
+        <td>createdAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час початку імпорту</td>
+    </tr>
+    <tr>
+        <td>completedAt</td>
+        <td>TIMESTAMP</td>
+        <td>Дата та час завершення імпорту</td>
+    </tr>
+</table>
+
+</body>
+</html>

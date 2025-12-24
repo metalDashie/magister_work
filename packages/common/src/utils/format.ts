@@ -1,10 +1,22 @@
 export function formatPrice(amount: number, currency: string = 'UAH'): string {
+  // Format number without currency symbol to avoid hydration mismatch
+  // (server and client may have different locale data for currency symbols)
   const formatter = new Intl.NumberFormat('uk-UA', {
-    style: 'currency',
-    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })
 
-  return formatter.format(amount)
+  const formattedAmount = formatter.format(amount)
+
+  // Use consistent currency symbol
+  const currencySymbols: Record<string, string> = {
+    UAH: '₴',
+    USD: '$',
+    EUR: '€',
+  }
+
+  const symbol = currencySymbols[currency] || currency
+  return `${formattedAmount} ${symbol}`
 }
 
 export function formatDate(date: Date | string): string {

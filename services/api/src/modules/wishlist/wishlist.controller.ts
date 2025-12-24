@@ -19,43 +19,43 @@ export class WishlistController {
 
   @Get()
   async getWishlist(@Request() req) {
-    const items = await this.wishlistService.getWishlist(req.user.id)
+    const items = await this.wishlistService.getWishlist(req.user.userId)
     return { items, count: items.length }
   }
 
   @Get('count')
   async getCount(@Request() req) {
-    const count = await this.wishlistService.getWishlistCount(req.user.id)
+    const count = await this.wishlistService.getWishlistCount(req.user.userId)
     return { count }
   }
 
   @Get('check/:productId')
   async checkInWishlist(@Request() req, @Param('productId') productId: string) {
-    const inWishlist = await this.wishlistService.isInWishlist(req.user.id, productId)
+    const inWishlist = await this.wishlistService.isInWishlist(req.user.userId, productId)
     return { inWishlist }
   }
 
   @Post(':productId')
   async addToWishlist(@Request() req, @Param('productId') productId: string) {
-    const item = await this.wishlistService.addToWishlist(req.user.id, productId)
+    const item = await this.wishlistService.addToWishlist(req.user.userId, productId)
     return { success: true, item }
   }
 
   @Post(':productId/toggle')
   async toggleWishlist(@Request() req, @Param('productId') productId: string) {
-    const result = await this.wishlistService.toggleWishlist(req.user.id, productId)
+    const result = await this.wishlistService.toggleWishlist(req.user.userId, productId)
     return { success: true, ...result }
   }
 
   @Delete(':productId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeFromWishlist(@Request() req, @Param('productId') productId: string) {
-    await this.wishlistService.removeFromWishlist(req.user.id, productId)
+    await this.wishlistService.removeFromWishlist(req.user.userId, productId)
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async clearWishlist(@Request() req) {
-    await this.wishlistService.clearWishlist(req.user.id)
+    await this.wishlistService.clearWishlist(req.user.userId)
   }
 }

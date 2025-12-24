@@ -274,7 +274,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
                     )}
                   </div>
                   <div className="flex items-center gap-2 mt-1 text-sm text-gray-500">
-                    <span>{review.user?.email}</span>
+                    <span>{review.user?.email || 'Anonymous'}</span>
                     {review.isVerifiedPurchase && (
                       <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full">
                         Verified Purchase
