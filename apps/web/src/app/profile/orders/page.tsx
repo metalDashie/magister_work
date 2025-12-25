@@ -107,29 +107,46 @@ export default function OrdersPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Order History</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Історія замовлень</h1>
 
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
+          <svg
+            className="w-16 h-16 mx-auto text-gray-300 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
           <p className="text-gray-600 mb-4">
-            You haven't placed any orders yet
+            У вас ще немає замовлень
           </p>
           <Link
             href="/products"
-            className="text-primary-600 hover:text-primary-700 font-semibold"
+            className="inline-block px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
-            Start Shopping
+            Перейти до покупок
           </Link>
         </div>
       ) : (
         <>
           <div className="space-y-4">
             {orders.map((order: any) => (
-              <div key={order.id} className="bg-white rounded-lg shadow p-6">
+              <Link
+                key={order.id}
+                href={`/profile/orders/${order.id}`}
+                className="block bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+              >
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-sm text-gray-600">
-                      Order ID: {order.id.slice(0, 8)}
+                      Замовлення #{order.id.slice(0, 8).toUpperCase()}
                     </p>
                     <p className="text-sm text-gray-600">
                       {formatDateTime(order.createdAt)}
@@ -146,7 +163,7 @@ export default function OrdersPage() {
 
                 <div className="border-t pt-4">
                   <div className="space-y-2">
-                    {order.items?.map((item: any) => (
+                    {order.items?.slice(0, 3).map((item: any) => (
                       <div
                         key={item.id}
                         className="flex justify-between items-center"
@@ -154,7 +171,7 @@ export default function OrdersPage() {
                         <div>
                           <p className="font-semibold">{item.product?.name}</p>
                           <p className="text-sm text-gray-600">
-                            Quantity: {item.quantity}
+                            Кількість: {item.quantity}
                           </p>
                         </div>
                         <p className="font-semibold">
@@ -162,16 +179,36 @@ export default function OrdersPage() {
                         </p>
                       </div>
                     ))}
+                    {order.items?.length > 3 && (
+                      <p className="text-sm text-gray-500">
+                        + ще {order.items.length - 3} товарів
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                    <span className="font-semibold">Total</span>
-                    <span className="text-xl font-bold text-primary-600">
-                      {formatPrice(order.totalAmount, 'UAH')}
-                    </span>
+                    <span className="font-semibold">Всього</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl font-bold text-primary-600">
+                        {formatPrice(order.totalAmount, 'UAH')}
+                      </span>
+                      <svg
+                        className="w-5 h-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

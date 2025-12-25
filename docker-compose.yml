@@ -37,8 +37,8 @@ services:
     image: axllent/mailpit:latest
     container_name: fullmag-mailpit
     ports:
-      - '8025:8025'   # Web UI
-      - '1025:1025'   # SMTP
+      - '10025:8025'   # Web UI (http://localhost:10025)
+      - '10026:1025'   # SMTP
     networks:
       - fullmag-network
     environment:
@@ -87,7 +87,7 @@ services:
       FRONTEND_URL: http://localhost:10002
       EMAIL_ENABLED: true
       EMAIL_HOST: mailpit
-      EMAIL_PORT: 1025
+      EMAIL_PORT: 1025  # Internal container port
       EMAIL_SECURE: false
       EMAIL_USER: ''
       EMAIL_PASSWORD: ''

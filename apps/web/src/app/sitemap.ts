@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fullmag.com'
-  const apiUrl = process.env.API_URL || 'http://localhost:3001'
+  const apiUrl = process.env.API_URL || 'http://localhost:10001'
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import CategoryProductList from '@/components/products/CategoryProductList'
 import { generateMetadata as generateMeta } from '@/lib/metadata'
 
-const apiUrl = process.env.API_URL || 'http://localhost:3001'
+const apiUrl = process.env.API_URL || 'http://localhost:10001'
 
 async function getCategory(id: string) {
   try {

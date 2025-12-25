@@ -200,12 +200,33 @@ export default function ComparePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Compare Products</h1>
-        <button
-          onClick={clearAll}
-          className="text-red-600 hover:text-red-800 font-medium"
-        >
-          Clear All
-        </button>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/wishlist"
+            className="flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+            <span>Wishlist</span>
+          </Link>
+          <button
+            onClick={clearAll}
+            className="text-red-600 hover:text-red-800 font-medium"
+          >
+            Clear All
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">

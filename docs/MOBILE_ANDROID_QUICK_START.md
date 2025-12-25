@@ -6,7 +6,7 @@
 ✅ Package name: `com.fullmag`
 ✅ App name: FullMag
 ✅ Metro bundler configured on port 10003
-✅ API endpoint configured for Android emulator: `http://10.0.2.2:10002/api`
+✅ API endpoint configured for Android emulator: `http://10.0.2.2:10001/api`
 ✅ Network security config for cleartext traffic in development
 ✅ Babel module resolver configured
 
@@ -47,14 +47,14 @@ From the root directory:
 
 ## Port Configuration
 
-- **Web App**: Port 3000
-- **API**: Port 10002
+- **Web App**: Port 10002
+- **API**: Port 10001
 - **Mobile Metro**: Port 10003
 
 ## Troubleshooting
 
 ### Can't connect to API?
-- Make sure API is running on port 10002
+- Make sure API is running on port 10001
 - The Android emulator uses `10.0.2.2` to access `localhost` on your host machine
 
 ### Metro bundler port conflict?

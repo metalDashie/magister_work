@@ -12,7 +12,7 @@ import { ChatService } from '../modules/chat/chat.service'
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:10002',
     credentials: true,
   },
   namespace: '/chat',

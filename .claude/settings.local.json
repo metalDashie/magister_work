@@ -98,7 +98,11 @@
       "Bash(cmd /c \"dir C:\\magister_work\\*.py\")",
       "Bash(cmd /c \"chcp 65001 >nul && python -c \"\"\nfrom docx import Document\n\n# Читаємо зразок відгуку\ndoc = Document\\(r''C:\\\\magister_work\\\\docs\\\\response\\\\Відгук_Зразок \\(1\\).docx''\\)\nprint\\(''=== ЗРАЗОК ВІДГУКУ ===''\\)\nfor para in doc.paragraphs:\n    if para.text.strip\\(\\):\n        print\\(para.text\\)\n\"\"\")",
       "Bash(cmd /c \"chcp 65001 >nul && python C:\\\\magister_work\\\\read_response.py 2>&1\")",
-      "Bash(cmd /c \"chcp 65001 >nul && python C:\\\\magister_work\\\\read_review.py 2>&1\")"
+      "Bash(cmd /c \"chcp 65001 >nul && python C:\\\\magister_work\\\\read_review.py 2>&1\")",
+      "Bash(lsof:*)",
+      "Bash(docker rm:*)",
+      "Bash(python3:*)",
+      "Bash(nc:*)"
     ],
     "deny": [],
     "ask": []

@@ -12,7 +12,6 @@ import Link from 'next/link'
 interface Order {
   id: string
   totalAmount: number
-  currency: string
   status: string
 }
 
@@ -43,8 +42,8 @@ export default function PaymentPage() {
       const response = await api.get(`/orders/${orderId}`)
       const orderData = response.data
 
-      // Check if order is already paid
-      if (orderData.status === 'paid') {
+      // Check if order is already paid (handle both upper and lowercase)
+      if (orderData.status.toLowerCase() === 'paid') {
         router.push(`/checkout/success?orderId=${orderId}`)
         return
       }
@@ -107,7 +106,7 @@ export default function PaymentPage() {
         <div className="border-t pt-4 flex justify-between items-center">
           <span className="text-lg font-semibold">Total Amount</span>
           <span className="text-2xl font-bold text-primary-600">
-            {formatPrice(order.totalAmount, order.currency)}
+            {formatPrice(order.totalAmount, 'UAH')}
           </span>
         </div>
       </div>

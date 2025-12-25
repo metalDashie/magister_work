@@ -13,7 +13,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: configService.get('CORS_ORIGIN') || 'http://localhost:3000',
+    origin: configService.get('CORS_ORIGIN') || 'http://localhost:10002',
     credentials: true,
   })
 
@@ -32,7 +32,7 @@ async function bootstrap() {
   // Global logging interceptor
   app.useGlobalInterceptors(new LoggingInterceptor())
 
-  const port = configService.get('PORT') || 3001
+  const port = configService.get('PORT') || 10001
 
   await app.listen(port)
   console.log(`Application is running on: http://localhost:${port}`)

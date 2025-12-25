@@ -11,7 +11,7 @@ import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generateMeta } from '@/lib/metadata'
 import { getProductSchema, getBreadcrumbSchema } from '@/lib/structured-data'
 
-const apiUrl = process.env.API_URL || 'http://localhost:3001'
+const apiUrl = process.env.API_URL || 'http://localhost:10001'
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://fullmag.com'
 
 // Ensure API URL has /api suffix for server-side fetches

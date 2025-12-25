@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js'
+import { api } from '@/lib/api'
 
 interface StripePaymentFormProps {
   orderId: string
@@ -40,6 +41,13 @@ export function StripePaymentForm({
       if (error) {
         onError(error.message || 'Payment failed')
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Confirm payment on backend to update order status
+        try {
+          await api.post('/payments/confirm', { paymentIntentId: paymentIntent.id })
+        } catch (confirmErr) {
+          console.error('Failed to confirm payment on backend:', confirmErr)
+          // Still proceed to success as Stripe payment succeeded
+        }
         onSuccess()
       }
     } catch (err: any) {

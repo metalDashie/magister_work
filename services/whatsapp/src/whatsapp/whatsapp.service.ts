@@ -30,7 +30,7 @@ export class WhatsAppService {
     this.phoneNumberId = this.configService.get<string>('WHATSAPP_PHONE_NUMBER_ID') || ''
     this.webhookVerifyToken = this.configService.get<string>('WHATSAPP_WEBHOOK_VERIFY_TOKEN') || ''
     this.botEnabled = this.configService.get<string>('WHATSAPP_BOT_ENABLED') === 'true'
-    this.mainApiUrl = this.configService.get<string>('MAIN_API_URL') || 'http://localhost:3001'
+    this.mainApiUrl = this.configService.get<string>('MAIN_API_URL') || 'http://localhost:10001'
 
     if (this.botEnabled) {
       if (!this.accessToken || !this.phoneNumberId) {

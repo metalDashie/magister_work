@@ -241,6 +241,12 @@ export default function ProfilePage() {
               >
                 Список бажань
               </Link>
+              <Link
+                href="/compare"
+                className="block px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700"
+              >
+                Порівняння товарів
+              </Link>
             </nav>
           </div>
         </div>
@@ -278,10 +284,6 @@ export default function ProfilePage() {
                     ? new Date(profile.dateOfBirth).toLocaleDateString('uk-UA')
                     : '—'}
                 </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Роль</label>
-                <p className="text-gray-900 capitalize">{profile.role}</p>
               </div>
             </div>
           </div>

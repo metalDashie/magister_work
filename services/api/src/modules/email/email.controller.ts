@@ -6,8 +6,8 @@ class TestEmailDto {
   @IsEmail()
   email: string
 
-  @IsIn(['welcome', 'order-confirmation', 'order-status-update', 'payment-success', 'password-reset', 'email-verification', 'cart-reminder', 'all'])
-  template: 'welcome' | 'order-confirmation' | 'order-status-update' | 'payment-success' | 'password-reset' | 'email-verification' | 'cart-reminder' | 'all'
+  @IsIn(['welcome', 'order-confirmation', 'order-status-update', 'payment-success', 'password-reset', 'email-verification', 'email-change-verification', 'cart-reminder', 'all'])
+  template: 'welcome' | 'order-confirmation' | 'order-status-update' | 'payment-success' | 'password-reset' | 'email-verification' | 'email-change-verification' | 'cart-reminder' | 'all'
 }
 
 @Controller('email')
@@ -115,6 +115,14 @@ export class EmailController {
       })
     }
 
+    if (template === 'all' || template === 'email-change-verification') {
+      results['email-change-verification'] = await this.emailService.sendEmailChangeVerification(
+        email,
+        'new.email@example.com',
+        'test-email-change-token'
+      )
+    }
+
     if (template === 'all' || template === 'cart-reminder') {
       results['cart-reminder'] = await this.emailService.sendAbandonedCartReminder(
         email,
@@ -144,6 +152,7 @@ export class EmailController {
         { id: 'payment-success', name: 'Payment Success', description: 'Sent after successful payment' },
         { id: 'password-reset', name: 'Password Reset', description: 'Sent for password reset request' },
         { id: 'email-verification', name: 'Email Verification', description: 'Sent to verify email address' },
+        { id: 'email-change-verification', name: 'Email Change Verification', description: 'Sent when user changes email' },
         { id: 'cart-reminder', name: 'Cart Reminder', description: 'Sent for abandoned carts' },
       ],
     }

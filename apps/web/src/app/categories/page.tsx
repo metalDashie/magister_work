@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { generateMetadata as generateMeta } from '@/lib/metadata'
 
-const apiUrl = process.env.API_URL || 'http://localhost:3001'
+const apiUrl = process.env.API_URL || 'http://localhost:10001'
 
 export const metadata: Metadata = generateMeta({
   title: 'Categories',

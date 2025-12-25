@@ -1,4 +1,0 @@
-=== ALL CAPTIONS IN FINAL3 ===
-
-Captions WITHOUT dash (correct): 67
-Captions WITH dash (need fixing): 0
