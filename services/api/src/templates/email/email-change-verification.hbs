@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Підтвердження зміни електронної пошти</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 40px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
+    h1 {
+      color: #1f2937;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 35px;
+      background-color: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      margin: 20px 0;
+      font-weight: 600;
+    }
+    .button:hover {
+      background-color: #1d4ed8;
+    }
+    .info {
+      background-color: #f0f9ff;
+      border-left: 4px solid #2563eb;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .warning {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .email-highlight {
+      background-color: #e0f2fe;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      color: #0369a1;
+      display: inline-block;
+      margin: 10px 0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .small-text {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">FullMag</div>
+    </div>
+
+    <h1>Підтвердіть зміну електронної пошти</h1>
+
+    <p>Вітаємо!</p>
+
+    <p>Ви запросили зміну електронної пошти вашого облікового запису FullMag на нову адресу:</p>
+
+    <div style="text-align: center;">
+      <span class="email-highlight">{{newEmail}}</span>
+    </div>
+
+    <p>Для підтвердження зміни, будь ласка, натисніть на кнопку нижче:</p>
+
+    <div style="text-align: center;">
+      <a href="{{verificationUrl}}" class="button">Підтвердити нову пошту</a>
+    </div>
+
+    <div class="warning">
+      <strong>⏰ Увага:</strong> Посилання для підтвердження дійсне протягом {{expiryHours}} годин.
+    </div>
+
+    <div class="info">
+      <strong>Не запитували зміну?</strong>
+      <p style="margin-bottom: 0;">Якщо ви не запитували зміну електронної пошти, просто ігноруйте цей лист. Ваша поточна адреса залишиться без змін. Рекомендуємо також змінити пароль для безпеки вашого облікового запису.</p>
+    </div>
+
+    <p>З повагою,<br>Команда FullMag</p>
+
+    <div class="footer">
+      <p>&copy; {{year}} FullMag. Всі права захищені.</p>
+      <p class="small-text">Якщо кнопка не працює, скопіюйте це посилання у браузер:</p>
+      <p class="small-text" style="word-break: break-all;">{{verificationUrl}}</p>
+    </div>
+  </div>
+</body>
+</html>
