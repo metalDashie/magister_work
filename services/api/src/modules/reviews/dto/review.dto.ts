@@ -1,4 +1,5 @@
 import { IsString, IsInt, IsOptional, IsArray, Min, Max, IsEnum, IsUUID, MinLength, MaxLength } from 'class-validator'
+import { Type } from 'class-transformer'
 import { ComplaintReason } from '../../../database/entities/review-complaint.entity'
 
 // Create Review
@@ -100,6 +101,7 @@ export class GetReviewsQueryDto {
   userId?: string
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(5)
@@ -110,11 +112,13 @@ export class GetReviewsQueryDto {
   sortBy?: 'newest' | 'oldest' | 'highest' | 'lowest' | 'mostLiked'
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   page?: number
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(100)

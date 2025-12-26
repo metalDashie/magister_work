@@ -43,6 +43,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
   const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [newReview, setNewReview] = useState({ rating: 5, title: '', content: '' })
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchReviews()
@@ -52,7 +53,12 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     try {
       setLoading(true)
       const res = await api.get('/reviews', {
-        params: { productId, page, limit: 5, sortBy },
+        params: {
+          productId,
+          page: Number(page),
+          limit: 5,
+          sortBy
+        },
       })
       setData(res.data)
     } catch (error) {
@@ -66,7 +72,14 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
     e.preventDefault()
     if (!isAuthenticated || submitting) return
 
+    // Validate content length (minimum 10 characters)
+    if (newReview.content.length < 10) {
+      setError('Review must be at least 10 characters long')
+      return
+    }
+
     setSubmitting(true)
+    setError(null)
     try {
       await api.post('/reviews', {
         productId,
@@ -78,7 +91,8 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
       setShowForm(false)
       fetchReviews()
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Failed to submit review')
+      const message = error.response?.data?.message || 'Failed to submit review'
+      setError(message)
     } finally {
       setSubmitting(false)
     }
@@ -151,9 +165,9 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
           <div className="flex items-center gap-8">
             <div className="text-center">
               <div className="text-5xl font-bold text-gray-900">
-                {data.averageRating?.toFixed(1) || '0'}
+                {Number(data.averageRating || 0).toFixed(1)}
               </div>
-              <div className="mt-2">{renderStars(Math.round(data.averageRating || 0))}</div>
+              <div className="mt-2">{renderStars(Math.round(Number(data.averageRating) || 0))}</div>
               <div className="text-sm text-gray-500 mt-1">{data.total} reviews</div>
             </div>
             <div className="flex-1">
@@ -182,18 +196,31 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
       )}
 
       {/* Write Review Button / Form */}
-      {isAuthenticated && (
-        <div className="mb-8">
-          {!showForm ? (
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              Write a Review
-            </button>
-          ) : (
+      <div className="mb-8">
+        {!isAuthenticated ? (
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+            <p className="text-gray-600">
+              <a href="/auth/login" className="text-primary-600 hover:underline font-medium">
+                Log in
+              </a>{' '}
+              to write a review
+            </p>
+          </div>
+        ) : !showForm ? (
+          <button
+            onClick={() => { setShowForm(true); setError(null); }}
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            Write a Review
+          </button>
+        ) : (
             <form onSubmit={submitReview} className="bg-white border rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4">Write Your Review</h3>
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm">
+                  {error}
+                </div>
+              )}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
                 {renderRatingInput()}
@@ -237,8 +264,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
               </div>
             </form>
           )}
-        </div>
-      )}
+      </div>
 
       {/* Sort */}
       {data && data.total > 0 && (
@@ -261,7 +287,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
       )}
 
       {/* Reviews List */}
-      {data && data.reviews.length > 0 ? (
+      {data && data.reviews && data.reviews.length > 0 ? (
         <div className="space-y-6">
           {data.reviews.map((review) => (
             <div key={review.id} className="border-b pb-6">

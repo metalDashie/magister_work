@@ -168,9 +168,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* Rating */}
       {product.reviewsCount > 0 && (
         <div className="flex items-center gap-3">
-          {renderStars(product.averageRating || 0)}
+          {renderStars(Number(product.averageRating) || 0)}
           <span className="text-sm text-gray-600">
-            {product.averageRating?.toFixed(1)} ({product.reviewsCount} reviews)
+            {Number(product.averageRating).toFixed(1)} ({product.reviewsCount} reviews)
           </span>
         </div>
       )}

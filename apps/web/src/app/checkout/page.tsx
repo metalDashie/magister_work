@@ -91,6 +91,11 @@ export default function CheckoutPage() {
   }
 
   const handleCheckout = async () => {
+    console.log('[Checkout] handleCheckout called')
+    console.log('[Checkout] Cart:', cart)
+    console.log('[Checkout] DeliveryData:', deliveryData)
+    console.log('[Checkout] PaymentMethod:', paymentMethod)
+
     if (!cart || !cart.items || cart.items.length === 0) {
       setError('Your cart is empty')
       return
@@ -107,7 +112,9 @@ export default function CheckoutPage() {
     try {
       // For online payment, create order and show Stripe form
       if (paymentMethod === PaymentMethodValues.ONLINE) {
+        console.log('[Checkout] Creating order for online payment...')
         const order = await createOrder()
+        console.log('[Checkout] Order created:', order)
         setPendingOrderId(order.id)
         setShowStripeForm(true)
         setLoading(false)
@@ -119,6 +126,7 @@ export default function CheckoutPage() {
       await clearCart()
       router.push(`/checkout/success?orderId=${order.id}`)
     } catch (err: any) {
+      console.error('[Checkout] Error:', err)
       setError(err.response?.data?.message || err.message || 'Checkout failed')
       setLoading(false)
     }
@@ -156,6 +164,15 @@ export default function CheckoutPage() {
       </div>
     )
   }
+
+  // Debug info
+  console.log('[Checkout] Render state:', {
+    showStripeForm,
+    pendingOrderId,
+    cartItems: cart?.items?.length,
+    deliveryData: !!deliveryData,
+    paymentMethod,
+  })
 
   // Show Stripe payment form after order is created
   if (showStripeForm && pendingOrderId) {

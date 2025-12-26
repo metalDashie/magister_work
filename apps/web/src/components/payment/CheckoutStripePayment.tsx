@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { loadStripe, Stripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { api } from '@/lib/api'
@@ -21,25 +21,30 @@ function StripePaymentFormInner({
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!stripe || !elements) {
+      console.log('[Stripe] Not ready - stripe:', !!stripe, 'elements:', !!elements)
       return
     }
 
     setLoading(true)
 
     try {
+      console.log('[Stripe] Confirming payment...')
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         redirect: 'if_required',
       })
 
       if (error) {
+        console.error('[Stripe] Payment error:', error)
         onError(error.message || 'Помилка оплати')
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        console.log('[Stripe] Payment succeeded:', paymentIntent.id)
         // Confirm payment on backend to update order status
         try {
           await api.post('/payments/confirm', { paymentIntentId: paymentIntent.id })
@@ -49,6 +54,7 @@ function StripePaymentFormInner({
         onSuccess()
       }
     } catch (err: any) {
+      console.error('[Stripe] Exception:', err)
       onError(err.message || 'Помилка обробки платежу')
     } finally {
       setLoading(false)
@@ -67,11 +73,22 @@ function StripePaymentFormInner({
         </p>
       </div>
 
-      <PaymentElement />
+      <div className="min-h-[200px]">
+        <PaymentElement
+          onReady={() => {
+            console.log('[Stripe] PaymentElement ready')
+            setReady(true)
+          }}
+          onLoadError={(error) => {
+            console.error('[Stripe] PaymentElement load error:', error)
+            onError('Не вдалося завантажити форму оплати')
+          }}
+        />
+      </div>
 
       <button
         type="submit"
-        disabled={!stripe || loading}
+        disabled={!stripe || !ready || loading}
         className="w-full bg-primary-600 text-white py-3 rounded-md text-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading ? (
@@ -111,12 +128,22 @@ export function CheckoutStripePayment({
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState(true)
 
+  const handleError = useCallback((message: string) => {
+    onError(message)
+  }, [onError])
+
   useEffect(() => {
+    let cancelled = false
+
     const initializeStripe = async () => {
+      console.log('[Stripe] Initializing for order:', orderId)
+
       try {
         // Get Stripe publishable key
+        console.log('[Stripe] Fetching config...')
         const configRes = await api.get('/payments/config')
         const publishableKey = configRes.data.publishableKey
+        console.log('[Stripe] Got publishable key:', publishableKey ? 'yes' : 'no')
 
         if (!publishableKey) {
           setError('Stripe не налаштовано')
@@ -124,26 +151,44 @@ export function CheckoutStripePayment({
           return
         }
 
+        if (cancelled) return
+
         // Load Stripe
+        console.log('[Stripe] Loading Stripe...')
         const stripe = loadStripe(publishableKey)
         setStripePromise(stripe)
 
         // Create payment intent
+        console.log('[Stripe] Creating payment intent...')
         const intentRes = await api.post('/payments/create-intent', { orderId })
+        console.log('[Stripe] Got client secret:', intentRes.data.clientSecret ? 'yes' : 'no')
+
+        if (cancelled) return
+
         setClientSecret(intentRes.data.clientSecret)
       } catch (err: any) {
-        console.error('Failed to initialize Stripe:', err)
-        setError(err.response?.data?.message || 'Не вдалося ініціалізувати платіжну систему')
-        onError(err.response?.data?.message || 'Помилка ініціалізації платежу')
+        console.error('[Stripe] Failed to initialize:', err)
+        console.error('[Stripe] Error response:', err.response?.data)
+        if (!cancelled) {
+          const message = err.response?.data?.message || 'Не вдалося ініціалізувати платіжну систему'
+          setError(message)
+          handleError(message)
+        }
       } finally {
-        setLoading(false)
+        if (!cancelled) {
+          setLoading(false)
+        }
       }
     }
 
     if (orderId) {
       initializeStripe()
     }
-  }, [orderId, onError])
+
+    return () => {
+      cancelled = true
+    }
+  }, [orderId, handleError])
 
   if (loading) {
     return (

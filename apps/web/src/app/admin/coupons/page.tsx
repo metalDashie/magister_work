@@ -47,7 +47,7 @@ export default function AdminCoupons() {
   const [formData, setFormData] = useState({
     code: '',
     description: '',
-    type: 'percentage' as const,
+    type: 'percentage' as 'percentage' | 'fixed_amount' | 'free_shipping',
     value: 10,
     minOrderAmount: '',
     maxDiscountAmount: '',
